@@ -19,35 +19,29 @@ export default function Home() {
               className="object-cover opacity-60"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90"></div>
+            <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(18, 20, 20, 0) 0%, rgba(18, 20, 20, 0.6) 50%, #121414 100%)" }}></div>
           </div>
 
           {/* Hero Content */}
-          <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-            {/* Perfume Bottle Image (Floating) */}
-            <div className="mb-12 animate-float">
-              <Image
-                src="/bottleofperfume.png"
-                alt="Signature Perfume"
-                width={300}
-                height={400}
-                className="mx-auto drop-shadow-[0_0_50px_rgba(235,193,84,0.3)]"
-              />
+          <div className="relative z-10 max-w-7xl mx-auto text-center px-4 flex flex-col items-center">
+            {/* Perfume Bottle - Centered and atmospheric */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 opacity-40 mix-blend-screen pointer-events-none">
+
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold text-[var(--primary)] mb-6 drop-shadow-sm">
+            <h1 className="mb-8 drop-shadow-2xl max-w-[900px]">
               Create Your Signature Scent
             </h1>
             
-            <p className="text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+            <p className="text-sm md:text-base text-[#ffffff] max-w-3xl mx-auto mb-14 font-light leading-relaxed opacity-70 tracking-wide">
               Create a fragrance that defines you. A beautiful blend crafted for your unique presence.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="btn-primary w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+              <button className="btn-primary w-full sm:w-auto min-w-[280px]">
                 Create Your Fragrance
               </button>
-              <button className="btn-outline w-full sm:w-auto">
+              <button className="btn-outline w-full sm:w-auto min-w-[280px]">
                 Shop Pre-made Blends
               </button>
             </div>
@@ -61,36 +55,94 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Feature Section */}
-        <section className="py-24 bg-black">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 italic">The Art of Blending</h2>
-              <div className="h-1 w-20 bg-[var(--primary)] mx-auto"></div>
+        {/* The Art of Creation Section */}
+        <section className="py-32 bg-[#0a0a0a] relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center mb-24">
+              <h2 className="text-4xl md:text-5xl font-normal text-[#D4AF37] mb-6" style={{ fontFamily: "var(--font-noto-serif)" }}>
+                The Art of Creation
+              </h2>
+              <div className="h-[1px] w-24 bg-[#D4AF37]/30 mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-[var(--primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                  <span className="text-[var(--primary)] text-2xl">01</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+              {/* Step 1 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="mb-10 text-[#D4AF37] transform transition-transform duration-500 group-hover:scale-110">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18.5 20H5.5L10.5 11.5V5H13.5V11.5L18.5 20Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M10.5 5H13.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M9 14H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Choose Your Base</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">Select from our curated collection of base notes that form the foundation of your scent.</p>
+                <h3 className="text-2xl font-normal mb-6 text-white" style={{ fontFamily: "var(--font-playfair)" }}>Choose fragrances</h3>
+                <p className="text-sm leading-relaxed text-white/60 max-w-[280px]">
+                  Select from over 100 rare, artisanal essences sourced from around the globe.
+                </p>
               </div>
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-[var(--primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                  <span className="text-[var(--primary)] text-2xl">02</span>
+
+              {/* Step 2 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="mb-10 text-[#D4AF37] transform transition-transform duration-500 group-hover:scale-110">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                    <circle cx="12" cy="6" r="1.5" fill="currentColor" opacity="0.6"/>
+                    <circle cx="12" cy="18" r="1.5" fill="currentColor" opacity="0.6"/>
+                    <circle cx="6" cy="12" r="1.5" fill="currentColor" opacity="0.6"/>
+                    <circle cx="18" cy="12" r="1.5" fill="currentColor" opacity="0.6"/>
+                    <circle cx="17" cy="17" r="1" fill="currentColor" opacity="0.4"/>
+                    <circle cx="7" cy="7" r="1" fill="currentColor" opacity="0.4"/>
+                    <circle cx="17" cy="7" r="1" fill="currentColor" opacity="0.4"/>
+                    <circle cx="7" cy="17" r="1" fill="currentColor" opacity="0.4"/>
+                  </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Add Heart Notes</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">Layer floral, spicy, or woody middle notes to give your fragrance its true character.</p>
+                <h3 className="text-2xl font-normal mb-6 text-white" style={{ fontFamily: "var(--font-playfair)" }}>Customize blend</h3>
+                <p className="text-sm leading-relaxed text-white/60 max-w-[280px]">
+                  Adjust the intensity of each scent balancing the formula to your choosing.
+                </p>
               </div>
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-[var(--primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                  <span className="text-[var(--primary)] text-2xl">03</span>
+
+              {/* Step 3 */}
+              <div className="flex flex-col items-center text-center group">
+                <div className="mb-10 text-[#D4AF37] transform transition-transform duration-500 group-hover:scale-110">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 3L13.5 8.5L19 10L13.5 11.5L12 17L10.5 11.5L5 10L10.5 8.5L12 3Z" fill="currentColor"/>
+                    <path d="M19 16L20 19.5L23.5 20.5L20 21.5L19 25L18 21.5L14.5 20.5L18 19.5L19 16Z" fill="currentColor" opacity="0.6"/>
+                    <path d="M5 16L5.5 18L7.5 18.5L5.5 19L5 21L4.5 19L2.5 18.5L4.5 18L5 16Z" fill="currentColor" opacity="0.4"/>
+                  </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Finish with Top Notes</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">Add light, refreshing top notes for that perfect first impression that lingers.</p>
+                <h3 className="text-2xl font-normal mb-6 text-white" style={{ fontFamily: "var(--font-playfair)" }}>Receive your scent</h3>
+                <p className="text-sm leading-relaxed text-white/60 max-w-[280px]">
+                  Your unique formula is hand made with meticulous quality control.
+                </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Masterpieces Section */}
+        <section className="py-32 bg-black">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl font-normal text-white mb-4" style={{ fontFamily: "var(--font-playfair)" }}>Masterpieces</h2>
+              <p className="text-white/50 text-sm uppercase tracking-[4px]">Our Finest Collections</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((num) => (
+                <div key={num} className="relative aspect-[3/4] overflow-hidden rounded-2xl group cursor-pointer">
+                  <Image
+                    src={`/Masterpieces (${num}).png`}
+                    alt={`Masterpiece ${num}`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                    <h4 className="text-white text-xl mb-2" style={{ fontFamily: "var(--font-playfair)" }}>Collection {num}</h4>
+                    <button className="text-[#D4AF37] text-xs uppercase tracking-widest font-semibold hover:underline decoration-1 underline-offset-4">Explore Details</button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>

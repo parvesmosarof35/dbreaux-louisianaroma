@@ -13,22 +13,36 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-inter), sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+  h1 {
+    font-family: var(--font-noto-serif), serif;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 70.4px;
+    letter-spacing: -1.6px;
+    text-align: center;
+    color: #D4AF37;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h2, h3, h4, h5, h6 {
+    font-family: var(--font-playfair), serif;
     letter-spacing: -0.02em;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-3 text-sm font-semibold tracking-wider uppercase transition-all duration-300 rounded-md bg-[var(--primary)] text-[var(--primary-foreground)] hover:brightness-110 active:scale-95;
+    @apply inline-flex items-center justify-center px-10 py-5 text-sm font-normal tracking-[3.2px] uppercase transition-all duration-300 rounded-2xl bg-[#D4AF37] text-black hover:brightness-110 active:scale-95 shadow-lg;
+    font-family: var(--font-inter), sans-serif;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center px-8 py-3 text-sm font-semibold tracking-wider uppercase transition-all duration-300 border rounded-md border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] active:scale-95;
+    @apply inline-flex items-center justify-center px-10 py-5 text-sm font-normal tracking-[3.2px] uppercase transition-all duration-300 border rounded-2xl border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 active:scale-95;
+    font-family: var(--font-inter), sans-serif;
   }
 }
 
