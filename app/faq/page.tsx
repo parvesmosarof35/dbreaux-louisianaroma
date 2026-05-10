@@ -72,9 +72,9 @@ export default function FAQPage() {
             >
               <button 
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex justify-between items-center p-10 text-left group"
+                className="w-full flex justify-between items-center p-6 md:p-8 text-left group"
               >
-                <h3 className="text-white text-2xl md:text-3xl font-serif tracking-wide group-hover:text-[#F2CA50] transition-colors">
+                <h3 className="text-white text-lg md:text-xl font-serif tracking-wide group-hover:text-[#F2CA50] transition-colors">
                   {faq.question}
                 </h3>
                 <span className={`text-[#F2CA50] text-xl transition-transform duration-500 ${openIndex === index ? "rotate-180" : ""}`}>
@@ -87,7 +87,7 @@ export default function FAQPage() {
                   openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="px-10 pb-10 text-white/40 text-lg font-light leading-relaxed tracking-wide">
+                <div className="px-6 md:px-8 pb-8 text-white/40 text-base font-light leading-relaxed tracking-wide">
                   {faq.answer}
                 </div>
               </div>

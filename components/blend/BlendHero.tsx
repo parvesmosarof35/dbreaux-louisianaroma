@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function BlendHero() {
   return (
@@ -51,7 +52,8 @@ export default function BlendHero() {
           Your journey to a unique olfactory signature starts here. Craft a scent that resonates with your soul.
         </p>
 
-        <button 
+        <Link 
+          href="/create-blend"
           className="flex items-center justify-center transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
           style={{
             width: "450px",
@@ -75,7 +77,7 @@ export default function BlendHero() {
           >
             Begin Your Custom Creation
           </span>
-        </button>
+        </Link>
       </div>
 
       {/* Scroll Indicator */}

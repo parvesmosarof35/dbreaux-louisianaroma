@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HeroSection() {
   return (
@@ -28,12 +29,12 @@ export default function HeroSection() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-          <button className="btn-primary w-full sm:w-auto min-w-[280px]">
+          <Link href="/create-blend" className="btn-primary w-full sm:w-auto min-w-[280px]">
             Create Your Fragrance
-          </button>
-          <button className="btn-outline w-full sm:w-auto min-w-[280px]">
+          </Link>
+          <Link href="/shop" className="btn-outline w-full sm:w-auto min-w-[280px]">
             Shop Pre-made Blends
-          </button>
+          </Link>
         </div>
       </div>
 
