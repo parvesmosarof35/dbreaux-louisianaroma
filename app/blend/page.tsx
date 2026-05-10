@@ -14,7 +14,7 @@ export default function BlendPage() {
     <>
       <Navbar />
       
-      <main className="min-h-screen pt-20">
+      <main className="min-h-screen pt-0">
         <BlendHero />
         <AnatomyOfScent />
         <PremiumFormulas />

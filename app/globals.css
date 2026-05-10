@@ -51,10 +51,10 @@
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.03) !important;
-  background-color: rgba(0, 0, 0, 0.15) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(120%) !important;
-  backdrop-filter: blur(20px) saturate(120%) !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
   border-bottom: 1px solid #D4AF3733 !important;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
   transform: translateZ(0) !important;

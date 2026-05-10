@@ -9,7 +9,7 @@ export default function BlendHero() {
           src="/blendhero.png"
           alt="Blend Background"
           fill
-          className="object-cover opacity-60"
+          className="object-cover opacity-70"
           priority
         />
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(18, 20, 20, 0) 0%, rgba(18, 20, 20, 0.6) 50%, #121414 100%)" }}></div>
