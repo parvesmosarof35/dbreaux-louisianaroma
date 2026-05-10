@@ -7,13 +7,13 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand and Description */}
-          <div className="col-span-1 md:col-span-1">
+          <div className="col-span-1 md:col-span-1 ">
             <Image
               src="/footerlogo.png"
               alt="Louisianaroma Footer Logo"
               width={150}
               height={40}
-              className="mb-6 h-10 w-auto object-contain"
+              className="mb-6 h-10 w-auto object-contain -ml-10"
             />
             <p className="text-sm leading-relaxed mb-8 opacity-80">
               The pinnacle of bespoke perfumery, blending traditional savoir-faire with contemporary digital precision.
