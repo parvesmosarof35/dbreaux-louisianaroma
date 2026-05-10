@@ -1,0 +1,102 @@
+"use client";
+
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Image from "next/image";
+
+const FAQS = [
+  {
+    question: "How do I create a custom blend?",
+    answer: "The creation of a bespoke fragrance begins with a private consultation with our master perfumer. Over several months, we explore rare essences and accords to craft a scent that reflects your personal narrative."
+  },
+  {
+    question: "What is the maturation process in Grasse?",
+    answer: "Our fragrances undergo a rigorous aging process in our Grasse atelier. This maturation allows the complex oils to bind perfectly, resulting in the deep longevity and sillage that defines Louisianaroma."
+  },
+  {
+    question: "Do you offer international shipping?",
+    answer: "Yes, we provide secure, insured international shipping to most countries. Each shipment is packaged with white-glove precision to ensure the preservation of the delicate olfactory notes."
+  },
+  {
+    question: "Can I gift a custom fragrance commission?",
+    answer: "Absolutely. We offer exclusive gift invitations for our bespoke services, allowing the recipient to embark on their own artistic journey with our master perfumers."
+  },
+  {
+    question: "What is the shelf life of an Essence Noire perfume?",
+    answer: "When stored away from light and extreme temperatures, our high-concentration extractions maintain their integrity for several years. We recommend keeping them in their original cases."
+  }
+];
+
+export default function FAQPage() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  return (
+    <div className="bg-[#121414] min-h-screen text-white">
+      <Navbar />
+
+      <main>
+        {/* Hero Section */}
+        <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/faqpageherobg.png"
+              alt="FAQ Hero"
+              fill
+              className="object-cover opacity-60"
+              priority
+            />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(18, 20, 20, 0) 0%, rgba(18, 20, 20, 0.6) 50%, #121414 100%)" }}></div>
+          </div>
+          
+          <div className="relative z-10 text-center max-w-5xl px-4 flex flex-col items-center">
+            <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase block mb-6">
+              Private Assistance
+            </span>
+            <h1 className="drop-shadow-2xl mb-8 tracking-tight">
+              Questions & Concierge
+            </h1>
+            <p className="text-white/40 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              Our artisans and concierge are dedicated to the preservation of olfactory excellence. Explore our most frequent inquiries regarding commissions, craftsmanship, and shipping.
+            </p>
+          </div>
+        </section>
+
+        {/* FAQ List Section */}
+        <section className="max-w-4xl mx-auto px-4 py-32 space-y-6">
+          {FAQS.map((faq, index) => (
+            <div 
+              key={index} 
+              className="bg-[#1A1C1C] border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 hover:border-[#F2CA50]/30"
+            >
+              <button 
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="w-full flex justify-between items-center p-10 text-left group"
+              >
+                <h3 className="text-white text-2xl md:text-3xl font-serif tracking-wide group-hover:text-[#F2CA50] transition-colors">
+                  {faq.question}
+                </h3>
+                <span className={`text-[#F2CA50] text-xl transition-transform duration-500 ${openIndex === index ? "rotate-180" : ""}`}>
+                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
+                </span>
+              </button>
+              
+              <div 
+                className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                  openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="px-10 pb-10 text-white/40 text-lg font-light leading-relaxed tracking-wide">
+                  {faq.answer}
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
