@@ -5,19 +5,19 @@ const formulas = [
     id: 1,
     category: "Resinous",
     title: "Royal Oud",
-    image: "/royal_oud.png"
+    image: "/FORMULAS (1).png"
   },
   {
     id: 2,
     category: "Floral",
     title: "Damask Rose",
-    image: "/damask_rose.png"
+    image: "/FORMULAS (2).png"
   },
   {
     id: 3,
     category: "Citrus",
     title: "Calabrian Bergamot",
-    image: "/calabrian_bergamot.png"
+    image: "/FORMULAS (3).png"
   }
 ];
 

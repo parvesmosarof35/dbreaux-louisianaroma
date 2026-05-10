@@ -17,16 +17,7 @@ export default function HeroSection() {
 
       {/* Hero Content */}
       <div className="relative z-10 max-w-7xl mx-auto text-center px-4 flex flex-col items-center">
-        {/* Perfume Bottle - Centered and atmospheric */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 opacity-40 mix-blend-screen pointer-events-none">
-          <Image
-            src="/bottleofperfume.png"
-            alt="Signature Perfume"
-            width={500}
-            height={600}
-            className="object-contain"
-          />
-        </div>
+
 
         <h1 className="mb-8 drop-shadow-2xl max-w-[900px]">
           Create Your Signature Scent

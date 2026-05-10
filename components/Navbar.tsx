@@ -17,9 +17,8 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass h-[92px] px-[48px] pr-[48.02px] py-[24px]">
+      <div className="max-w-[1280px] mx-auto flex justify-between items-center h-full">
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
@@ -37,11 +36,11 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-[11.6px] font-normal tracking-[2.4px] uppercase transition-colors hover:text-[var(--primary)] align-middle`}
+                className={`text-[11.6px] font-normal tracking-[2.4px] uppercase transition-all duration-300 hover:text-[var(--primary)] align-middle flex items-center h-full`}
                 style={{ 
                   fontFamily: "Georgia, serif",
                   lineHeight: "16px",
-                  color: pathname === link.href ? "var(--primary)" : "inherit"
+                  color: pathname === link.href ? "var(--primary)" : "rgba(255, 255, 255, 0.8)"
                 }}
               >
                 {link.name}
@@ -62,7 +61,6 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </div>
     </nav>
   );
 }
