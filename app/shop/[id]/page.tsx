@@ -177,6 +177,55 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
             ))}
           </div>
         </div>
+        {/* FAQ Section */}
+        <div className="space-y-20 mt-32">
+          <div className="text-center space-y-4">
+            <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">
+              Olfactive Inquiries
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif">Frequently Asked</h2>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-4">
+            {[
+              { 
+                q: "What is the concentration of this fragrance?", 
+                a: "This creation is an Eau de Parfum Intense, featuring a 20-25% concentration of rare essential oils and absolutes for exceptional depth and sillage." 
+              },
+              { 
+                q: "How long will the scent linger on my skin?", 
+                a: "Due to the high quality of our raw materials, you can expect the fragrance to last between 10 to 14 hours. The base notes often remain detectable on skin for over 24 hours." 
+              },
+              { 
+                q: "How should I preserve the integrity of the essence?", 
+                a: "To maintain the olfactory profile, store your bottle in a cool, dark environment away from direct sunlight and significant temperature shifts." 
+              },
+              { 
+                q: "What is the best way to experience the full pyramid?", 
+                a: "Apply to clean, hydrated pulse points. Avoid rubbing your wrists together, as this can break down the delicate top note molecules and alter the progression." 
+              },
+              { 
+                q: "Is this scent suitable for layering?", 
+                a: "While complete on its own, its balanced architecture allows for layering with our 'L'Heritage' collection to create a truly bespoke signature." 
+              }
+            ].map((faq, idx) => (
+              <details key={idx} className="group bg-[#1A1C1C] border border-white/5 rounded-2xl overflow-hidden hover:border-[#F2CA50]/20 transition-all duration-500">
+                <summary className="flex justify-between items-center p-8 cursor-pointer list-none">
+                  <h3 className="text-white text-lg font-light tracking-wide">{faq.q}</h3>
+                  <div className="relative w-6 h-6 shrink-0">
+                    <div className="absolute top-1/2 left-0 w-full h-px bg-[#F2CA50] opacity-40"></div>
+                    <div className="absolute top-0 left-1/2 h-full w-px bg-[#F2CA50] opacity-40 group-open:rotate-90 transition-transform duration-500"></div>
+                  </div>
+                </summary>
+                <div className="px-8 pb-8">
+                  <p className="text-white/40 text-sm font-light leading-relaxed max-w-2xl border-t border-white/5 pt-6 italic">
+                    "{faq.a}"
+                  </p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
       </main>
 
       <Footer />

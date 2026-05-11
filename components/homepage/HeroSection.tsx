@@ -33,16 +33,16 @@ export default function HeroSection() {
           Create Your Signature Scent
         </h1>
         
-        <p className="text-sm md:text-base text-[#ffffff] max-w-3xl mx-auto mb-14 font-light leading-relaxed opacity-70 tracking-wide">
+        <p className="text-sm md:text-base text-[#ffffff] max-w-3xl mx-auto mb-8 md:mb-14 font-light leading-relaxed opacity-70 tracking-wide px-4">
           Create a fragrance that defines you. A beautiful blend crafted for your unique presence.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-          <Link href="/create-blend" className="btn-primary w-full sm:w-auto min-w-[280px]">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-8 w-full max-w-[600px] px-6">
+          <Link href="/create-blend" className="btn-primary w-full sm:flex-1 min-w-0 text-center">
             Create Your Fragrance
           </Link>
-          <Link href="/shop" className="btn-outline w-full sm:w-auto min-w-[280px]">
-            Shop Pre-made Blends
+          <Link href="/shop" className="btn-outline w-full sm:flex-1 min-w-0 text-center">
+            Shop Pre-made
           </Link>
         </div>
       </div>

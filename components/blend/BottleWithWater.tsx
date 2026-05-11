@@ -57,12 +57,22 @@ export default function BottleWithWater({ level, label, delay }: BottleWithWater
         {/* Percentage Indicator - Eye Catching */}
         <div className="absolute z-20 top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none">
           <span 
-            className="text-white text-5xl font-serif tracking-tighter opacity-0 group-hover:opacity-90 transition-all duration-700 transform translate-y-4 group-hover:translate-y-0 scale-90 group-hover:scale-110"
-            style={{ textShadow: "0 10px 30px rgba(0,0,0,0.8)" }}
+            className="text-white text-5xl font-serif tracking-tighter opacity-90 transition-all duration-700 transform scale-110 animate-fade-in-up"
+            style={{ 
+              textShadow: "0 10px 30px rgba(0,0,0,0.8)",
+              animationDelay: `calc(${delay} + 0.5s)`,
+              animationFillMode: "backwards"
+            }}
           >
             {fillValue}%
           </span>
-          <div className="w-10 h-px bg-[#D4AF37] mt-3 opacity-0 group-hover:opacity-60 transition-all duration-1000 transform scale-x-0 group-hover:scale-x-100 delay-200"></div>
+          <div 
+            className="w-10 h-px bg-[#D4AF37] mt-3 opacity-60 animate-scale-x"
+            style={{ 
+              animationDelay: `calc(${delay} + 1s)`,
+              animationFillMode: "backwards"
+            }}
+          ></div>
         </div>
 
         {/* Bottom Reflection Glow */}
@@ -70,7 +80,13 @@ export default function BottleWithWater({ level, label, delay }: BottleWithWater
       </div>
 
       {/* Label */}
-      <div className="mt-8 text-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+      <div 
+        className="mt-8 text-center animate-fade-in-up"
+        style={{ 
+          animationDelay: `calc(${delay} + 1.2s)`,
+          animationFillMode: "backwards"
+        }}
+      >
         <span className="text-[#D4AF37] text-xs font-bold tracking-[4px] uppercase mb-1 block">{label}</span>
         <span className="text-white/40 text-[10px] uppercase tracking-[2px]">{level} Concentration</span>
       </div>

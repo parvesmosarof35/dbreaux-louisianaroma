@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function CTASection() {
   return (
-    <section className="relative h-[57vh] flex items-center justify-center overflow-hidden">
+    <section className="relative h-auto md:h-[57vh] py-24 md:py-0 flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -16,15 +16,14 @@ export default function CTASection() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 flex flex-col items-center">
-        <h2 className="text-4xl md:text-[40px] font-normal text-white mb-12" style={{ fontFamily: "var(--font-noto-serif)", lineHeight: "48px", letterSpacing: "0.4px" }}>
+        <h2 className="text-3xl md:text-[40px] font-normal text-white mb-8 md:mb-12" style={{ fontFamily: "var(--font-noto-serif)", lineHeight: "1.2", letterSpacing: "0.4px" }}>
           Start Your Custom Blend Today
         </h2>
         
         <button 
-          className="inline-flex items-center justify-center rounded-[12px] transition-all duration-300 hover:brightness-110 active:scale-95 shadow-xl"
+          className="inline-flex items-center justify-center rounded-[12px] transition-all duration-300 hover:brightness-110 active:scale-95 shadow-xl max-w-[270px] w-full"
           style={{ 
             background: "#D4AF37",
-            width: "270px",
             height: "64px",
             padding: "20px 45px",
             color: "#3C2F00",

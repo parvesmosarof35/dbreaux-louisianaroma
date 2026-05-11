@@ -1,15 +1,15 @@
 export default function ArtOfCreationSection() {
   return (
-    <section className="py-32 bg-[#0a0a0a] relative overflow-hidden">
+    <section className="py-20 md:py-32 bg-[#0a0a0a] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-24">
-          <h2 className="text-4xl md:text-5xl font-normal text-[#D4AF37] mb-6" style={{ fontFamily: "var(--font-noto-serif)" }}>
+        <div className="text-center mb-16 md:mb-24">
+          <h2 className="text-3xl md:text-5xl font-normal text-[#D4AF37] mb-6" style={{ fontFamily: "var(--font-noto-serif)" }}>
             The Art of Creation
           </h2>
           <div className="h-[1px] w-24 bg-[#D4AF37]/30 mx-auto"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {/* Step 1 */}
           <div className="flex flex-col items-center text-center group">
             <div className="mb-10 text-[#D4AF37] transform transition-transform duration-500 group-hover:scale-110">

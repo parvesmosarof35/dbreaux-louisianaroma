@@ -25,10 +25,10 @@ export default function AdminProfilePage() {
   };
 
   return (
-    <div className="space-y-12 max-w-5xl mx-auto animate-in fade-in duration-700">
-      <header className="flex items-center gap-10">
+    <div className="space-y-12 max-w-5xl mx-auto animate-in fade-in duration-700 px-4 sm:px-6">
+      <header className="flex flex-col md:flex-row items-center gap-6 md:gap-10 text-center md:text-left">
           <div className="relative group">
-            <div className="relative w-40 h-40 rounded-[48px] overflow-hidden border-2 border-[#F2CA50]/20 bg-white/5 flex items-center justify-center font-serif text-[#F2CA50] text-6xl shadow-2xl transition-all group-hover:border-[#F2CA50]/50">
+            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-[32px] md:rounded-[48px] overflow-hidden border-2 border-[#F2CA50]/20 bg-white/5 flex items-center justify-center font-serif text-[#F2CA50] text-4xl md:text-6xl shadow-2xl transition-all group-hover:border-[#F2CA50]/50">
                 {profile.avatar ? (
                   <img src={profile.avatar} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
@@ -48,11 +48,11 @@ export default function AdminProfilePage() {
             </div>
           </div>
           <div className="space-y-2">
-            <h1 className="text-white text-6xl font-serif">{profile.name}</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">{profile.role}</span>
-              <div className="w-1 h-1 rounded-full bg-white/20" />
-              <span className="text-white/20 text-[10px] font-bold tracking-[4px] uppercase">Member since {profile.joined}</span>
+            <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-serif">{profile.name}</h1>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4">
+              <span className="text-[#F2CA50] text-[9px] md:text-[10px] font-bold tracking-[3px] md:tracking-[4px] uppercase opacity-60">{profile.role}</span>
+              <div className="hidden sm:block w-1 h-1 rounded-full bg-white/20" />
+              <span className="text-white/20 text-[9px] md:text-[10px] font-bold tracking-[3px] md:tracking-[4px] uppercase">Member since {profile.joined}</span>
             </div>
           </div>
       </header>
@@ -60,7 +60,7 @@ export default function AdminProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Info */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-[#121414] border border-white/5 rounded-[40px] p-10 space-y-10">
+          <div className="bg-[#121414] border border-white/5 rounded-[30px] md:rounded-[40px] p-6 md:p-10 space-y-8 md:space-y-10">
             <div className="flex justify-between items-center">
                <h2 className="text-white text-2xl font-serif">Master Identity</h2>
                <p className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Public Information</p>
@@ -83,15 +83,15 @@ export default function AdminProfilePage() {
                 <input type="text" defaultValue={profile.joined} disabled className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl text-white/40 outline-none font-light opacity-50" />
               </div>
             </div>
-            <div className="pt-8 border-t border-white/5 flex justify-end">
-              <button className="bg-[#F2CA50] text-black text-[10px] font-bold tracking-[3px] uppercase px-12 py-6 rounded-2xl hover:bg-white transition-all duration-500 shadow-[0_20px_40px_rgba(242,202,80,0.2)]">Update Identity</button>
+            <div className="pt-8 border-t border-white/5 flex justify-center md:justify-end">
+              <button className="w-full md:w-auto bg-[#F2CA50] text-black text-[10px] font-bold tracking-[3px] uppercase px-8 md:px-12 py-5 md:py-6 rounded-2xl hover:bg-white transition-all duration-500 shadow-[0_20px_40px_rgba(242,202,80,0.2)]">Update Identity</button>
             </div>
           </div>
         </div>
 
         {/* Security / Password */}
         <div className="space-y-8">
-           <div className="bg-[#121414] border border-white/5 rounded-[40px] p-10 space-y-10">
+           <div className="bg-[#121414] border border-white/5 rounded-[30px] md:rounded-[40px] p-6 md:p-10 space-y-8 md:space-y-10">
               <div className="space-y-2">
                  <h2 className="text-white text-2xl font-serif">Security</h2>
                  <p className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Account Protection</p>
@@ -141,7 +141,7 @@ export default function AdminProfilePage() {
               )}
            </div>
 
-           <div className="bg-red-500/5 border border-red-500/10 rounded-[40px] p-10 space-y-6">
+           <div className="bg-red-500/5 border border-red-500/10 rounded-[30px] md:rounded-[40px] p-6 md:p-10 space-y-6">
               <div className="space-y-2">
                  <h2 className="text-red-500 text-xl font-serif">Danger Zone</h2>
                  <p className="text-red-500/40 text-[9px] font-bold tracking-[2px] uppercase leading-relaxed">Deactivating your alchemist identity will remove your access to the Maison forever.</p>

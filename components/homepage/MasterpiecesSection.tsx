@@ -26,13 +26,13 @@ const collections = [
 
 export default function MasterpiecesSection() {
   return (
-    <section className="py-32 bg-[#0a0a0a]">
+    <section className="py-20 md:py-32 bg-[#0a0a0a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-[#D4AF37]/10 pb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-16 border-b border-[#D4AF37]/10 pb-10">
           <div className="mb-6 md:mb-0">
-            <p className="text-[#D4AF37] text-xs font-bold tracking-[3px] uppercase mb-4">Exquisite Collections</p>
-            <h2 className="text-4xl md:text-5xl font-normal text-white" style={{ fontFamily: "var(--font-noto-serif)" }}>
+            <p className="text-[#D4AF37] text-[10px] font-bold tracking-[3px] uppercase mb-4">Exquisite Collections</p>
+            <h2 className="text-3xl md:text-5xl font-normal text-white" style={{ fontFamily: "var(--font-noto-serif)" }}>
               Curated Masterpieces
             </h2>
           </div>
@@ -42,7 +42,7 @@ export default function MasterpiecesSection() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {collections.map((item) => (
             <div key={item.id} className="bg-[#121414] p-5 rounded-[32px] border border-white/5 group hover:border-[#D4AF37]/20 transition-all duration-500">
               {/* Card Image Container */}
@@ -58,10 +58,10 @@ export default function MasterpiecesSection() {
               {/* Card Info */}
               <div className="px-2">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-3xl text-white font-normal" style={{ fontFamily: "var(--font-noto-serif)" }}>
+                  <h3 className="text-2xl md:text-3xl text-white font-normal" style={{ fontFamily: "var(--font-noto-serif)" }}>
                     {item.title}
                   </h3>
-                  <span className="text-[#D4AF37] text-2xl font-normal pt-1" style={{ fontFamily: "var(--font-noto-serif)" }}>
+                  <span className="text-[#D4AF37] text-xl md:text-2xl font-normal pt-1" style={{ fontFamily: "var(--font-noto-serif)" }}>
                     {item.price}
                   </span>
                 </div>

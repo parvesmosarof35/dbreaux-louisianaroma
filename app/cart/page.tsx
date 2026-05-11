@@ -5,10 +5,12 @@ import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { useCart } from "@/app/context/CartContext";
 
 export default function CartPage() {
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<any[]>([]);
   const { refreshCart } = useCart();
 
@@ -22,6 +24,18 @@ export default function CartPage() {
     setCartItems(updated);
     localStorage.setItem("louisianaroma-cart", JSON.stringify(updated));
     refreshCart();
+  };
+
+  const handleEdit = (item: any) => {
+    const data = btoa(JSON.stringify({
+      formulaIds: item.formulaIds,
+      percentages: item.percentages,
+      name: item.name,
+      labelBg: item.labelBg,
+      textColor: item.textColor,
+      giftMessage: item.giftMessage
+    }));
+    router.push(`/create-blend?edit=${item.id}&data=${data}`);
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
@@ -83,7 +97,10 @@ export default function CartPage() {
                     </div>
                     <div className="flex gap-8 pt-8 border-t border-white/5">
                       {item.isCustom && (
-                        <button className="flex items-center gap-2 text-[#F2CA50] text-[10px] font-bold tracking-[2px] uppercase hover:text-white transition-colors">
+                        <button 
+                          onClick={() => handleEdit(item)}
+                          className="flex items-center gap-2 text-[#F2CA50] text-[10px] font-bold tracking-[2px] uppercase hover:text-white transition-colors"
+                        >
                           <span className="text-sm">✎</span> Edit Formula
                         </button>
                       )}

@@ -2,14 +2,14 @@ import Image from "next/image";
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-32 bg-[#1a1a1a]">
+    <section className="py-20 md:py-32 bg-[#1a1a1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-24">
+        <div className="text-center mb-16 md:mb-24">
           <p className="text-[#D4AF37] text-[10px] font-normal tracking-[1px] uppercase mb-4" style={{ fontFamily: "var(--font-inter)" }}>
             The Experience
           </p>
-          <h2 className="text-5xl font-normal text-white" style={{ fontFamily: "var(--font-noto-serif)", lineHeight: "48px", letterSpacing: "0.4px" }}>
+          <h2 className="text-3xl md:text-5xl font-normal text-white" style={{ fontFamily: "var(--font-noto-serif)", lineHeight: "48px", letterSpacing: "0.4px" }}>
             Voices of Distinction
           </h2>
         </div>

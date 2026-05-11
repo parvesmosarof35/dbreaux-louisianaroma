@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Toast from "@/components/ui/Toast";
 import { useCart } from "@/app/context/CartContext";
+import { useSearchParams } from "next/navigation";
 
 const STEPS = [
   { id: "01", name: "Select Fragrance" },
@@ -24,9 +25,12 @@ const FORMULAS = [
   { id: 6, name: "Inspired by Amber Noir", category: "A Resinous Oriental", type: "BASE NOTE", description: "A magnetic blend of fossil amber, labdanum, and charred cedarwood.", image: "/product (5).png" }
 ];
 
-export default function CreateBlendPage() {
+function CreateBlendContent() {
   const router = useRouter();
   const { refreshCart } = useCart();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
+
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedFormulas, setSelectedFormulas] = useState<number[]>([]);
   const [percentages, setPercentages] = useState<{ [key: number]: number }>({ 1: 45, 2: 35, 3: 20 });
@@ -38,6 +42,25 @@ export default function CreateBlendPage() {
   const [labelBg, setLabelBg] = useState("#F2CA50");
   const [textColor, setTextColor] = useState("#000000");
   const [giftMessage, setGiftMessage] = useState("");
+
+  // Initialize from searchParams if editing
+  useEffect(() => {
+    const dataParam = searchParams.get("data");
+    if (dataParam) {
+      try {
+        const data = JSON.parse(atob(dataParam));
+        if (data.formulaIds) setSelectedFormulas(data.formulaIds);
+        if (data.percentages) setPercentages(data.percentages);
+        if (data.name) setFragranceName(data.name);
+        if (data.labelBg) setLabelBg(data.labelBg);
+        if (data.textColor) setTextColor(data.textColor);
+        if (data.giftMessage) setGiftMessage(data.giftMessage);
+        setCurrentStep(1); // Jump to composition step
+      } catch (e) {
+        console.error("Failed to parse edit data", e);
+      }
+    }
+  }, [searchParams]);
 
   const bgInputRef = useRef<HTMLInputElement>(null);
   const textInputRef = useRef<HTMLInputElement>(null);
@@ -128,7 +151,7 @@ export default function CreateBlendPage() {
 
   const handleAddToCart = () => {
     const customItem = {
-      id: `custom-${Date.now()}`,
+      id: editId || `custom-${Date.now()}`,
       name: fragranceName || "Your Signature Scent",
       price: 450.00,
       category: "Custom Formulation",
@@ -137,6 +160,8 @@ export default function CreateBlendPage() {
       isCustom: true,
       labelBg,
       textColor,
+      formulaIds: selectedFormulas,
+      percentages,
       details: selectedData.map(f => ({
         label: f.name,
         value: `${percentages[f.id] || 0}%`
@@ -145,10 +170,18 @@ export default function CreateBlendPage() {
     };
 
     const existingCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
-    localStorage.setItem("louisianaroma-cart", JSON.stringify([...existingCart, customItem]));
+    
+    let updatedCart;
+    if (editId) {
+      updatedCart = existingCart.map((item: any) => item.id === editId ? customItem : item);
+    } else {
+      updatedCart = [...existingCart, customItem];
+    }
+    
+    localStorage.setItem("louisianaroma-cart", JSON.stringify(updatedCart));
     refreshCart();
 
-    triggerToast("Your masterpiece has been added to the atelier.", "success");
+    triggerToast(editId ? "Your masterpiece has been refined." : "Your masterpiece has been added to the atelier.", "success");
     setTimeout(() => {
       router.push("/cart");
     }, 1500);
@@ -406,5 +439,17 @@ export default function CreateBlendPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function CreateBlendPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+        <div className="text-[#F2CA50] font-serif text-xl animate-pulse">Initializing Atelier...</div>
+      </div>
+    }>
+      <CreateBlendContent />
+    </Suspense>
   );
 }

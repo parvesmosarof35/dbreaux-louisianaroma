@@ -17,11 +17,11 @@
   }
 
   h1 {
+    @apply text-4xl md:text-6xl;
     font-family: var(--font-noto-serif), serif;
     font-weight: 400;
-    font-size: 64px;
-    line-height: 70.4px;
-    letter-spacing: -1.6px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
     text-align: center;
     color: #D4AF37;
     margin-left: auto;
@@ -133,4 +133,49 @@
   border-radius: 33%;
   animation: inherit;
   animation-duration: 11s;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up-centered {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 20px)) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes scale-x-reveal {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-fade-in-up-centered {
+  animation: fade-in-up-centered 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-scale-x {
+  animation: scale-x-reveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }

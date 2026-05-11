@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
+import MobileNavbar from "./mobilenavbar/MobileNavbar";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { cartCount } = useCart();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -19,8 +22,11 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass h-[92px] px-[48px] pr-[48.02px] py-[24px]">
-      <div className="max-w-[1280px] mx-auto flex justify-between items-center h-full">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass h-[80px] md:h-[92px] px-6 md:px-[48px] py-4 md:py-[24px]">
+      <div className="max-w-[1280px] mx-auto flex justify-between items-center h-full relative z-[60]">
+          {/* Desktop Logo Spacer */}
+          <div className="md:hidden w-10"></div>
+
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
@@ -28,7 +34,7 @@ export default function Navbar() {
                 alt="Louisianaroma Logo"
                 width={180}
                 height={50}
-                className="h-10 w-auto object-contain"
+                className="h-8 md:h-10 w-auto object-contain"
               />
             </Link>
           </div>
@@ -50,7 +56,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center space-x-8">
+          <div className={`flex items-center space-x-4 md:space-x-8 transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
             <Link href="/cart" className="relative group p-2">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white group-hover:text-[#F2CA50] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -68,6 +74,8 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
+
+        <MobileNavbar onToggle={(open) => setIsMenuOpen(open)} />
     </nav>
   );
 }
