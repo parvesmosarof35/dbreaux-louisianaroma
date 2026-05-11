@@ -8,7 +8,6 @@ const SIDEBAR_LINKS = [
   { name: "Profile", href: "/dashboard/userdashboard/profile", icon: "👤" },
   { name: "My Orders", href: "/dashboard/userdashboard/orders", icon: "📦" },
   { name: "Security", href: "/dashboard/userdashboard/security", icon: "🔒" },
-  { name: "The Vault", href: "/dashboard/userdashboard/vault", icon: "⚗" },
   { name: "Logout", href: "/", icon: "✕" },
 ];
 

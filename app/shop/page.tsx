@@ -40,8 +40,8 @@ export default function ShopPage() {
           {/* Product Grid */}
           <div className="flex-1 space-y-24">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-              {PRODUCTS.map((product) => (
-                <ProductCard key={product.id} {...product} />
+              {PRODUCTS.map((product, index) => (
+                <ProductCard key={product.id} {...product} priority={index < 3} />
               ))}
             </div>
 

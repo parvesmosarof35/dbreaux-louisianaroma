@@ -54,6 +54,17 @@ export default function BottleWithWater({ level, label, delay }: BottleWithWater
           className="relative z-10 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-transform duration-700 group-hover:scale-105"
         />
 
+        {/* Percentage Indicator - Eye Catching */}
+        <div className="absolute z-20 top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none">
+          <span 
+            className="text-white text-5xl font-serif tracking-tighter opacity-0 group-hover:opacity-90 transition-all duration-700 transform translate-y-4 group-hover:translate-y-0 scale-90 group-hover:scale-110"
+            style={{ textShadow: "0 10px 30px rgba(0,0,0,0.8)" }}
+          >
+            {fillValue}%
+          </span>
+          <div className="w-10 h-px bg-[#D4AF37] mt-3 opacity-0 group-hover:opacity-60 transition-all duration-1000 transform scale-x-0 group-hover:scale-x-100 delay-200"></div>
+        </div>
+
         {/* Bottom Reflection Glow */}
         <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 h-10 bg-[#3B82F6]/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
       </div>

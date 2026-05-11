@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   description: "Create your signature scent with Louisianaroma.",
 };
 
+import { Providers } from "./Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,7 +35,11 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${notoSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }

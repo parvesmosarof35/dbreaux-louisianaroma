@@ -6,8 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { useCart } from "@/app/context/CartContext";
+
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const { refreshCart } = useCart();
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
@@ -18,6 +21,7 @@ export default function CartPage() {
     const updated = cartItems.filter(item => item.id !== id);
     setCartItems(updated);
     localStorage.setItem("louisianaroma-cart", JSON.stringify(updated));
+    refreshCart();
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);

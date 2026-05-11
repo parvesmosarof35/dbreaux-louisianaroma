@@ -1,7 +1,10 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
+import { useCart } from "@/app/context/CartContext";
 
 const PRODUCTS = [
   { id: 1, category: "Private Reserve", name: "Noire d'Oud", description: "A magnetic depth that captures the essence of midnight in the desert. Intense, sophisticated, and eternally lingering.", notes: "Agarwood, Bulgarian Rose, Ambergris", price: 450, image: "/product (1).png" },
@@ -14,6 +17,24 @@ const PRODUCTS = [
 
 export default function ProductDetailsPage({ params }: { params: { id: string } }) {
   const product = PRODUCTS.find((p) => p.id === parseInt(params.id)) || PRODUCTS[0];
+  const { refreshCart } = useCart();
+
+  const addToCart = () => {
+    const savedCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
+    const newItem = {
+      id: `${product.id}-${Date.now()}`,
+      name: product.name,
+      category: product.category,
+      price: product.price,
+      image: product.image,
+      description: product.description || product.notes,
+      isCustom: false
+    };
+    const updatedCart = [...savedCart, newItem];
+    localStorage.setItem("louisianaroma-cart", JSON.stringify(updatedCart));
+    refreshCart();
+    alert(`${product.name} has been added to your atelier.`);
+  };
 
   return (
     <div className="bg-[#121414] min-h-screen text-white">
@@ -54,12 +75,12 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
               <div className="text-white/30 text-xs font-bold tracking-[2px] uppercase">100ML EAU DE PARFUM</div>
             </div>
 
-            <Link 
-              href="/cart"
+            <button 
+              onClick={addToCart}
               className="w-full sm:w-80 flex items-center justify-center bg-[#F2CA50] text-black text-xs font-bold tracking-[3px] uppercase py-6 rounded-xl hover:bg-white transition-all duration-500 transform hover:scale-[1.02] shadow-[0_20px_40px_rgba(242,202,80,0.15)]"
             >
               Add to Cart →
-            </Link>
+            </button>
           </div>
         </div>
 

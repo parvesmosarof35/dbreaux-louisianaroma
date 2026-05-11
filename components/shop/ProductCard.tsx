@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,9 +10,36 @@ interface ProductCardProps {
   notes: string;
   price: number;
   image: string;
+  priority?: boolean;
 }
 
-export default function ProductCard({ id, category, name, notes, price, image }: ProductCardProps) {
+import { useCart } from "@/app/context/CartContext";
+
+export default function ProductCard({ id, category, name, notes, price, image, priority }: ProductCardProps) {
+  const { refreshCart } = useCart();
+
+  const addToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const savedCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
+    const newItem = {
+      id: `${id}-${Date.now()}`,
+      name,
+      category,
+      price,
+      image,
+      description: notes,
+      isCustom: false
+    };
+    const updatedCart = [...savedCart, newItem];
+    localStorage.setItem("louisianaroma-cart", JSON.stringify(updatedCart));
+    
+    // Trigger update in Context
+    refreshCart();
+    
+    // Optional: show a small toast or visual feedback
+    alert(`${name} has been added to your atelier.`);
+  };
+
   return (
     <div className="bg-[#1A1C1C] rounded-2xl p-6 group transition-all duration-500 hover:bg-[#222424] hover:translate-y-[-8px]">
       {/* Product Image */}
@@ -20,6 +49,7 @@ export default function ProductCard({ id, category, name, notes, price, image }:
           alt={name}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110"
+          priority={priority}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       </div>
@@ -45,12 +75,12 @@ export default function ProductCard({ id, category, name, notes, price, image }:
 
         {/* Actions */}
         <div className="flex gap-3 pt-6">
-          <Link 
-            href="/cart"
+          <button 
+            onClick={addToCart}
             className="flex-1 flex items-center justify-center bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[11px] font-bold tracking-[2px] uppercase py-4 rounded-lg hover:bg-[#D4AF37] hover:text-black transition-all duration-300"
           >
             Add to Cart
-          </Link>
+          </button>
           <Link 
             href={`/shop/${id}`}
             className="flex-1 flex items-center justify-center border border-white/10 text-white/60 text-[11px] font-bold tracking-[2px] uppercase py-4 rounded-lg hover:border-white/40 hover:text-white transition-all duration-300"

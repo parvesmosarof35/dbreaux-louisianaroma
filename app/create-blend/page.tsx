@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Toast from "@/components/ui/Toast";
+import { useCart } from "@/app/context/CartContext";
 
 const STEPS = [
   { id: "01", name: "Select Fragrance" },
@@ -25,6 +26,7 @@ const FORMULAS = [
 
 export default function CreateBlendPage() {
   const router = useRouter();
+  const { refreshCart } = useCart();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedFormulas, setSelectedFormulas] = useState<number[]>([]);
   const [percentages, setPercentages] = useState<{ [key: number]: number }>({ 1: 45, 2: 35, 3: 20 });
@@ -144,6 +146,7 @@ export default function CreateBlendPage() {
 
     const existingCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
     localStorage.setItem("louisianaroma-cart", JSON.stringify([...existingCart, customItem]));
+    refreshCart();
 
     triggerToast("Your masterpiece has been added to the atelier.", "success");
     setTimeout(() => {
