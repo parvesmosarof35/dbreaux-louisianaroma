@@ -147,6 +147,7 @@ function CreateBlendContent() {
       return;
     }
     setCurrentStep(prev => Math.min(prev + 1, STEPS.length - 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleAddToCart = () => {
@@ -187,7 +188,10 @@ function CreateBlendContent() {
     }, 1500);
   };
 
-  const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
+  const prevStep = () => {
+    setCurrentStep(prev => Math.max(prev - 1, 0));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="bg-[#0A0A0A] min-h-screen text-white flex flex-col">
@@ -210,9 +214,9 @@ function CreateBlendContent() {
           {currentStep === 0 && (
             <div className="flex-1 px-8 md:px-12 py-12 overflow-y-auto">
               <div className="max-w-7xl mx-auto">
-                <header className="mb-16 space-y-4 text-center">
-                  <h1 className="text-[#F2CA50] text-6xl font-serif uppercase tracking-tight">Choose Your Formulas</h1>
-                  <p className="text-white/40 text-lg font-light max-w-2xl mx-auto leading-relaxed">Begin your olfactory journey by selecting up to three core essences. Each foundation is crafted from the rarest botanicals and aged to perfection.</p>
+                <header className="mb-10 md:mb-16 space-y-4 text-center">
+                  <h1 className="text-[#F2CA50] text-4xl md:text-6xl font-serif uppercase tracking-tight">Choose Your Formulas</h1>
+                  <p className="text-white/40 text-sm md:text-lg font-light max-w-2xl mx-auto leading-relaxed px-4">Begin your olfactory journey by selecting up to three core essences. Each foundation is crafted from the rarest botanicals and aged to perfection.</p>
                   <div className="pt-4 text-white/20 text-[10px] font-bold tracking-[4px] uppercase">Selected: <span className="text-[#F2CA50]">{selectedFormulas.length} / 3</span></div>
                 </header>
                 
@@ -253,37 +257,44 @@ function CreateBlendContent() {
 
           {currentStep === 1 && (
             <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-              <div className="flex-1 px-8 md:px-20 py-12 space-y-16 overflow-y-auto">
-                <header className="space-y-4">
+              <div className="flex-1 px-6 md:px-20 py-12 space-y-12 md:space-y-16 overflow-y-auto">
+                <header className="space-y-6 md:space-y-4">
                   <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-60">Step 02 / 04</span>
-                  <div className="flex justify-between items-center">
-                    <h1 className="text-[#F2CA50] text-6xl font-serif">Art of Composition</h1>
-                    <div className="bg-[#1A1C1C] border border-white/5 px-6 py-4 rounded-xl flex items-center gap-4">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <h1 className="text-[#F2CA50] text-4xl md:text-6xl font-serif">Art of Composition</h1>
+                    <div className="bg-[#1A1C1C] border border-white/5 px-6 py-4 rounded-xl flex items-center gap-4 w-full md:w-auto justify-between">
                        <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Total Blend:</span>
-                       <span className="text-[#F2CA50] text-2xl font-light">{totalPercentage}%</span>
-                       {totalPercentage === 100 && <span className="text-green-500 text-lg">✓</span>}
+                       <div className="flex items-center gap-2">
+                         <span className="text-[#F2CA50] text-2xl font-light">{totalPercentage}%</span>
+                         {totalPercentage === 100 && <span className="text-green-500 text-lg">✓</span>}
+                       </div>
                     </div>
                   </div>
                 </header>
-                <div className="space-y-8">
+                <div className="space-y-6 md:space-y-8">
                   {selectedData.map((formula) => (
-                    <div key={formula.id} className="bg-[#1A1C1C]/40 border border-white/5 p-10 rounded-2xl space-y-10 group hover:border-white/10 transition-all duration-500">
-                      <div className="flex justify-between items-baseline">
-                        <div className="space-y-2"><span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-70">{formula.type}</span><h3 className="text-white text-4xl font-serif">{formula.name}</h3></div>
-                        <div className="text-white/20 text-6xl font-light group-hover:text-white/40 transition-colors">{percentages[formula.id] || 0}%</div>
+                    <div key={formula.id} className="bg-[#1A1C1C]/40 border border-white/5 p-6 md:p-10 rounded-2xl space-y-8 md:space-y-10 group hover:border-white/10 transition-all duration-500">
+                      <div className="flex justify-between items-start md:items-baseline">
+                        <div className="space-y-2"><span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-70">{formula.type}</span><h3 className="text-white text-2xl md:text-4xl font-serif">{formula.name}</h3></div>
+                        <div className="text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 transition-colors">{percentages[formula.id] || 0}%</div>
                       </div>
                       <div className="relative group/slider">
                         <input type="range" min="0" max="100" value={percentages[formula.id] || 0} onChange={(e) => handlePercentageChange(formula.id, parseInt(e.target.value))} className="w-full h-px bg-white/10 appearance-none cursor-pointer accent-[#F2CA50]" />
                         <div className="absolute top-1/2 -translate-y-1/2 left-0 h-px bg-[#F2CA50]/40 pointer-events-none" style={{ width: `${percentages[formula.id] || 0}%` }}></div>
                       </div>
-                      <p className="text-white/30 text-sm font-light leading-relaxed max-w-xl italic">"{formula.description}"</p>
+                      <p className="text-white/30 text-xs md:text-sm font-light leading-relaxed max-w-xl italic">"{formula.description}"</p>
                     </div>
                   ))}
                 </div>
               </div>
-              <aside className="w-full lg:w-[450px] border-l border-white/5 p-12 space-y-12 bg-[#0D0E0E]">
-                <div className="relative aspect-square rounded-3xl overflow-hidden bg-black/40 shadow-2xl"><Image src="/bottleofperfume.png" alt="Bottle Preview" fill className="object-contain p-12 drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)]" /></div>
-                <div className="space-y-6"><h2 className="text-white text-3xl font-serif">The Alchemist's View</h2><p className="text-white/40 text-base font-light italic leading-relaxed tracking-wide">The current blend creates a deep amber hue with high viscosity. Recommended for evening wear. The dominance of {selectedData[0]?.name} provides a robust foundation.</p></div>
+              <aside className="w-full lg:w-[450px] border-l border-white/5 p-8 md:p-12 space-y-8 md:space-y-12 bg-[#0D0E0E]">
+                <div className="relative aspect-square rounded-3xl overflow-hidden bg-black/40 shadow-2xl flex items-center justify-center">
+                   <Image src="/bottleofperfume.png" alt="Bottle Preview" fill className="object-contain p-8 md:p-12 drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)]" />
+                </div>
+                <div className="space-y-6">
+                   <h2 className="text-white text-2xl md:text-3xl font-serif">The Alchemist's View</h2>
+                   <p className="text-white/40 text-sm md:text-base font-light italic leading-relaxed tracking-wide">The current blend creates a deep amber hue with high viscosity. Recommended for evening wear. The dominance of {selectedData[0]?.name} provides a robust foundation.</p>
+                </div>
               </aside>
             </div>
           )}
@@ -326,14 +337,14 @@ function CreateBlendContent() {
                   </div>
                 </div>
               </div>
-              <aside className="w-full lg:w-[600px] border-l border-white/5 p-12 flex flex-col items-center justify-center bg-[#0D0E0E] space-y-12">
+              <aside className="w-full lg:w-[600px] border-l border-white/5 p-8 md:p-12 flex flex-col items-center justify-center bg-[#0D0E0E] space-y-8 md:space-y-12">
                 <div className="relative w-full aspect-square bg-[#121414] rounded-3xl flex items-center justify-center overflow-hidden shadow-2xl">
-                   <Image src="/bottleofperfume.png" alt="Label Preview" fill className="object-contain p-2 opacity-50 transition-all duration-700 hover:scale-105" />
-                   <div className="absolute z-10 w-44 h-44 flex flex-col items-center justify-center text-center p-6 transition-all duration-500 shadow-2xl border border-white/5" style={{ backgroundColor: labelBg }}>
-                      <span className="text-[6px] tracking-[2px] uppercase font-bold mb-2 opacity-60" style={{ color: textColor }}>L'Essence Noire</span>
-                      <h3 className="text-sm font-serif uppercase tracking-widest break-words w-full" style={{ color: textColor }}>{fragranceName || "Your Signature"}</h3>
-                      <div className="w-8 h-px my-3 opacity-20" style={{ backgroundColor: textColor }}></div>
-                      <span className="text-[5px] uppercase tracking-[1px] font-light" style={{ color: textColor }}>Eau De Parfum</span>
+                   <Image src="/bottleofperfume.png" alt="Label Preview" fill className="object-contain p-4 md:p-2 opacity-50 transition-all duration-700 hover:scale-105" />
+                   <div className="absolute z-10 w-32 h-32 md:w-44 md:h-44 flex flex-col items-center justify-center text-center p-4 md:p-6 transition-all duration-500 shadow-2xl border border-white/5" style={{ backgroundColor: labelBg }}>
+                      <span className="text-[5px] md:text-[6px] tracking-[2px] uppercase font-bold mb-1 md:mb-2 opacity-60" style={{ color: textColor }}>L'Essence Noire</span>
+                      <h3 className="text-xs md:text-sm font-serif uppercase tracking-widest break-words w-full px-2" style={{ color: textColor }}>{fragranceName || "Your Signature"}</h3>
+                      <div className="w-6 md:w-8 h-px my-2 md:my-3 opacity-20" style={{ backgroundColor: textColor }}></div>
+                      <span className="text-[4px] md:text-[5px] uppercase tracking-[1px] font-light" style={{ color: textColor }}>Eau De Parfum</span>
                    </div>
                 </div>
                 <div className="text-center space-y-2"><span className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Visual Preview</span><p className="text-white/20 text-xs italic font-light tracking-wide">Finishing: Hand-applied 24k Gold Foil</p></div>
@@ -343,10 +354,10 @@ function CreateBlendContent() {
 
           {currentStep === 3 && (
             <div className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[url('/hero_bg.png')] bg-cover bg-fixed">
-              <div className="flex-1 px-8 md:px-20 py-12 space-y-12 overflow-y-auto bg-black/60 backdrop-blur-3xl">
+              <div className="flex-1 px-6 md:px-20 py-12 space-y-12 overflow-y-auto bg-black/60 backdrop-blur-3xl">
                 <header className="space-y-4">
-                  <h1 className="text-white text-5xl font-serif">Review Your Signature Scent</h1>
-                  <p className="text-white/40 text-lg font-light max-w-2xl leading-relaxed">
+                  <h1 className="text-white text-3xl md:text-5xl font-serif">Review Your Signature Scent</h1>
+                  <p className="text-white/40 text-sm md:text-lg font-light max-w-2xl leading-relaxed">
                     A meticulous orchestration of {selectedData.map(f => f.name).join(" and ")}, curated for a presence that lingers in the memory.
                   </p>
                 </header>
@@ -381,11 +392,11 @@ function CreateBlendContent() {
                       </section>
                    </div>
 
-                   <div className="space-y-12">
-                      <section className="space-y-2">
-                        <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Label Name</span>
-                        <h2 className="text-white text-5xl font-serif">"{fragranceName}"</h2>
-                      </section>
+                    <div className="space-y-12">
+                       <section className="space-y-2">
+                         <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Label Name</span>
+                         <h2 className="text-white text-3xl md:text-5xl font-serif">"{fragranceName}"</h2>
+                       </section>
 
                       {giftMessage && (
                         <section className="space-y-4 italic">
@@ -397,18 +408,17 @@ function CreateBlendContent() {
                    </div>
                 </div>
               </div>
-
-              <aside className="w-full lg:w-[650px] border-l border-white/5 p-12 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl space-y-16">
-                 <div className="relative w-full aspect-square bg-gradient-to-b from-white/5 to-transparent rounded-3xl flex items-center justify-center overflow-hidden group shadow-[0_50px_100px_rgba(0,0,0,0.5)]">
-                    <Image src="/bottleofperfume.png" alt="Final Review" fill className="object-contain p-2 drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)] transition-transform duration-1000 group-hover:scale-110 opacity-60" />
-                    <div className="absolute z-10 w-48 h-48 flex flex-col items-center justify-center text-center p-8 shadow-2xl transition-all duration-700 group-hover:shadow-[0_0_50px_rgba(242,202,80,0.1)]" style={{ backgroundColor: labelBg }}>
-                        <span className="text-[7px] tracking-[2px] uppercase font-bold mb-3 opacity-60" style={{ color: textColor }}>L'Essence Noire</span>
-                        <h3 className="text-lg font-serif uppercase tracking-widest break-words w-full" style={{ color: textColor }}>{fragranceName}</h3>
-                        <div className="w-10 h-px my-4 opacity-20" style={{ backgroundColor: textColor }}></div>
-                        <span className="text-[6px] uppercase tracking-[1px] font-light" style={{ color: textColor }}>Eau De Parfum</span>
-                    </div>
-                 </div>
-                 
+              <aside className="w-full lg:w-[650px] border-l border-white/5 p-8 md:p-12 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl space-y-12 md:space-y-16">
+                  <div className="relative w-full aspect-[4/5] md:aspect-square bg-gradient-to-b from-white/5 to-transparent rounded-3xl flex items-center justify-center overflow-hidden group shadow-[0_50px_100px_rgba(0,0,0,0.5)]">
+                     <Image src="/bottleofperfume.png" alt="Final Review" fill className="object-contain p-0 md:p-2 drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)] transition-transform duration-1000 group-hover:scale-110 opacity-60" />
+                     <div className="absolute z-10 w-28 h-28 md:w-48 md:h-48 flex flex-col items-center justify-center text-center p-4 md:p-8 shadow-2xl transition-all duration-700 group-hover:shadow-[0_0_50px_rgba(242,202,80,0.1)]" style={{ backgroundColor: labelBg }}>
+                         <span className="text-[4px] md:text-[7px] tracking-[2px] uppercase font-bold mb-1 md:mb-3 opacity-60" style={{ color: textColor }}>L'Essence Noire</span>
+                         <h3 className="text-[10px] md:text-lg font-serif uppercase tracking-widest break-words w-full px-2" style={{ color: textColor }}>{fragranceName}</h3>
+                         <div className="w-4 md:w-10 h-px my-2 md:my-4 opacity-20" style={{ backgroundColor: textColor }}></div>
+                         <span className="text-[3px] md:text-[6px] uppercase tracking-[1px] font-light" style={{ color: textColor }}>Eau De Parfum</span>
+                     </div>
+                  </div>
+  
                  <div className="flex flex-col items-center space-y-4">
                     <div className="flex items-center gap-4 text-[#F2CA50]">
                        <div className="w-6 h-6 border-2 border-[#F2CA50] rounded-full flex items-center justify-center text-[8px] animate-pulse">3D</div>
@@ -425,7 +435,7 @@ function CreateBlendContent() {
         <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
           <button onClick={prevStep} className="flex items-center gap-3 text-white/40 text-[10px] font-bold tracking-[3px] uppercase hover:text-white transition-colors">← Back</button>
           
-          <div className="hidden md:flex flex-col items-center">
+          <div className="hidden lg:flex flex-col items-center">
              <span className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">{currentStep === 3 ? "Total Value" : "Current Estimate"}</span>
              <span className="text-[#F2CA50] text-3xl font-light">{currentStep === 3 ? "$450.00" : "€285.00"}</span>
           </div>
