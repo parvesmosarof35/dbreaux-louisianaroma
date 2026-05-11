@@ -5,24 +5,50 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    // Auto-open sidebar on desktop
+    if (window.innerWidth >= 1024) {
+      setIsSidebarOpen(true);
+    }
   }, []);
+
+  // Close sidebar on navigation (mobile)
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  }, [pathname]);
 
   if (!isClient) return null;
 
   return (
-    <div className="flex h-screen bg-[#0A0A0A] text-white font-sans">
+    <div className="flex h-screen bg-[#0A0A0A] text-white font-sans overflow-hidden">
+      {/* Sidebar Overlay (Mobile) */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Simple Sidebar */}
-      <aside className={`w-64 bg-[#121414] border-r border-white/5 flex flex-col transition-all duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="p-8 border-b border-white/5">
-          <Link href="/admin/dashboard" className="text-[#F2CA50] text-xl font-serif tracking-widest uppercase">Maison</Link>
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-72 bg-[#121414] border-r border-white/5 flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
+        lg:static lg:translate-x-0
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      `}>
+        <div className="p-8 border-b border-white/5 flex justify-between items-center">
+          <Link href="/admin/dashboard" className="text-[#F2CA50] text-2xl font-serif tracking-widest uppercase">Maison</Link>
+          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
         </div>
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-6 space-y-3 overflow-y-auto custom-scrollbar">
           {[
             { name: "Dashboard", path: "/admin/dashboard" },
             { name: "Products", path: "/admin/products" },
@@ -34,33 +60,44 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link 
               key={item.path} 
               href={item.path} 
-              className={`block px-6 py-4 rounded-xl text-sm font-medium tracking-wider uppercase transition-all ${pathname === item.path ? "bg-[#F2CA50] text-black" : "text-white/40 hover:text-white hover:bg-white/5"}`}
+              className={`flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-bold tracking-[3px] uppercase transition-all duration-300 ${pathname === item.path ? "bg-[#F2CA50] text-black shadow-[0_10px_20px_rgba(242,202,80,0.1)]" : "text-white/30 hover:text-[#F2CA50] hover:bg-white/5"}`}
             >
+              <div className={`w-1.5 h-1.5 rounded-full ${pathname === item.path ? "bg-black" : "bg-[#F2CA50]/20"}`} />
               {item.name}
             </Link>
           ))}
         </nav>
-        <div className="p-4 border-t border-white/5">
-          <Link href="/login" className="block px-6 py-4 rounded-xl text-sm font-medium tracking-wider uppercase text-red-500/50 hover:text-red-500 transition-all">Logout</Link>
+        <div className="p-6 border-t border-white/5">
+          <Link href="/login" className="flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-bold tracking-[3px] uppercase text-red-500/40 hover:text-red-500 hover:bg-red-500/5 transition-all">
+             <div className="w-1.5 h-1.5 rounded-full bg-red-500/40" />
+             Logout
+          </Link>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-24 bg-[#121414]/50 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-10">
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="text-white/40 hover:text-white transition-all">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header className="h-24 bg-[#121414]/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-6 md:px-10 z-30">
+          <div className="flex items-center gap-6">
+            <button onClick={() => setIsSidebarOpen(true)} className={`lg:hidden p-3 rounded-xl bg-white/5 text-[#F2CA50] border border-white/10 hover:bg-white/10 transition-all ${isSidebarOpen ? "opacity-0" : "opacity-100"}`}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <div className="hidden sm:block">
+               <span className="text-white/20 text-[10px] font-bold tracking-[4px] uppercase">Management Console</span>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
-             <div className="text-right">
-                <p className="text-xs font-bold tracking-widest uppercase text-white">Alexander Vanderbilt</p>
-                <p className="text-[10px] text-[#F2CA50] font-bold tracking-widest uppercase opacity-60">High Alchemist</p>
+             <div className="text-right hidden xs:block">
+                <p className="text-[11px] font-bold tracking-[2px] uppercase text-white">Alexander Vanderbilt</p>
+                <p className="text-[9px] text-[#F2CA50] font-bold tracking-[1px] uppercase opacity-60">High Alchemist</p>
              </div>
-             <div className="w-12 h-12 bg-[#F2CA50] rounded-xl flex items-center justify-center text-black font-serif text-xl">A</div>
+             <Link href="/admin/profile" className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-[#F2CA50] font-serif text-xl hover:border-[#F2CA50]/50 transition-all">A</Link>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-10 bg-[#0A0A0A]">
-          {children}
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 bg-[#0A0A0A] custom-scrollbar">
+          <div className="max-w-[1600px] mx-auto w-full">
+            {children}
+          </div>
         </main>
       </div>
     </div>

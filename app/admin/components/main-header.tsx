@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { textPrimary, sidebarbg } from "../theme";
 
@@ -19,13 +21,26 @@ export default function MainHeader({ toggleSidebar }: MainHeaderProps) {
     <div className="relative w-full px-8 pt-4 pb-2">
       <header className={`${sidebarbg} border border-white/5 rounded-3xl overflow-hidden shadow-2xl bg-white/5 backdrop-blur-xl`}>
         <div className="flex justify-between items-center px-10 h-[92px]">
-          <button
-            onClick={toggleSidebar}
-            aria-label="Toggle sidebar"
-            className={`p-3 rounded-xl hover:bg-white/5 transition-all focus:outline-none cursor-pointer ${textPrimary} border border-white/5`}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
+          <div className="flex items-center gap-8">
+            <button
+              onClick={toggleSidebar}
+              aria-label="Toggle sidebar"
+              className={`p-3 rounded-xl hover:bg-white/5 transition-all focus:outline-none cursor-pointer ${textPrimary} border border-white/5`}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+
+            <Link href="/" className="hidden sm:block">
+              <div className="relative w-40 h-10">
+                <Image 
+                  src="/navbarlogo.png" 
+                  alt="Maison Logo" 
+                  fill 
+                  className="object-contain" 
+                />
+              </div>
+            </Link>
+          </div>
           
           <div className="flex items-center gap-6">
             <div
