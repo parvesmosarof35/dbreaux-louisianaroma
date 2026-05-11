@@ -111,7 +111,8 @@ export default function LoginPage() {
         </div>
       </main>
 
-      <footer className="py-12 text-center z-10">
+      <footer className="py-12 text-center z-10 space-y-6">
+        <Link href="/admin/dashboard" className="inline-block text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase hover:text-white transition-all border-b border-[#F2CA50]/20 pb-1">Admin Login</Link>
         <p className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">Part of the Louisianaroma Artisanal Group</p>
       </footer>
     </div>
