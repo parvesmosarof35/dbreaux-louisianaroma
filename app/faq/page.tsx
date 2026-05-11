@@ -37,7 +37,7 @@ export default function FAQPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -50,21 +50,21 @@ export default function FAQPage() {
             <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(18, 20, 20, 0) 0%, rgba(18, 20, 20, 0.6) 50%, #121414 100%)" }}></div>
           </div>
           
-          <div className="relative z-10 text-center max-w-5xl px-4 flex flex-col items-center">
-            <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase block mb-6">
+          <div className="relative z-10 text-center max-w-5xl px-6 flex flex-col items-center">
+            <span className="text-[#F2CA50] text-[10px] md:text-xs font-bold tracking-[3px] md:tracking-[4px] uppercase block mb-6">
               Private Assistance
             </span>
-            <h1 className="drop-shadow-2xl mb-8 tracking-tight">
+            <h1 className="text-3xl md:text-6xl drop-shadow-2xl mb-8 tracking-tight">
               Questions & Concierge
             </h1>
-            <p className="text-white/40 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+            <p className="text-white/40 text-sm md:text-xl font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
               Our artisans and concierge are dedicated to the preservation of olfactory excellence. Explore our most frequent inquiries regarding commissions, craftsmanship, and shipping.
             </p>
           </div>
         </section>
 
         {/* FAQ List Section */}
-        <section className="max-w-4xl mx-auto px-4 py-32 space-y-6">
+        <section className="max-w-4xl mx-auto px-6 py-20 md:py-32 space-y-6">
           {FAQS.map((faq, index) => (
             <div 
               key={index} 

@@ -10,7 +10,7 @@ export default function AboutPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -23,17 +23,17 @@ export default function AboutPage() {
             <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(18, 20, 20, 0) 0%, rgba(18, 20, 20, 0.6) 50%, #121414 100%)" }}></div>
           </div>
           
-          <div className="relative z-10 text-center max-w-5xl px-4">
-             <h1 className="drop-shadow-2xl mb-8 uppercase tracking-[10px]">
+          <div className="relative z-10 text-center max-w-5xl px-6">
+             <h1 className="text-3xl md:text-6xl lg:text-7xl drop-shadow-2xl mb-8 uppercase tracking-[6px] md:tracking-[10px] leading-tight">
                 The Heritage of Scent
              </h1>
-             <div className="w-24 h-px bg-[#F2CA50]/40 mx-auto"></div>
+             <div className="w-16 md:w-24 h-px bg-[#F2CA50]/40 mx-auto"></div>
           </div>
         </section>
 
         {/* Bespoke Artistry Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-40">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 md:py-40">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
             <div className="space-y-10">
               <div className="space-y-4">
                 <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">
@@ -67,9 +67,9 @@ export default function AboutPage() {
         </section>
 
         {/* The Master Perfumer Section */}
-        <section className="bg-[#0D0E0E] py-40">
-           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+        <section className="bg-[#0D0E0E] py-16 md:py-40">
+           <div className="max-w-7xl mx-auto px-6 lg:px-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
                  <div className="relative aspect-square order-2 lg:order-1">
                     <div className="absolute inset-0 border border-[#F2CA50]/20 translate-x-6 translate-y-6 rounded-2xl"></div>
                     <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">

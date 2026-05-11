@@ -9,7 +9,7 @@ export default function ContactPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -22,18 +22,18 @@ export default function ContactPage() {
             <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(18, 20, 20, 0) 0%, rgba(18, 20, 20, 0.6) 50%, #121414 100%)" }}></div>
           </div>
           
-          <div className="relative z-10 text-center max-w-5xl px-4 flex flex-col items-center">
-            <h1 className="drop-shadow-2xl mb-8 tracking-tight">
+          <div className="relative z-10 text-center max-w-5xl px-6 flex flex-col items-center">
+            <h1 className="text-4xl md:text-6xl drop-shadow-2xl mb-6 tracking-tight">
               Contact Us
             </h1>
-            <p className="text-white/60 text-lg md:text-xl font-light tracking-wide max-w-xl mx-auto">
+            <p className="text-white/60 text-sm md:text-xl font-light tracking-wide max-w-xl mx-auto">
               Our curators are available to assist with your private inquiries.
             </p>
           </div>
         </section>
 
         {/* Content Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
             
             {/* Left side: Information */}
@@ -96,7 +96,7 @@ export default function ContactPage() {
             </div>
 
             {/* Right side: Form Card */}
-            <div className="bg-[#1A1C1C] border border-white/5 rounded-3xl p-12 shadow-2xl relative">
+            <div className="bg-[#1A1C1C] border border-white/5 rounded-3xl p-8 md:p-12 shadow-2xl relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#F2CA50]/5 blur-3xl rounded-full"></div>
               
               <form className="space-y-8 relative z-10">

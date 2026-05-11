@@ -26,64 +26,20 @@ export default function BlendHero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto text-center px-4 flex flex-col items-center -mt-24">
-        <h1 
-          className="uppercase mb-8" 
-          style={{ 
-            color: "#E2E2E2",
-            fontFamily: "var(--font-noto-serif), serif",
-            fontWeight: 400,
-            fontSize: "64px",
-            lineHeight: "70.4px",
-            letterSpacing: "6.4px",
-            textAlign: "center",
-            maxWidth: "700px",
-            width: "100%"
-          }}
-        >
-          The Art of the<br />Blend
+      <div className="relative z-10 max-w-6xl mx-auto text-center px-6 flex flex-col items-center -mt-10 md:-mt-24">
+        <h1 className="uppercase mb-8 text-4xl md:text-6xl lg:text-[64px] leading-tight md:leading-[70.4px] tracking-[4px] md:tracking-[6.4px] text-[#E2E2E2] font-serif max-w-[800px]">
+          The Art of the<br className="hidden md:block" /> Blend
         </h1>
         
-        <p 
-          className="mb-14"
-          style={{
-            color: "#D0C5AF",
-            fontFamily: "var(--font-inter), sans-serif",
-            fontWeight: 300,
-            fontSize: "18px",
-            lineHeight: "28.8px",
-            letterSpacing: "0.36px",
-            textAlign: "center",
-            maxWidth: "647px",
-            width: "100%"
-          }}
-        >
+        <p className="mb-10 md:mb-14 text-sm md:text-lg leading-relaxed md:leading-[28.8px] tracking-[0.36px] text-[#D0C5AF] font-light max-w-[647px]">
           Your journey to a unique olfactory signature starts here. Craft a scent that resonates with your soul.
         </p>
 
         <Link 
           href="/create-blend"
-          className="flex items-center justify-center transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
-          style={{
-            width: "450px",
-            height: "58px",
-            borderRadius: "12px",
-            background: "#D4AF37",
-            boxShadow: "0px 0px 20px 0px rgba(212, 175, 55, 0.2)",
-            padding: "20px 48px",
-          }}
+          className="flex items-center justify-center w-full sm:w-[450px] h-[58px] rounded-xl bg-[#D4AF37] shadow-[0px_0px_20px_0px_rgba(212,175,55,0.2)] transition-all duration-300 hover:brightness-110 active:scale-[0.98] px-6"
         >
-          <span
-            style={{
-              fontFamily: "var(--font-inter), sans-serif",
-              fontWeight: 600,
-              fontSize: "12px",
-              lineHeight: "12px",
-              letterSpacing: "3.6px",
-              textTransform: "uppercase",
-              color: "#241A00",
-            }}
-          >
+          <span className="font-semibold text-[10px] md:text-[12px] tracking-[2px] md:tracking-[3.6px] uppercase text-[#241A00]">
             Begin Your Custom Creation
           </span>
         </Link>

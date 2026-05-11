@@ -12,7 +12,7 @@ export default function Home() {
     <>
       <Navbar />
       
-      <main className="flex-grow">
+      <main className="flex-grow overflow-x-hidden">
         <HeroSection />
         <ArtOfCreationSection />
         <MasterpiecesSection />

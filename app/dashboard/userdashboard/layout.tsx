@@ -18,28 +18,28 @@ export default function UserDashboardLayout({ children }: { children: React.Reac
     <div className="bg-[#0A0A0A] min-h-screen text-white flex flex-col">
       <Navbar />
 
-      <div className="flex flex-1 pt-32 px-8 md:px-12 max-w-7xl mx-auto w-full gap-12 pb-24">
-        {/* Simple Side Navbar */}
-        <aside className="w-64 shrink-0 space-y-12">
-          <header className="space-y-2 px-4">
+      <div className="flex flex-col lg:flex-row flex-1 pt-24 md:pt-32 px-4 md:px-12 max-w-7xl mx-auto w-full gap-8 lg:gap-12 pb-24">
+        {/* Side Navbar */}
+        <aside className="w-full lg:w-64 shrink-0 flex flex-col gap-8 lg:gap-12">
+          <header className="space-y-2 px-4 text-center lg:text-left">
              <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-60">Alchemist Level</span>
              <h2 className="text-white text-xl font-serif">A. Vanderbilt</h2>
           </header>
 
-          <nav className="space-y-2">
+          <nav className="flex lg:flex-col overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 gap-2 px-2 lg:px-0 scrollbar-hide">
             {SIDEBAR_LINKS.map((link) => (
               <Link 
                 key={link.name} 
                 href={link.href}
-                className={`flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 group ${pathname === link.href ? "bg-white/5 text-[#F2CA50] border border-white/10" : "text-white/20 hover:text-white hover:bg-white/5"}`}
+                className={`flex items-center gap-3 lg:gap-4 px-5 lg:px-6 py-3 lg:py-4 rounded-2xl transition-all duration-300 group whitespace-nowrap lg:whitespace-normal ${pathname === link.href ? "bg-white/5 text-[#F2CA50] border border-white/10" : "text-white/20 hover:text-white hover:bg-white/5"}`}
               >
                 <span className="text-lg opacity-40 group-hover:opacity-100 transition-opacity">{link.icon}</span>
-                <span className="text-[11px] font-bold tracking-[2px] uppercase">{link.name}</span>
+                <span className="text-[10px] lg:text-[11px] font-bold tracking-[2px] uppercase">{link.name}</span>
               </Link>
             ))}
           </nav>
 
-          <div className="bg-[#F2CA50]/5 border border-[#F2CA50]/10 rounded-[32px] p-8 space-y-4">
+          <div className="hidden lg:block bg-[#F2CA50]/5 border border-[#F2CA50]/10 rounded-[32px] p-8 space-y-4">
              <h3 className="text-[#F2CA50] text-[10px] font-bold tracking-[2px] uppercase">Need Assistance?</h3>
              <p className="text-white/40 text-[10px] font-light leading-relaxed">Our concierge is available 24/7 for our elite members.</p>
              <button className="text-white text-[9px] font-bold tracking-[2px] uppercase border-b border-white/20 pb-1">Contact Support</button>
@@ -47,7 +47,7 @@ export default function UserDashboardLayout({ children }: { children: React.Reac
         </aside>
 
         {/* Content Area */}
-        <main className="flex-1 bg-[#121414] border border-white/5 rounded-[40px] p-12 shadow-2xl overflow-hidden">
+        <main className="flex-1 bg-[#121414] border border-white/5 rounded-[32px] md:rounded-[40px] p-6 md:p-12 shadow-2xl overflow-hidden">
           {children}
         </main>
       </div>
