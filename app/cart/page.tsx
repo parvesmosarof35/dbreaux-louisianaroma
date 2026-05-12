@@ -11,8 +11,24 @@ import { useCart } from "@/app/context/CartContext";
 
 export default function CartPage() {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState<any[]>([]);
   const { refreshCart } = useCart();
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [promoError, setPromoError] = useState("");
+  const [isPromoApplied, setIsPromoApplied] = useState(false);
+
+  const applyPromoCode = () => {
+    if (promoCode.toUpperCase() === "LOUISIANA10") {
+      setDiscount(subtotal * 0.1);
+      setPromoError("");
+      setIsPromoApplied(true);
+    } else {
+      setPromoError("Invalid promo code");
+      setDiscount(0);
+      setIsPromoApplied(false);
+    }
+  };
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
@@ -40,7 +56,7 @@ export default function CartPage() {
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
   const tax = subtotal * 0.08;
-  const total = subtotal + tax;
+  const total = subtotal + tax - discount;
   return (
     <div className="bg-[#121414] min-h-screen text-white">
       <Navbar />
@@ -130,6 +146,34 @@ export default function CartPage() {
                   <span className="text-white/40">Estimated Tax</span>
                   <span className="text-white tracking-normal text-sm">${tax.toFixed(2)}</span>
                 </div>
+                {isPromoApplied && (
+                  <div className="flex justify-between text-[10px] font-bold tracking-[2px] uppercase animate-in slide-in-from-top-2 duration-300">
+                    <span className="text-green-500/60">Discount (10%)</span>
+                    <span className="text-green-500">-${discount.toFixed(2)}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Promo Code Input */}
+              <div className="pt-6 border-t border-white/5 space-y-4">
+                <label className="text-white/40 text-[9px] font-bold tracking-[2px] uppercase ml-1">Promo Code</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    placeholder="ENTER CODE (E.G. LOUISIANA10)" 
+                    className="flex-1 bg-white/5 border border-white/10 text-white text-[10px] font-bold tracking-[2px] px-4 py-4 rounded-lg outline-none focus:border-[#F2CA50]/50 transition-all uppercase"
+                  />
+                  <button 
+                    onClick={applyPromoCode}
+                    className="bg-[#F2CA50]/10 border border-[#F2CA50]/30 text-[#F2CA50] text-[10px] font-bold tracking-[2px] px-6 py-4 rounded-lg hover:bg-[#F2CA50] hover:text-black transition-all"
+                  >
+                    Apply
+                  </button>
+                </div>
+                {promoError && <p className="text-red-500 text-[8px] font-bold tracking-[1px] uppercase ml-1">{promoError}</p>}
+                {isPromoApplied && <p className="text-green-500 text-[8px] font-bold tracking-[1px] uppercase ml-1">Promo code applied successfully</p>}
               </div>
               <div className="pt-10 border-t border-white/5 space-y-8">
                 <div className="flex justify-between items-end">

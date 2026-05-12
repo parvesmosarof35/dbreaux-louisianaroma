@@ -26,9 +26,9 @@ export default function AnatomyOfScent() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 items-center">
           {[
-            { level: "30%", delay: "0s", label: "Base" },
-            { level: "50%", delay: "1.5s", label: "Heart" },
-            { level: "80%", delay: "3s", label: "Top" }
+            { level: "30%", delay: "0s", label: "fragment 1" },
+            { level: "50%", delay: "1.5s", label: "fragment 2" },
+            { level: "80%", delay: "3s", label: "fragment 3" }
           ].map((bottle, idx) => (
             <BottleWithWater 
               key={idx}

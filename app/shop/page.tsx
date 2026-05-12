@@ -4,11 +4,11 @@ import ShopSidebar from "@/components/shop/ShopSidebar";
 import ProductCard from "@/components/shop/ProductCard";
 
 const PRODUCTS = [
-  { id: 1, category: "Private Reserve", name: "Noire d'Oud", notes: "Agarwood, Bulgarian Rose, Ambergris", price: 450, image: "/product (1).png" },
+  { id: 1, category: "Private Reserve", name: "Noire d'Oud", notes: "Agarwood, Bulgarian Rose, Ambergris", price: 450, image: "/product (1).png", freeDelivery: true },
   { id: 2, category: "Les Ephemeres", name: "Iris de Minuit", notes: "Iris Pallida, White Musk, Bergamot", price: 320, image: "/product (2).png" },
-  { id: 3, category: "L'Heritage", name: "Cuir d'Or", notes: "Russian Leather, Tobacco, Vanilla", price: 280, image: "/product (3).png" },
+  { id: 3, category: "L'Heritage", name: "Cuir d'Or", notes: "Russian Leather, Tobacco, Vanilla", price: 280, image: "/product (3).png", freeDelivery: true },
   { id: 4, category: "Private Reserve", name: "Santal Sacré", notes: "Mysore Sandalwood, Cardamom, Amber", price: 580, image: "/product (4).png" },
-  { id: 5, category: "L'Heritage", name: "Ambre Royal", notes: "Fossil Amber, Labdanum, Tonka Bean", price: 295, image: "/product (5).png" },
+  { id: 5, category: "L'Heritage", name: "Ambre Royal", notes: "Fossil Amber, Labdanum, Tonka Bean", price: 295, image: "/product (5).png", freeDelivery: true },
   { id: 6, category: "Les Ephemeres", name: "Vétiver Nuit", notes: "Haitian Vetiver, Black Pepper, Cedar", price: 340, image: "/product (6).png" },
 ];
 

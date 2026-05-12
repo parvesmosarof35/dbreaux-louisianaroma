@@ -132,6 +132,51 @@ function CreateBlendContent() {
     });
   };
 
+  const updatePercentage = (id: number, val: number) => {
+    const cappedVal = Math.max(0, Math.min(100, val));
+    setPercentages(prev => ({ ...prev, [id]: cappedVal }));
+  };
+
+  const handleTotalChange = (newTotal: number) => {
+    if (newTotal < 0) return;
+    if (newTotal === 0) {
+      setPercentages(prev => {
+        const next = { ...prev };
+        selectedData.forEach(f => next[f.id] = 0);
+        return next;
+      });
+      return;
+    }
+    
+    // If current total is 0, distribute equally
+    if (totalPercentage === 0) {
+      const share = Math.round(newTotal / selectedData.length);
+      setPercentages(prev => {
+        const next = { ...prev };
+        selectedData.forEach((f, i) => {
+          next[f.id] = i === selectedData.length - 1 ? newTotal - (share * (selectedData.length - 1)) : share;
+        });
+        return next;
+      });
+      return;
+    }
+
+    const ratio = newTotal / totalPercentage;
+    setPercentages(prev => {
+      const next = { ...prev };
+      selectedData.forEach(f => {
+        next[f.id] = Math.round((prev[f.id] || 0) * ratio);
+      });
+      // Fix rounding errors
+      const currentSum = selectedData.reduce((sum, f) => sum + (next[f.id] || 0), 0);
+      if (currentSum !== newTotal && selectedData.length > 0) {
+        const fixerId = selectedData[0].id;
+        next[fixerId] = Math.max(0, (next[fixerId] || 0) + (newTotal - currentSum));
+      }
+      return next;
+    });
+  };
+
   const nextStep = () => {
     if (currentStep === 1 && totalPercentage !== 100) {
       triggerToast(`Your total blend is currently ${totalPercentage}%. It must be exactly 100% to proceed.`, "error");
@@ -262,11 +307,33 @@ function CreateBlendContent() {
                   <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-60">Step 02 / 04</span>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <h1 className="text-[#F2CA50] text-4xl md:text-6xl font-serif">Art of Composition</h1>
-                    <div className="bg-[#1A1C1C] border border-white/5 px-6 py-4 rounded-xl flex items-center gap-4 w-full md:w-auto justify-between">
-                       <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Total Blend:</span>
+                    <div className="bg-[#1A1C1C] border border-white/5 px-6 py-4 rounded-xl flex items-center gap-4 w-full md:w-auto justify-between min-w-[200px]">
+                       <div className="flex flex-col gap-1">
+                         <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Total Blend:</span>
+                         {totalPercentage !== 100 && totalPercentage > 0 && (
+                           <button 
+                             onClick={() => handleTotalChange(100)}
+                             className="text-[#F2CA50] text-[10px] font-bold tracking-[1px] uppercase hover:text-white transition-colors flex items-center gap-1.5 animate-pulse"
+                             title="Automatically scale ingredients to reach 100%"
+                           >
+                             <span className="w-1 h-1 rounded-full bg-[#F2CA50]"></span>
+                             Balance to 100%
+                           </button>
+                         )}
+                       </div>
                        <div className="flex items-center gap-2">
-                         <span className="text-[#F2CA50] text-2xl font-light">{totalPercentage}%</span>
-                         {totalPercentage === 100 && <span className="text-green-500 text-lg">✓</span>}
+                         <div className="flex items-center gap-1 group/total">
+                            <input 
+                              type="number"
+                              value={totalPercentage}
+                              onChange={(e) => handleTotalChange(parseInt(e.target.value) || 0)}
+                              onFocus={(e) => e.target.select()}
+                              className={`bg-transparent text-2xl font-light w-16 text-right outline-none focus:ring-1 focus:ring-[#F2CA50]/30 rounded px-1 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}
+                              inputMode="numeric"
+                            />
+                            <span className={`text-2xl font-light transition-colors ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}>%</span>
+                         </div>
+                         {totalPercentage === 100 && <span className="text-green-500 text-lg animate-in fade-in zoom-in duration-500">✓</span>}
                        </div>
                     </div>
                   </div>
@@ -276,7 +343,17 @@ function CreateBlendContent() {
                     <div key={formula.id} className="bg-[#1A1C1C]/40 border border-white/5 p-6 md:p-10 rounded-2xl space-y-8 md:space-y-10 group hover:border-white/10 transition-all duration-500">
                       <div className="flex justify-between items-start md:items-baseline">
                         <div className="space-y-2"><span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-70">{formula.type}</span><h3 className="text-white text-2xl md:text-4xl font-serif">{formula.name}</h3></div>
-                        <div className="text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 transition-colors">{percentages[formula.id] || 0}%</div>
+                         <div className="flex items-center gap-1 group/val">
+                            <input
+                              type="number"
+                              value={percentages[formula.id] || 0}
+                              onChange={(e) => updatePercentage(formula.id, parseInt(e.target.value) || 0)}
+                              onFocus={(e) => e.target.select()}
+                              className="bg-transparent text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 focus:text-[#F2CA50] outline-none transition-colors w-28 md:w-44 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              inputMode="numeric"
+                            />
+                            <span className="text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 transition-colors">%</span>
+                         </div>
                       </div>
                       <div className="relative group/slider">
                         <input type="range" min="0" max="100" value={percentages[formula.id] || 0} onChange={(e) => handlePercentageChange(formula.id, parseInt(e.target.value))} className="w-full h-px bg-white/10 appearance-none cursor-pointer accent-[#F2CA50]" />
@@ -376,6 +453,10 @@ function CreateBlendContent() {
                           <div className="flex justify-between items-baseline pt-4 border-t border-white/5">
                              <span className="text-white/40 text-sm font-light uppercase tracking-[2px]">Label Color</span>
                              <span className="text-[#F2CA50] text-sm font-mono">{labelBg.toUpperCase()}</span>
+                          </div>
+                          <div className="flex justify-between items-baseline pt-2">
+                             <span className="text-white/40 text-sm font-light uppercase tracking-[2px]">Text Color</span>
+                             <span className="text-[#F2CA50] text-sm font-mono">{textColor.toUpperCase()}</span>
                           </div>
                         </div>
                       </section>

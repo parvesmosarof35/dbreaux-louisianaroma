@@ -7,17 +7,17 @@ import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 
 const PRODUCTS = [
-  { id: 1, category: "Private Reserve", name: "Noire d'Oud", description: "A magnetic depth that captures the essence of midnight in the desert. Intense, sophisticated, and eternally lingering.", notes: "Agarwood, Bulgarian Rose, Ambergris", price: 450, image: "/product (1).png" },
+  { id: 1, category: "Private Reserve", name: "Noire d'Oud", description: "A magnetic depth that captures the essence of midnight in the desert. Intense, sophisticated, and eternally lingering.", notes: "Agarwood, Bulgarian Rose, Ambergris", price: 450, image: "/product (1).png", freeDelivery: true },
   { id: 2, category: "Les Ephemeres", name: "Iris de Minuit", description: "A delicate whisper of the night, where iris and bergamot dance in the moonlit air.", notes: "Iris Pallida, White Musk, Bergamot", price: 320, image: "/product (2).png" },
-  { id: 3, category: "L'Heritage", name: "Cuir d'Or", description: "The scent of timeless luxury, blending the richness of fine leather with the warmth of vanilla.", notes: "Russian Leather, Tobacco, Vanilla", price: 280, image: "/product (3).png" },
+  { id: 3, category: "L'Heritage", name: "Cuir d'Or", description: "The scent of timeless luxury, blending the richness of fine leather with the warmth of vanilla.", notes: "Russian Leather, Tobacco, Vanilla", price: 280, image: "/product (3).png", freeDelivery: true },
   { id: 4, category: "Private Reserve", name: "Santal Sacré", description: "An olfactory temple of sandalwood and amber, grounding the soul in sacred peace.", notes: "Mysore Sandalwood, Cardamom, Amber", price: 580, image: "/product (4).png" },
-  { id: 5, category: "L'Heritage", name: "Ambre Royal", notes: "Fossil Amber, Labdanum, Tonka Bean", price: 295, image: "/product (5).png" },
+  { id: 5, category: "L'Heritage", name: "Ambre Royal", notes: "Fossil Amber, Labdanum, Tonka Bean", price: 295, image: "/product (5).png", freeDelivery: true },
   { id: 6, category: "Les Ephemeres", name: "Vétiver Nuit", notes: "Haitian Vetiver, Black Pepper, Cedar", price: 340, image: "/product (6).png" },
 ];
 
 export default function ProductDetailsPage({ params }: { params: { id: string } }) {
   const product = PRODUCTS.find((p) => p.id === parseInt(params.id)) || PRODUCTS[0];
-  const { refreshCart } = useCart();
+  const { refreshCart, showToast } = useCart();
 
   const addToCart = () => {
     const savedCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
@@ -33,7 +33,7 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
     const updatedCart = [...savedCart, newItem];
     localStorage.setItem("louisianaroma-cart", JSON.stringify(updatedCart));
     refreshCart();
-    alert(`${product.name} has been added to your atelier.`);
+    showToast(`${product.name} has been added to your atelier.`, "success");
   };
 
   return (
@@ -54,6 +54,11 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
                 className="object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)]"
               />
             </div>
+            {(product as any).freeDelivery && (
+              <div className="absolute top-8 left-8 bg-[#F2CA50] text-black text-[10px] font-bold tracking-[3px] uppercase px-5 py-2 rounded-full shadow-2xl z-10 animate-pulse">
+                Free Delivery
+              </div>
+            )}
           </div>
 
           {/* Details Content */}

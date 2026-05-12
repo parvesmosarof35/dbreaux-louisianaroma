@@ -11,12 +11,13 @@ interface ProductCardProps {
   price: number;
   image: string;
   priority?: boolean;
+  freeDelivery?: boolean;
 }
 
 import { useCart } from "@/app/context/CartContext";
 
-export default function ProductCard({ id, category, name, notes, price, image, priority }: ProductCardProps) {
-  const { refreshCart } = useCart();
+export default function ProductCard({ id, category, name, notes, price, image, priority, freeDelivery }: ProductCardProps) {
+  const { refreshCart, showToast } = useCart();
 
   const addToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -36,8 +37,8 @@ export default function ProductCard({ id, category, name, notes, price, image, p
     // Trigger update in Context
     refreshCart();
     
-    // Optional: show a small toast or visual feedback
-    alert(`${name} has been added to your atelier.`);
+    // Success Toast
+    showToast(`${name} has been added to your atelier.`, "success");
   };
 
   return (
@@ -52,6 +53,11 @@ export default function ProductCard({ id, category, name, notes, price, image, p
           priority={priority}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        {freeDelivery && (
+          <div className="absolute top-4 right-4 bg-[#F2CA50] text-black text-[8px] font-bold tracking-[2px] uppercase px-3 py-1.5 rounded-full shadow-lg z-10 animate-pulse">
+            Free Delivery
+          </div>
+        )}
       </div>
 
       {/* Product Info */}

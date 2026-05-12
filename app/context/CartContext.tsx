@@ -5,16 +5,26 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface CartContextType {
   cartCount: number;
   refreshCart: () => void;
+  showToast: (message: string, type?: "success" | "error" | "info") => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartCount, setCartCount] = useState(0);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info"; isVisible: boolean }>({
+    message: "",
+    type: "info",
+    isVisible: false
+  });
 
   const refreshCart = () => {
     const savedCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
     setCartCount(savedCart.length);
+  };
+
+  const showToast = (message: string, type: "success" | "error" | "info" = "info") => {
+    setToast({ message, type, isVisible: true });
   };
 
   useEffect(() => {
@@ -39,11 +49,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <CartContext.Provider value={{ cartCount, refreshCart }}>
+    <CartContext.Provider value={{ cartCount, refreshCart, showToast }}>
       {children}
+      <Toast 
+        message={toast.message} 
+        isVisible={toast.isVisible} 
+        type={toast.type} 
+        onClose={() => setToast(prev => ({ ...prev, isVisible: false }))} 
+      />
     </CartContext.Provider>
   );
 }
+
+// Simple Toast component internal or import
+import Toast from '@/components/ui/Toast';
 
 export function useCart() {
   const context = useContext(CartContext);
