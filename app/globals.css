@@ -185,3 +185,13 @@ body {
 .animate-scale-x {
   animation: scale-x-reveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
+
+@keyframes typewriter-cursor {
+  from, to { border-color: transparent }
+  50% { border-color: #F2CA50 }
+}
+
+.typewriter-cursor {
+  border-right: 2px solid transparent;
+  animation: typewriter-cursor 1s step-end infinite;
+}

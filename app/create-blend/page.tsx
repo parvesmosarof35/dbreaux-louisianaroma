@@ -322,13 +322,13 @@ function CreateBlendContent() {
                          )}
                        </div>
                        <div className="flex items-center gap-2">
-                         <div className="flex items-center gap-1 group/total">
+                         <div className="flex items-center gap-1 group/total relative">
                             <input 
                               type="number"
                               value={totalPercentage}
                               onChange={(e) => handleTotalChange(parseInt(e.target.value) || 0)}
                               onFocus={(e) => e.target.select()}
-                              className={`bg-transparent text-2xl font-light w-16 text-right outline-none focus:ring-1 focus:ring-[#F2CA50]/30 rounded px-1 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}
+                              className={`bg-transparent text-2xl font-light w-16 text-right outline-none focus:ring-1 focus:ring-[#F2CA50]/30 rounded px-1 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none typewriter-cursor focus:animate-none caret-[#F2CA50] ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}
                               inputMode="numeric"
                             />
                             <span className={`text-2xl font-light transition-colors ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}>%</span>
@@ -343,13 +343,13 @@ function CreateBlendContent() {
                     <div key={formula.id} className="bg-[#1A1C1C]/40 border border-white/5 p-6 md:p-10 rounded-2xl space-y-8 md:space-y-10 group hover:border-white/10 transition-all duration-500">
                       <div className="flex justify-between items-start md:items-baseline">
                         <div className="space-y-2"><span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-70">{formula.type}</span><h3 className="text-white text-2xl md:text-4xl font-serif">{formula.name}</h3></div>
-                         <div className="flex items-center gap-1 group/val">
+                         <div className="flex items-center gap-1 group/val relative">
                             <input
                               type="number"
                               value={percentages[formula.id] || 0}
                               onChange={(e) => updatePercentage(formula.id, parseInt(e.target.value) || 0)}
                               onFocus={(e) => e.target.select()}
-                              className="bg-transparent text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 focus:text-[#F2CA50] outline-none transition-colors w-28 md:w-44 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              className="bg-transparent text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 focus:text-[#F2CA50] outline-none transition-colors w-28 md:w-44 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none typewriter-cursor focus:animate-none caret-[#F2CA50]"
                               inputMode="numeric"
                             />
                             <span className="text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 transition-colors">%</span>
