@@ -30,7 +30,7 @@ export default function Navbar() {
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
-                src="/navbarlogo.png"
+                src="/SVG Logo (Louisianaroma) (1).svg"
                 alt="Louisianaroma Logo"
                 width={180}
                 height={50}

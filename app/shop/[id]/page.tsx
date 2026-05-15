@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
+import { use } from "react";
 
 const PRODUCTS = [
   { id: 1, category: "Private Reserve", name: "Noire d'Oud", description: "A magnetic depth that captures the essence of midnight in the desert. Intense, sophisticated, and eternally lingering.", notes: "Agarwood, Bulgarian Rose, Ambergris", price: 450, image: "/product (1).png", freeDelivery: true },
@@ -15,8 +16,9 @@ const PRODUCTS = [
   { id: 6, category: "Les Ephemeres", name: "Vétiver Nuit", notes: "Haitian Vetiver, Black Pepper, Cedar", price: 340, image: "/product (6).png" },
 ];
 
-export default function ProductDetailsPage({ params }: { params: { id: string } }) {
-  const product = PRODUCTS.find((p) => p.id === parseInt(params.id)) || PRODUCTS[0];
+export default function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const product = PRODUCTS.find((p) => p.id === parseInt(id)) || PRODUCTS[0];
   const { refreshCart, showToast } = useCart();
 
   const addToCart = () => {

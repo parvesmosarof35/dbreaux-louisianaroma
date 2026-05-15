@@ -33,7 +33,7 @@ export default function MainHeader({ toggleSidebar }: MainHeaderProps) {
             <Link href="/" className="hidden sm:block">
               <div className="relative w-40 h-10">
                 <Image 
-                  src="/navbarlogo.png" 
+                  src="/SVG Logo (Louisianaroma) (1).svg" 
                   alt="Maison Logo" 
                   fill 
                   className="object-contain" 

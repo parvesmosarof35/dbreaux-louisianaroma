@@ -55,7 +55,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
       <Link href="/">
       <div className="flex justify-center items-center gap-2 px-8 mt-12 mb-8">
         <div className="relative w-full h-16">
-             <Image src="/navbarlogo.png" alt="Louisianaroma Logo" fill className="object-contain" />
+             <Image src="/SVG Logo (Louisianaroma) (1).svg" alt="Louisianaroma Logo" fill className="object-contain" />
         </div>
       </div>
       </Link>

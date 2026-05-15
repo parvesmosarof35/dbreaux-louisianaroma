@@ -17,6 +17,7 @@ export default function CartPage() {
   const [discount, setDiscount] = useState(0);
   const [promoError, setPromoError] = useState("");
   const [isPromoApplied, setIsPromoApplied] = useState(false);
+  const [giftMessage, setGiftMessage] = useState("");
 
   const applyPromoCode = () => {
     if (promoCode.toUpperCase() === "LOUISIANA10") {
@@ -175,8 +176,18 @@ export default function CartPage() {
                 {promoError && <p className="text-red-500 text-[8px] font-bold tracking-[1px] uppercase ml-1">{promoError}</p>}
                 {isPromoApplied && <p className="text-green-500 text-[8px] font-bold tracking-[1px] uppercase ml-1">Promo code applied successfully</p>}
               </div>
-              <div className="pt-10 border-t border-white/5 space-y-8">
-                <div className="flex justify-between items-end">
+                <div className="pt-8 border-t border-white/5 space-y-6">
+                  <div className="flex justify-between items-center"><label className="text-white/40 text-[9px] font-bold tracking-[3px] uppercase">Gift Message (Optional)</label><span className="text-white/10 text-[8px] font-bold">{giftMessage.length}/150</span></div>
+                  <textarea 
+                    placeholder="A personal note for the recipient..." 
+                    rows={3} 
+                    value={giftMessage}
+                    onChange={(e) => setGiftMessage(e.target.value.slice(0, 150))}
+                    className="w-full bg-white/5 border border-white/10 px-6 py-4 rounded-xl text-white outline-none focus:border-[#F2CA50]/50 transition-all text-[10px] font-light leading-relaxed resize-none placeholder:text-white/10" 
+                  />
+                </div>
+                
+                <div className="flex justify-between items-end pt-4">
                   <div className="text-white/20 text-[10px] font-bold tracking-[3px] uppercase">Total Price</div>
                   <div className="text-[#F2CA50] text-5xl tracking-tighter">${total.toFixed(2)}</div>
                 </div>
@@ -196,7 +207,6 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </main>
 

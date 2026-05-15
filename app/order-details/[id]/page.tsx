@@ -1,10 +1,13 @@
 "use client";
 
+import { use } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 
-export default function OrderDetailsPage({ params }: { params: { id: string } }) {
+export default function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   return (
     <div className="bg-[#0A0A0A] min-h-screen text-white flex flex-col">
       <Navbar />
