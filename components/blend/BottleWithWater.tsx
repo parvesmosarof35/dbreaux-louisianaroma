@@ -14,32 +14,32 @@ export default function BottleWithWater({ level, label, delay }: BottleWithWater
   const fillValue = parseInt(level);
 
   return (
-    <div 
+    <div
       className="relative aspect-[3/4] flex flex-col items-center justify-center group animate-float"
       style={{ animationDelay: delay, animationDuration: "6s" }}
     >
       {/* Bottle Container */}
       <div className="relative w-full h-full flex items-center justify-center">
-        
+
         {/* Dynamic Liquid Fill Container */}
-        <div 
+        <div
           className="absolute bottom-[18%] w-[62%] h-[55%] overflow-hidden"
-          style={{ 
+          style={{
             borderRadius: "2px 2px 4px 4px",
           }}
         >
           {/* Animated Waves using User's exact logic */}
           <div className={styles["water-round-container"]}>
-            <div 
-              className={styles["water-wave1"]} 
+            <div
+              className={styles["water-wave1"]}
               style={{ top: `${100 - fillValue - 10}%` }}
             ></div>
-            <div 
-              className={styles["water-wave2"]} 
+            <div
+              className={styles["water-wave2"]}
               style={{ top: `${100 - fillValue - 5}%` }}
             ></div>
-            <div 
-              className={styles["water-wave3"]} 
+            <div
+              className={styles["water-wave3"]}
               style={{ top: `${100 - fillValue}%` }}
             ></div>
           </div>
@@ -56,9 +56,9 @@ export default function BottleWithWater({ level, label, delay }: BottleWithWater
 
         {/* Percentage Indicator - Eye Catching */}
         <div className="absolute z-20 top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none">
-          <span 
+          <span
             className="text-white text-5xl font-serif tracking-tighter opacity-90 transition-all duration-700 transform scale-110 animate-fade-in-up"
-            style={{ 
+            style={{
               textShadow: "0 10px 30px rgba(0,0,0,0.8)",
               animationDelay: `calc(${delay} + 0.5s)`,
               animationFillMode: "backwards"
@@ -66,9 +66,9 @@ export default function BottleWithWater({ level, label, delay }: BottleWithWater
           >
             {fillValue}%
           </span>
-          <div 
+          <div
             className="w-10 h-px bg-[#D4AF37] mt-3 opacity-60 animate-scale-x"
-            style={{ 
+            style={{
               animationDelay: `calc(${delay} + 1s)`,
               animationFillMode: "backwards"
             }}
@@ -80,9 +80,9 @@ export default function BottleWithWater({ level, label, delay }: BottleWithWater
       </div>
 
       {/* Label */}
-      <div 
+      <div
         className="mt-8 text-center animate-fade-in-up"
-        style={{ 
+        style={{
           animationDelay: `calc(${delay} + 1.2s)`,
           animationFillMode: "backwards"
         }}

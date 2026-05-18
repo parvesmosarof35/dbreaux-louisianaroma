@@ -20,7 +20,7 @@ export default function AnatomyOfScent() {
               width: "100%"
             }}
           >
-            The Anatomy of Scent
+            Craft Your Signature Scent
           </h2>
         </div>
 
@@ -30,7 +30,7 @@ export default function AnatomyOfScent() {
             { level: "50%", delay: "1.5s", label: "fragment 2" },
             { level: "80%", delay: "3s", label: "fragment 3" }
           ].map((bottle, idx) => (
-            <BottleWithWater 
+            <BottleWithWater
               key={idx}
               level={bottle.level}
               label={bottle.label}

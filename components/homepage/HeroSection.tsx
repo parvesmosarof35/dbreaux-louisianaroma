@@ -42,7 +42,7 @@ export default function HeroSection() {
             Create Your Fragrance
           </Link>
           <Link href="/shop" className="btn-outline w-full sm:flex-1 min-w-0 text-center">
-            Shop Pre-made
+            SHOP HOUSE BLENDS
           </Link>
         </div>
       </div>
