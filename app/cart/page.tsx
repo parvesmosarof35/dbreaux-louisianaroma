@@ -43,6 +43,38 @@ export default function CartPage() {
     refreshCart();
   };
 
+  const updateCartItemSpecs = (itemId: string, newSize: "30ml" | "50ml" | "100ml", newConcentration: "20%" | "30%" | "40%") => {
+    const updated = cartItems.map(item => {
+      if (item.id === itemId) {
+        const base = newSize === "30ml" ? 25.00 : newSize === "50ml" ? 45.00 : 70.00;
+        const addOn = newConcentration === "20%" ? 0.00 : newConcentration === "30%" ? 10.00 : 20.00;
+        const newPrice = base + addOn;
+        const newSubCategory = newConcentration === "20%" ? "Eau De Parfum" : newConcentration === "30%" ? "Extrait De Parfum" : "Parfum";
+        
+        const baseDetails = (item.details || []).filter((d: any) => d.label !== "Bottle Size" && d.label !== "Concentration");
+        const updatedDetails = [
+          ...baseDetails,
+          { label: "Bottle Size", value: newSize === "30ml" ? "30mL" : newSize === "50ml" ? "50mL" : "100mL" },
+          { label: "Concentration", value: newConcentration === "20%" ? "20% (Eau De Parfum)" : newConcentration === "30%" ? "30% (Extrait De Parfum)" : "40% (Parfum)" }
+        ];
+
+        return {
+          ...item,
+          bottleSize: newSize,
+          concentration: newConcentration,
+          price: newPrice,
+          subCategory: newSubCategory,
+          details: updatedDetails
+        };
+      }
+      return item;
+    });
+
+    setCartItems(updated);
+    localStorage.setItem("louisianaroma-cart", JSON.stringify(updated));
+    refreshCart();
+  };
+
   const handleEdit = (item: any) => {
     const data = btoa(JSON.stringify({
       formulaIds: item.formulaIds,
@@ -50,6 +82,11 @@ export default function CartPage() {
       name: item.name,
       labelBg: item.labelBg,
       textColor: item.textColor,
+      labelFontSize: item.labelFontSize,
+      productType: item.productType,
+      textAlign: item.textAlign,
+      bottleSize: item.bottleSize,
+      concentration: item.concentration,
       giftMessage: item.giftMessage
     }));
     router.push(`/create-blend?edit=${item.id}&data=${data}`);
@@ -87,9 +124,9 @@ export default function CartPage() {
                   key={item.id} 
                   className="bg-[#2A2B1D]/40 border border-[#D4AF37]/10 rounded-2xl p-8 flex flex-col md:flex-row gap-10 hover:border-[#D4AF37]/30 transition-all duration-500"
                 >
-                  <div className="relative w-48 aspect-square bg-black/40 rounded-xl overflow-hidden shrink-0">
+                  {/* <div className="relative w-48 aspect-square bg-black/40 rounded-xl overflow-hidden shrink-0">
                     <Image src={item.image} alt={item.name} fill className="object-contain p-4" />
-                  </div>
+                  </div> */}
                   <div className="flex-1 flex flex-col justify-between py-2">
                     <div className="space-y-6">
                       <div className="flex justify-between items-start">
@@ -100,13 +137,63 @@ export default function CartPage() {
                         <div className="text-white text-3xl font-light">${item.price.toFixed(2)}</div>
                       </div>
                       {item.isCustom ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          {item.details?.map((detail: any, idx: number) => (
-                            <div key={idx} className="space-y-1 border-l border-[#D4AF37]/20 pl-4">
-                              <div className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">{detail.label}</div>
-                              <div className="text-[#F2CA50] text-xl font-light">{detail.value}</div>
+                        <div className="space-y-6">
+                          {/* Ingredients Grid */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {item.details?.filter((d: any) => d.label !== "Bottle Size" && d.label !== "Concentration").map((detail: any, idx: number) => (
+                              <div key={idx} className="space-y-1 border-l border-[#D4AF37]/20 pl-4">
+                                <div className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">{detail.label}</div>
+                                <div className="text-[#F2CA50] text-xl font-light">{detail.value}</div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Editable Selectors in Cart */}
+                          <div className="pt-6 border-t border-white/5 space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              {/* Select Size Selector */}
+                              <div className="space-y-3">
+                                <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Select Size</span>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {[
+                                    { size: "30ml", label: "30mL", price: "$25.00" },
+                                    { size: "50ml", label: "50mL", price: "$45.00" },
+                                    { size: "100ml", label: "100mL", price: "$70.00" }
+                                  ].map((opt) => (
+                                    <button
+                                      key={opt.size}
+                                      onClick={() => updateCartItemSpecs(item.id, opt.size as any, item.concentration || "20%")}
+                                      className={`py-2 px-1 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${(item.bottleSize || "100ml") === opt.size ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_2px_10px_rgba(242,202,80,0.15)] font-semibold" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                                    >
+                                      <span className="text-[10px] font-serif">{opt.label}</span>
+                                      <span className={`text-[8px] mt-0.5 ${(item.bottleSize || "100ml") === opt.size ? "text-black/60" : "text-white/30"}`}>{opt.price}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Concentration Level Selector */}
+                              <div className="space-y-3">
+                                <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Concentration Level</span>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {[
+                                    { level: "20%", label: "20% EDP", add: "+$0.00" },
+                                    { level: "30%", label: "30% Extrait", add: "+$10.00" },
+                                    { level: "40%", label: "40% Parfum", add: "+$20.00" }
+                                  ].map((opt) => (
+                                    <button
+                                      key={opt.level}
+                                      onClick={() => updateCartItemSpecs(item.id, item.bottleSize || "100ml", opt.level as any)}
+                                      className={`py-2 px-1 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${(item.concentration || "20%") === opt.level ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_2px_10px_rgba(242,202,80,0.15)] font-semibold" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                                    >
+                                      <span className="text-[9px] font-serif whitespace-nowrap">{opt.label}</span>
+                                      <span className={`text-[8px] mt-0.5 ${(item.concentration || "20%") === opt.level ? "text-black/60" : "text-white/30"}`}>{opt.add}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
-                          ))}
+                          </div>
                         </div>
                       ) : (
                         <p className="text-white/40 text-sm font-light leading-relaxed max-w-md italic">{item.description}</p>

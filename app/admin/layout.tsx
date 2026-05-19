@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -42,8 +43,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         lg:static lg:translate-x-0
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
-        <div className="p-8 border-b border-white/5 flex justify-between items-center">
-          <Link href="/admin/dashboard" className="text-[#F2CA50] text-2xl font-serif tracking-widest uppercase">Maison</Link>
+        <div className="p-7 border-b border-white/5 flex justify-between items-center">
+                     <Link href="/">
+              <Image
+                src="/Louisianaroma header white logo.svg"
+                alt="Louisianaroma Logo"
+                width={180}
+                height={50}
+                className="h-8 md:h-10 w-auto object-contain"
+              />
+            </Link>
           <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>

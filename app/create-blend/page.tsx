@@ -25,14 +25,14 @@ const FORMULAS = [
   { id: 6, name: "Inspired by Amber Noir", category: "A Resinous Oriental", type: "BASE NOTE", description: "A magnetic blend of fossil amber, labdanum, and charred cedarwood.", image: "/product (5).png" }
 ];
 
-function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, size }: { fragranceName: string, labelBg: string, textColor: string, textAlign: string, fontSize: number, size: 'large' | 'small' }) {
+function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, size, concentration = "20%" }: { fragranceName: string, labelBg: string, textColor: string, textAlign: string, fontSize: number, size: 'large' | 'small', concentration?: string }) {
   return (
     <div className={`relative flex flex-col items-center justify-center text-center transition-all duration-700 shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/5 overflow-hidden ${size === 'large' ? 'w-64 h-64 md:w-80 md:h-80 p-6 md:p-8' : 'w-28 h-28 md:w-48 md:h-48 p-4 md:p-6'}`} style={{ backgroundColor: labelBg }}>
         <span className={`${size === 'large' ? 'absolute top-8 md:top-12 text-[8px] md:text-[10px]' : 'absolute top-3 md:top-6 text-[4px] md:text-[7px]'} tracking-[4px] uppercase font-bold opacity-60`} style={{ color: textColor }}>L'Essence Noire</span>
         
         <div className={`w-full flex flex-col items-center justify-center ${size === 'large' ? 'py-10' : 'py-4 md:py-8'}`}>
         <h3 
-            className="font-serif uppercase w-full px-4 whitespace-pre leading-tight" 
+            className="font-serif uppercase w-full px-4 whitespace-pre-wrap break-words leading-tight" 
             style={{ 
             color: textColor, 
             textAlign: textAlign as any,
@@ -46,7 +46,9 @@ function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, 
 
         <div className={`${size === 'large' ? 'absolute bottom-8 md:bottom-12' : 'absolute bottom-3 md:bottom-6'} flex flex-col items-center w-full`}>
         <div className={`${size === 'large' ? 'w-12 md:w-16 h-px mb-4 md:mb-6' : 'w-4 md:w-10 h-px mb-2 md:mb-3'} opacity-30`} style={{ backgroundColor: textColor }}></div>
-        <span className={`${size === 'large' ? 'text-[6px] md:text-[8px] tracking-[2px]' : 'text-[3px] md:text-[6px] tracking-[1px]'} uppercase font-light`} style={{ color: textColor }}>Eau De Parfum</span>
+        <span className={`${size === 'large' ? 'text-[6px] md:text-[8px] tracking-[2px]' : 'text-[3px] md:text-[6px] tracking-[1px]'} uppercase font-light`} style={{ color: textColor }}>
+          {concentration === "30%" ? "Extrait De Parfum" : concentration === "40%" ? "Parfum" : "Eau De Parfum"}
+        </span>
         </div>
     </div>
   );
@@ -73,6 +75,14 @@ function CreateBlendContent() {
   const [productType, setProductType] = useState("Fragrance");
   const [textAlign, setTextAlign] = useState("center");
   const [labelFontSize, setLabelFontSize] = useState(1.0);
+  const [bottleSize, setBottleSize] = useState<"30ml" | "50ml" | "100ml">("100ml");
+  const [concentration, setConcentration] = useState<"20%" | "30%" | "40%">("20%");
+
+  const price = useMemo(() => {
+    const base = bottleSize === "30ml" ? 25.00 : bottleSize === "50ml" ? 45.00 : 70.00;
+    const addOn = concentration === "20%" ? 0.00 : concentration === "30%" ? 10.00 : 20.00;
+    return base + addOn;
+  }, [bottleSize, concentration]);
 
   // Initialize from searchParams if editing
   useEffect(() => {
@@ -88,6 +98,8 @@ function CreateBlendContent() {
         if (data.labelFontSize) setLabelFontSize(data.labelFontSize);
         if (data.productType) setProductType(data.productType);
         if (data.textAlign) setTextAlign(data.textAlign);
+        if (data.bottleSize) setBottleSize(data.bottleSize);
+        if (data.concentration) setConcentration(data.concentration);
         
         // If data is present, we likely want to see the result
         if (!stepParam) {
@@ -241,7 +253,9 @@ function CreateBlendContent() {
       textColor,
       textAlign,
       labelFontSize,
-      productType
+      productType,
+      bottleSize,
+      concentration
     };
     const encodedData = btoa(JSON.stringify(data));
     const shareUrl = `${window.location.origin}${window.location.pathname}?step=3&data=${encodedData}`;
@@ -257,9 +271,9 @@ function CreateBlendContent() {
     const customItem = {
       id: editId || `custom-${Date.now()}`,
       name: fragranceName || "Your Signature Scent",
-      price: 450.00,
+      price: price,
       category: "Custom Formulation",
-      subCategory: "Eau De Parfum",
+      subCategory: concentration === "20%" ? "Eau De Parfum" : concentration === "30%" ? "Extrait De Parfum" : "Parfum",
       image: "/bottleofperfume.png",
       isCustom: true,
       labelBg,
@@ -269,10 +283,16 @@ function CreateBlendContent() {
       labelFontSize,
       formulaIds: selectedFormulas,
       percentages,
-      details: selectedData.map(f => ({
-        label: f.name,
-        value: `${percentages[f.id] || 0}%`
-      }))
+      bottleSize,
+      concentration,
+      details: [
+        ...selectedData.map(f => ({
+          label: f.name,
+          value: `${percentages[f.id] || 0}%`
+        })),
+        { label: "Bottle Size", value: bottleSize === "30ml" ? "30mL" : bottleSize === "50ml" ? "50mL" : "100mL" },
+        { label: "Concentration", value: concentration === "20%" ? "20% (Eau De Parfum)" : concentration === "30%" ? "30% (Extrait De Parfum)" : "40% (Parfum)" }
+      ]
     };
 
     const existingCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
@@ -315,9 +335,9 @@ function CreateBlendContent() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
           {currentStep === 0 && (
-            <div className="flex-1 px-4 md:px-12 py-8 overflow-y-auto scrollbar-hide">
+            <div className="flex-1 px-4 md:px-12 py-8 lg:overflow-y-auto scrollbar-hide">
               <div className="max-w-5xl mx-auto space-y-10">
                 <header className="space-y-4 text-center">
                   <div className="space-y-1">
@@ -442,8 +462,8 @@ function CreateBlendContent() {
           )}
 
           {currentStep === 1 && (
-            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-              <div className="flex-1 px-6 md:px-20 py-12 space-y-12 md:space-y-16 overflow-y-auto">
+            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
+              <div className="flex-1 px-6 lg:px-12 xl:px-20 py-12 space-y-12 md:space-y-16 lg:overflow-y-auto">
                 <header className="space-y-6 md:space-y-4">
                   <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-60">Step 02 / 04</span>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -505,7 +525,7 @@ function CreateBlendContent() {
                   ))}
                 </div>
               </div>
-              <aside className="w-full lg:w-[450px] border-l border-white/5 p-8 md:p-12 space-y-12 bg-[#0D0E0E] flex flex-col justify-center">
+              <aside className="w-full lg:w-[380px] xl:w-[450px] border-l border-white/5 p-6 lg:p-6 xl:p-10 space-y-12 bg-[#0D0E0E] flex flex-col justify-center">
                 <div className="space-y-10">
                   <div className="space-y-6">
                     <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">Medium Selection</span>
@@ -548,15 +568,15 @@ function CreateBlendContent() {
           )}
 
           {currentStep === 2 && (
-            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-              <div className="flex-1 px-8 md:px-20 py-12 space-y-12 overflow-y-auto">
+            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
+              <div className="flex-1 px-8 lg:px-12 xl:px-20 py-12 space-y-12 lg:overflow-y-auto">
                 <header className="space-y-4">
                   <h2 className="text-white text-3xl font-serif">Label Your Creation</h2>
                   <p className="text-white/40 text-lg font-light max-w-lg leading-relaxed">The final touch to your artisanal blend. Define the identity of your bespoke fragrance.</p>
                 </header>
                 <div className="space-y-10 max-w-xl">
                   <div className="space-y-4">
-                    <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Fragrance Name</label>
+                    <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Name Your Product</label>
                     <textarea 
                       placeholder="" 
                       value={fragranceName} 
@@ -616,9 +636,9 @@ function CreateBlendContent() {
                   </div>
                 </div>
               </div>
-              <aside className="w-full lg:w-[600px] border-l border-white/5 p-8 md:p-12 flex flex-col items-center justify-center bg-[#0D0E0E] space-y-8 md:space-y-12">
+              <aside className="w-full lg:w-[380px] xl:w-[450px] border-l border-white/5 p-6 lg:p-6 xl:p-10 flex flex-col items-center justify-center bg-[#0D0E0E] space-y-8 md:space-y-12">
                 <div className="relative w-full aspect-square bg-[#121414] rounded-[40px] flex items-center justify-center overflow-hidden shadow-2xl border border-white/5">
-                   <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" />
+                   <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" concentration={concentration} />
                 </div>
                 <div className="text-center space-y-2">
                   <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase">Artisanal Labeling</span>
@@ -628,8 +648,8 @@ function CreateBlendContent() {
           )}
 
           {currentStep === 3 && (
-            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[url('/hero_bg.png')] bg-cover bg-fixed">
-              <div className="flex-1 px-6 md:px-20 py-12 space-y-12 overflow-y-auto bg-black/60 backdrop-blur-3xl">
+            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden ">
+              <div className="flex-1 px-6 lg:px-12 xl:px-20 py-12 space-y-12 lg:overflow-y-auto bg-black/60 backdrop-blur-3xl">
                 <header className="space-y-4">
                   <h1 className="text-white text-3xl md:text-5xl font-serif">Review Your Signature Scent</h1>
                   <p className="text-white/40 text-sm md:text-lg font-light max-w-2xl leading-relaxed">
@@ -637,14 +657,14 @@ function CreateBlendContent() {
                   </p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-8 md:gap-12">
                    <div className="space-y-12">
                       <section className="space-y-6">
                         <h3 className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase">The Formulation</h3>
                         <div className="space-y-4 border-l border-white/10 pl-8">
                           {selectedData.map(formula => (
                             <div key={formula.id} className="flex justify-between items-baseline group">
-                               <span className="text-white/60 font-serif text-2xl group-hover:text-white transition-colors">{formula.name}</span>
+                               <span className="text-white/60 font-serif text-lg md:text-xl group-hover:text-white transition-colors">{formula.name}</span>
                                <span className="text-[#F2CA50] text-lg font-light">{percentages[formula.id] || 0}%</span>
                             </div>
                           ))}
@@ -659,22 +679,55 @@ function CreateBlendContent() {
                         </div>
                       </section>
 
-                      <section className="grid grid-cols-2 gap-8">
-                         <div className="space-y-2">
-                            <span className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">Product Type</span>
-                            <p className="text-white text-2xl font-serif">Perfume</p>
-                         </div>
-                         <div className="space-y-2">
-                            <span className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">Bottle Size</span>
-                            <p className="text-white text-2xl font-serif">100ml</p>
-                         </div>
+                      <section className="space-y-6">
+                        <div className="space-y-3">
+                          <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Select Size</span>
+                          <div className="grid grid-cols-3 gap-3">
+                            {[
+                              { size: "30ml", label: "30mL", price: "$25.00" },
+                              { size: "50ml", label: "50mL", price: "$45.00" },
+                              { size: "100ml", label: "100mL", price: "$70.00" }
+                            ].map((opt) => (
+                              <button
+                                key={opt.size}
+                                onClick={() => setBottleSize(opt.size as any)}
+                                className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${bottleSize === opt.size ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                              >
+                                <span className="text-xs font-serif">{opt.label}</span>
+                                <span className={`text-[9px] mt-0.5 ${bottleSize === opt.size ? "text-black/60" : "text-white/30"}`}>{opt.price}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Concentration Level</span>
+                          <div className="grid grid-cols-3 gap-3">
+                            {[
+                              { level: "20%", label: "20% EDP", add: "+$0.00" },
+                              { level: "30%", label: "30% Extrait", add: "+$10.00" },
+                              { level: "40%", label: "40% Parfum", add: "+$20.00" }
+                            ].map((opt) => (
+                              <button
+                                key={opt.level}
+                                onClick={() => setConcentration(opt.level as any)}
+                                className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${concentration === opt.level ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                              >
+                                <span className="text-[10px] font-serif whitespace-nowrap">{opt.label}</span>
+                                <span className={`text-[9px] mt-0.5 ${concentration === opt.level ? "text-black/60" : "text-white/30"}`}>{opt.add}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       </section>
                    </div>
 
                      <div className="space-y-12">
                         <section className="space-y-2">
                           <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Label Name</span>
-                          <h2 className="text-white text-3xl md:text-5xl font-serif whitespace-pre-wrap leading-tight uppercase">"{fragranceName}"</h2>
+                          <h2 className="text-white text-2xl md:text-3xl xl:text-4xl font-serif whitespace-pre-wrap leading-tight uppercase">
+                             {fragranceName ? `"${fragranceName}"` : "Unnamed Masterpiece"}
+                           </h2>
                         </section>
                         <section className="space-y-4">
                             <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Adjust Font Size</label>
@@ -708,9 +761,9 @@ function CreateBlendContent() {
                      </div>
                 </div>
               </div>
-              <aside className="w-full lg:w-[650px] border-l border-white/5 p-8 md:p-12 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl space-y-12 md:space-y-16">
+              <aside className="w-full lg:w-[380px] xl:w-[450px] border-l border-white/5 p-6 lg:p-6 xl:p-10 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl space-y-12 md:space-y-16">
                   <div className="relative w-full aspect-square bg-[#121414] rounded-[40px] flex items-center justify-center overflow-hidden shadow-2xl border border-white/5">
-                     <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" />
+                     <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" concentration={concentration} />
                   </div>
   
                  <div className="flex flex-col items-center space-y-4">
@@ -731,7 +784,7 @@ function CreateBlendContent() {
           
           <div className="hidden lg:flex flex-col items-center">
              <span className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">{currentStep === 3 ? "Total Value" : "Current Estimate"}</span>
-             <span className="text-[#F2CA50] text-3xl font-light">{currentStep === 3 ? "$450.00" : "€285.00"}</span>
+             <span className="text-[#F2CA50] text-3xl font-light">${price.toFixed(2)}</span>
           </div>
 
           <button 

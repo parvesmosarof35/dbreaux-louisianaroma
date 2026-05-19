@@ -12,7 +12,7 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { name: "Home", href: "/" },
-  { name: "Blend Station", href: "/blend" },
+  // { name: "Blend Station", href: "/blend" },
   { name: "Shop", href: "/shop" },
   { name: "About", href: "/about" },
   { name: "FAQ", href: "/faq" },
