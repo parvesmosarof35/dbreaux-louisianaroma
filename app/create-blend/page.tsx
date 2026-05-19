@@ -25,31 +25,130 @@ const FORMULAS = [
   { id: 6, name: "Inspired by Amber Noir", category: "A Resinous Oriental", type: "BASE NOTE", description: "A magnetic blend of fossil amber, labdanum, and charred cedarwood.", image: "/product (5).png" }
 ];
 
+const PREVIOUS_PRODUCTS = [
+  {
+    id: 1,
+    name: "Royal Oud Intense",
+    category: "Private Reserve",
+    image: "/product (1).png",
+    description: "A rich, mysterious olfactory masterpiece. The warmth of pure Cambodian Oud forms the majestic base, enriched by creaminess of Mysore Sandalwood and completed with a lingering trace of Amber Noir.",
+    formulaIds: [1, 3, 6],
+    percentages: { 1: 50, 3: 30, 6: 20 },
+    bottleSize: "100ml" as const,
+    concentration: "30%" as const,
+    labelBg: "#1A1C1C",
+    textColor: "#F2CA50",
+    textAlign: "center",
+    labelFontSize: 1.0,
+    productType: "Fragrance"
+  },
+  {
+    id: 2,
+    name: "Jardin de Rose",
+    category: "Les Ephemeres",
+    image: "/product (2).png",
+    description: "An elegant tribute to the botanical garden. Honeyed Damask Rose takes center stage, blended with intoxicating Midnight Jasmine and kissed by a refreshing top note of Citrus Aurantium.",
+    formulaIds: [2, 5, 4],
+    percentages: { 2: 60, 5: 30, 4: 10 },
+    bottleSize: "50ml" as const,
+    concentration: "20%" as const,
+    labelBg: "#7F1D1D",
+    textColor: "#E5E7EB",
+    textAlign: "center",
+    labelFontSize: 1.1,
+    productType: "Fragrance"
+  },
+  {
+    id: 3,
+    name: "Santal Blanc",
+    category: "L'Heritage",
+    image: "/product (3).png",
+    description: "A velvety, warm and enveloping scent. Soft, milky Mysore Sandalwood dominates, lightened by sparkling Citrus Aurantium and soft white florals for a delicate yet lasting signature.",
+    formulaIds: [3, 4, 5],
+    percentages: { 3: 70, 4: 20, 5: 10 },
+    bottleSize: "100ml" as const,
+    concentration: "40%" as const,
+    labelBg: "#F2CA50",
+    textColor: "#000000",
+    textAlign: "center",
+    labelFontSize: 0.9,
+    productType: "Fragrance"
+  },
+  {
+    id: 4,
+    name: "Amber Gold",
+    category: "Private Reserve",
+    image: "/product (4).png",
+    description: "A resinous, magnetic warmth. A dominant accord of deep fossil Amber Noir, grounded by complex Cambodian Oud and brightened with a crisp, refreshing splash of Citrus Aurantium.",
+    formulaIds: [6, 1, 4],
+    percentages: { 6: 50, 1: 30, 4: 20 },
+    bottleSize: "100ml" as const,
+    concentration: "30%" as const,
+    labelBg: "#064E3B",
+    textColor: "#F2CA50",
+    textAlign: "center",
+    labelFontSize: 1.0,
+    productType: "Fragrance"
+  },
+  {
+    id: 5,
+    name: "Midnight Jasmine",
+    category: "Les Ephemeres",
+    image: "/product (5).png",
+    description: "A sensory voyage through moonlit gardens. Captivating night-blooming Jasmine dominates the blend, layered on a smooth base of Amber Noir and warm Damask Rose.",
+    formulaIds: [5, 6, 2],
+    percentages: { 5: 60, 6: 25, 2: 15 },
+    bottleSize: "50ml" as const,
+    concentration: "20%" as const,
+    labelBg: "#0D0E0E",
+    textColor: "#E5E7EB",
+    textAlign: "center",
+    labelFontSize: 1.0,
+    productType: "Fragrance"
+  },
+  {
+    id: 6,
+    name: "Citrus Oud Accord",
+    category: "L'Heritage",
+    image: "/product (6).png",
+    description: "A perfect harmony between rich agarwood and radiant citrus. Bitter orange and bergamot provide a bright, energetic opening that melts into smoky Cambodian Oud and creamy sandalwood.",
+    formulaIds: [4, 1, 3],
+    percentages: { 4: 40, 1: 40, 3: 20 },
+    bottleSize: "100ml" as const,
+    concentration: "30%" as const,
+    labelBg: "#1E293B",
+    textColor: "#F2CA50",
+    textAlign: "center",
+    labelFontSize: 0.9,
+    productType: "Fragrance"
+  }
+];
+
 function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, size, concentration = "20%" }: { fragranceName: string, labelBg: string, textColor: string, textAlign: string, fontSize: number, size: 'large' | 'small', concentration?: string }) {
   return (
     <div className={`relative flex flex-col items-center justify-center text-center transition-all duration-700 shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/5 overflow-hidden ${size === 'large' ? 'w-64 h-64 md:w-80 md:h-80 p-6 md:p-8' : 'w-28 h-28 md:w-48 md:h-48 p-4 md:p-6'}`} style={{ backgroundColor: labelBg }}>
-        <span className={`${size === 'large' ? 'absolute top-8 md:top-12 text-[8px] md:text-[10px]' : 'absolute top-3 md:top-6 text-[4px] md:text-[7px]'} tracking-[4px] uppercase font-bold opacity-60`} style={{ color: textColor }}>L'Essence Noire</span>
-        
-        <div className={`w-full flex flex-col items-center justify-center ${size === 'large' ? 'py-10' : 'py-4 md:py-8'}`}>
-        <h3 
-            className="font-serif uppercase w-full px-4 whitespace-pre-wrap break-words leading-tight" 
-            style={{ 
-            color: textColor, 
+      <span className={`${size === 'large' ? 'absolute top-8 md:top-12 text-[8px] md:text-[10px]' : 'absolute top-3 md:top-6 text-[4px] md:text-[7px]'} tracking-[4px] uppercase font-bold opacity-60`} style={{ color: textColor }}>L'Essence Noire</span>
+
+      <div className={`w-full flex flex-col items-center justify-center ${size === 'large' ? 'py-10' : 'py-4 md:py-8'}`}>
+        <h3
+          className="font-serif uppercase w-full px-4 whitespace-pre-wrap break-words leading-tight"
+          style={{
+            color: textColor,
             textAlign: textAlign as any,
             fontSize: `calc(${fragranceName.length > 20 ? (size === 'large' ? '0.85rem' : '0.5rem') : fragranceName.length > 10 ? (size === 'large' ? '1.25rem' : '0.75rem') : (size === 'large' ? '1.75rem' : '1.0rem')} * ${fontSize})`,
             letterSpacing: fragranceName.length > 15 ? '0.05em' : '0.02em'
-            }}
+          }}
         >
-            {fragranceName || (size === 'large' ? "Your Signature" : "")}
+          {fragranceName || (size === 'large' ? "Your Signature" : "")}
         </h3>
-        </div>
+      </div>
 
-        <div className={`${size === 'large' ? 'absolute bottom-8 md:bottom-12' : 'absolute bottom-3 md:bottom-6'} flex flex-col items-center w-full`}>
+      <div className={`${size === 'large' ? 'absolute bottom-8 md:bottom-12' : 'absolute bottom-3 md:bottom-6'} flex flex-col items-center w-full`}>
         <div className={`${size === 'large' ? 'w-12 md:w-16 h-px mb-4 md:mb-6' : 'w-4 md:w-10 h-px mb-2 md:mb-3'} opacity-30`} style={{ backgroundColor: textColor }}></div>
         <span className={`${size === 'large' ? 'text-[6px] md:text-[8px] tracking-[2px]' : 'text-[3px] md:text-[6px] tracking-[1px]'} uppercase font-light`} style={{ color: textColor }}>
           {concentration === "30%" ? "Extrait De Parfum" : concentration === "40%" ? "Parfum" : "Eau De Parfum"}
         </span>
-        </div>
+      </div>
     </div>
   );
 }
@@ -66,7 +165,7 @@ function CreateBlendContent() {
   const [percentages, setPercentages] = useState<{ [key: number]: number }>({ 1: 45, 2: 35, 3: 20 });
   const [pivotId, setPivotId] = useState<number | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
-  
+
   // Label Customization State
   const [fragranceName, setFragranceName] = useState("");
   const [labelBg, setLabelBg] = useState("#F2CA50");
@@ -77,6 +176,7 @@ function CreateBlendContent() {
   const [labelFontSize, setLabelFontSize] = useState(1.0);
   const [bottleSize, setBottleSize] = useState<"30ml" | "50ml" | "100ml">("100ml");
   const [concentration, setConcentration] = useState<"20%" | "30%" | "40%">("20%");
+  const [previewProduct, setPreviewProduct] = useState<typeof PREVIOUS_PRODUCTS[number] | null>(null);
 
   const price = useMemo(() => {
     const base = bottleSize === "30ml" ? 25.00 : bottleSize === "50ml" ? 45.00 : 70.00;
@@ -100,7 +200,7 @@ function CreateBlendContent() {
         if (data.textAlign) setTextAlign(data.textAlign);
         if (data.bottleSize) setBottleSize(data.bottleSize);
         if (data.concentration) setConcentration(data.concentration);
-        
+
         // If data is present, we likely want to see the result
         if (!stepParam) {
           router.replace("?step=3&data=" + dataParam);
@@ -134,7 +234,7 @@ function CreateBlendContent() {
   };
 
   const selectedData = useMemo(() => {
-    return selectedFormulas.length > 0 
+    return selectedFormulas.length > 0
       ? selectedFormulas.map(id => FORMULAS.find(f => f.id === id)!)
       : FORMULAS.slice(0, 3);
   }, [selectedFormulas]);
@@ -196,7 +296,7 @@ function CreateBlendContent() {
       });
       return;
     }
-    
+
     // If current total is 0, distribute equally
     if (totalPercentage === 0) {
       const share = Math.round(newTotal / selectedData.length);
@@ -232,10 +332,10 @@ function CreateBlendContent() {
       return;
     }
     if (currentStep === 2 && !fragranceName.trim()) {
-       triggerToast("Please provide a name for your fragrance before proceeding.", "error");
-       return;
+      triggerToast("Please provide a name for your fragrance before proceeding.", "error");
+      return;
     }
-    
+
     if (currentStep === 3) {
       handleAddToCart();
       return;
@@ -259,7 +359,7 @@ function CreateBlendContent() {
     };
     const encodedData = btoa(JSON.stringify(data));
     const shareUrl = `${window.location.origin}${window.location.pathname}?step=3&data=${encodedData}`;
-    
+
     navigator.clipboard.writeText(shareUrl).then(() => {
       triggerToast("Share link copied to clipboard!", "success");
     }).catch(() => {
@@ -296,14 +396,14 @@ function CreateBlendContent() {
     };
 
     const existingCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
-    
+
     let updatedCart;
     if (editId) {
       updatedCart = existingCart.map((item: any) => item.id === editId ? customItem : item);
     } else {
       updatedCart = [...existingCart, customItem];
     }
-    
+
     localStorage.setItem("louisianaroma-cart", JSON.stringify(updatedCart));
     refreshCart();
 
@@ -323,7 +423,7 @@ function CreateBlendContent() {
       <Navbar />
       <Toast message={toastConfig.message} isVisible={showToast} onClose={() => setShowToast(false)} type={toastConfig.type} />
 
-      <div className="flex flex-1 pt-24 pb-32">
+      <div className="flex flex-col lg:flex-row flex-1 pt-20 lg:pt-24 pb-28 lg:pb-32 w-full max-w-full overflow-x-hidden">
         {/* Left Sidebar Steps */}
         <aside className="w-80 border-r border-white/5 hidden lg:flex flex-col px-12 py-12 space-y-12">
           {STEPS.map((step, idx) => (
@@ -335,186 +435,220 @@ function CreateBlendContent() {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
+        <main className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden w-full max-w-full">
           {currentStep === 0 && (
-            <div className="flex-1 px-4 md:px-12 py-8 lg:overflow-y-auto scrollbar-hide">
-              <div className="max-w-5xl mx-auto space-y-10">
-                <header className="space-y-4 text-center">
-                  <div className="space-y-1">
-                    <span className="text-[#F2CA50] text-[8px] font-bold tracking-[4px] uppercase opacity-50">Step 01 / 04</span>
-                    <h1 className="text-white text-3xl md:text-5xl font-serif tracking-tight">Choose Your Formulas</h1>
-                  </div>
-                </header>
-
-                {/* Search Bar */}
-                <div className="relative max-w-xl mx-auto group">
-                  <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-[#F2CA50]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                  <input 
-                    type="text" 
-                    placeholder="Search essences..." 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-[#121414] border border-white/5 pl-14 pr-6 py-4 rounded-xl text-white placeholder:text-white/10 outline-none focus:border-[#F2CA50]/30 transition-all duration-500 text-sm font-light"
-                  />
-                </div>
-
-                {/* Available Essences - COMPACT LIST */}
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center border-b border-white/5 pb-3">
-                    <h2 className="text-white/30 text-[10px] font-bold tracking-[3px] uppercase px-2">Available Essences</h2>
-                    {searchQuery && (
-                      <button onClick={() => setSearchQuery("")} className="text-[#F2CA50] text-[9px] font-bold tracking-[2px] uppercase opacity-60 hover:opacity-100 transition-opacity">Clear Filter</button>
-                    )}
-                  </div>
-
-                  <div className="max-h-[350px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
-                    {FORMULAS.filter(f => !selectedFormulas.includes(f.id))
-                      .filter(f => 
-                        f.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                        f.category.toLowerCase().includes(searchQuery.toLowerCase())
-                      )
-                      .map((formula) => (
-                        <div 
-                          key={formula.id} 
-                          className="bg-[#121414]/30 border border-white/5 rounded-xl p-3 flex items-center gap-4 group hover:bg-[#121414] hover:border-[#F2CA50]/20 transition-all duration-300"
-                        >
-                          <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black/40 shrink-0">
-                            <Image src={formula.image} alt={formula.name} fill className="object-cover opacity-40 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                          
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-baseline gap-3">
-                              <h3 className="text-white text-sm font-serif truncate">{formula.name}</h3>
-                              <span className="text-[#F2CA50] text-[8px] font-bold tracking-[1px] uppercase opacity-30 truncate">{formula.category}</span>
-                            </div>
-                            <p className="text-white/20 text-[10px] font-light truncate">{formula.description}</p>
-                          </div>
-
-                          <button 
-                            onClick={() => toggleFormula(formula.id)}
-                            disabled={selectedFormulas.length >= 3}
-                            className={`shrink-0 px-6 py-2 rounded-lg text-[9px] font-bold tracking-[2px] uppercase transition-all duration-300 ${selectedFormulas.length >= 3 ? "text-white/5 cursor-not-allowed" : "bg-white/5 text-[#F2CA50] border border-[#F2CA50]/10 hover:bg-[#F2CA50] hover:text-black"}`}
-                          >
-                            + Add
-                          </button>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-
-                {/* Selected Essences - AT THE BOTTOM */}
-                <div className="space-y-6 pt-6 border-t border-white/5">
-                  <div className="flex justify-between items-center px-2">
+            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden w-full">
+              <div className="flex-1 px-4 md:px-12 py-8 lg:overflow-y-auto scrollbar-hide">
+                <div className="max-w-5xl mx-auto space-y-10">
+                  <header className="space-y-4 text-center">
                     <div className="space-y-1">
-                      <h2 className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Your Selection</h2>
-                      <p className="text-white/20 text-[9px] font-light">Max 3 essences per blend</p>
+                      <span className="text-[#F2CA50] text-[8px] font-bold tracking-[4px] uppercase opacity-50">Step 01 / 04</span>
+                      <h1 className="text-white text-3xl md:text-5xl font-serif tracking-tight">Choose Your Formulas</h1>
                     </div>
-                    <div className="text-white/40 text-[10px] font-bold tracking-[2px]">
-                      <span className={selectedFormulas.length === 3 ? "text-[#F2CA50]" : ""}>{selectedFormulas.length}</span> / 3
+                  </header>
+
+                  {/* Search Bar */}
+                  <div className="relative w-full max-w-xl mx-auto group">
+                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                      <svg className="w-4 h-4 text-[#F2CA50]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search essences..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-[#121414] border border-white/5 pl-14 pr-6 py-4 rounded-xl text-white placeholder:text-white/10 outline-none focus:border-[#F2CA50]/30 transition-all duration-500 text-sm font-light"
+                    />
+                  </div>
+
+                  {/* Available Essences - COMPACT LIST */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                      <h2 className="text-white/30 text-[10px] font-bold tracking-[3px] uppercase px-2">Available Essences</h2>
+                      {searchQuery && (
+                        <button onClick={() => setSearchQuery("")} className="text-[#F2CA50] text-[9px] font-bold tracking-[2px] uppercase opacity-60 hover:opacity-100 transition-opacity">Clear Filter</button>
+                      )}
+                    </div>
+
+                    <div className="max-h-[350px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+                      {FORMULAS.filter(f => !selectedFormulas.includes(f.id))
+                        .filter(f =>
+                          f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          f.category.toLowerCase().includes(searchQuery.toLowerCase())
+                        )
+                        .map((formula) => (
+                          <div
+                            key={formula.id}
+                            className="bg-[#121414]/30 border border-white/5 rounded-xl p-3 flex items-center gap-4 group hover:bg-[#121414] hover:border-[#F2CA50]/20 transition-all duration-300"
+                          >
+                            <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black/40 shrink-0">
+                              <Image src={formula.image} alt={formula.name} fill className="object-cover opacity-40 group-hover:opacity-100 transition-opacity" />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-2">
+                                <h3 className="text-white text-xs sm:text-sm font-serif truncate">{formula.name}</h3>
+                                <span className="text-[#F2CA50] text-[7px] sm:text-[8px] font-bold tracking-[1px] uppercase opacity-30 truncate">{formula.category}</span>
+                              </div>
+                              <p className="text-white/20 text-[9px] sm:text-[10px] font-light truncate">{formula.description}</p>
+                            </div>
+
+                            <button
+                              onClick={() => toggleFormula(formula.id)}
+                              disabled={selectedFormulas.length >= 3}
+                              className={`shrink-0 px-3 sm:px-6 py-1.5 sm:py-2 rounded-lg text-[9px] font-bold tracking-[2px] uppercase transition-all duration-300 ${selectedFormulas.length >= 3 ? "text-white/5 cursor-not-allowed" : "bg-white/5 text-[#F2CA50] border border-[#F2CA50]/10 hover:bg-[#F2CA50] hover:text-black"}`}
+                            >
+                              + Add
+                            </button>
+                          </div>
+                        ))}
                     </div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {selectedFormulas.length === 0 ? (
-                      <div className="md:col-span-3 py-12 border border-dashed border-white/5 rounded-[32px] flex flex-col items-center justify-center space-y-3">
-                        <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/10">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                          </svg>
-                        </div>
-                        <p className="text-white/20 text-xs font-light italic">Select essences from the list above to begin...</p>
+
+                  {/* Selected Essences - AT THE BOTTOM */}
+                  <div className="space-y-6 pt-6 border-t border-white/5">
+                    <div className="flex justify-between items-center px-2">
+                      <div className="space-y-1">
+                        <h2 className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Your Selection</h2>
+                        <p className="text-white/20 text-[9px] font-light">Max 3 essences per blend</p>
                       </div>
-                    ) : (
-                      selectedFormulas.map((id) => {
-                        const formula = FORMULAS.find(f => f.id === id)!;
-                        return (
-                          <div key={formula.id} className="bg-[#1A1C1C] rounded-[24px] overflow-hidden border border-[#F2CA50]/20 group transition-all duration-500 relative shadow-xl hover:translate-y-[-4px]">
-                            <div className="relative aspect-[16/9] bg-black/40">
-                              <Image src={formula.image} alt={formula.name} fill className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1C1C] to-transparent"></div>
-                              
-                              <button 
-                                onClick={() => toggleFormula(formula.id)}
-                                className="absolute top-4 right-4 w-8 h-8 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-white/40 hover:text-red-400 transition-all"
-                              >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </button>
-                            </div>
-                            
-                            <div className="p-5 space-y-1">
-                              <h3 className="text-white text-sm font-serif">{formula.name}</h3>
-                              <p className="text-[#F2CA50] text-[8px] font-bold tracking-[1px] uppercase opacity-40">{formula.category}</p>
-                            </div>
+                      <div className="text-white/40 text-[10px] font-bold tracking-[2px]">
+                        <span className={selectedFormulas.length === 3 ? "text-[#F2CA50]" : ""}>{selectedFormulas.length}</span> / 3
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {selectedFormulas.length === 0 ? (
+                        <div className="md:col-span-3 py-12 border border-dashed border-white/5 rounded-[32px] flex flex-col items-center justify-center space-y-3">
+                          <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/10">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
                           </div>
-                        );
-                      })
-                    )}
+                          <p className="text-white/20 text-xs font-light italic">Select essences from the list above to begin...</p>
+                        </div>
+                      ) : (
+                        selectedFormulas.map((id) => {
+                          const formula = FORMULAS.find(f => f.id === id)!;
+                          return (
+                            <div key={formula.id} className="bg-[#1A1C1C] rounded-[24px] overflow-hidden border border-[#F2CA50]/20 group transition-all duration-500 relative shadow-xl hover:translate-y-[-4px]">
+                              <div className="relative aspect-[16/9] bg-black/40">
+                                <Image src={formula.image} alt={formula.name} fill className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1C1C] to-transparent"></div>
+
+                                <button
+                                  onClick={() => toggleFormula(formula.id)}
+                                  className="absolute top-4 right-4 w-8 h-8 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-white/40 hover:text-red-400 transition-all"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                  </svg>
+                                </button>
+                              </div>
+
+                              <div className="p-5 space-y-1">
+                                <h3 className="text-white text-sm font-serif">{formula.name}</h3>
+                                <p className="text-[#F2CA50] text-[8px] font-bold tracking-[1px] uppercase opacity-40">{formula.category}</p>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {/* Right Sidebar - Our Previous Customized Products */}
+              <aside className="w-full lg:w-[380px] xl:w-[450px] border-t lg:border-t-0 lg:border-l border-white/5 p-6 lg:p-8 bg-[#0D0E0E] flex flex-col lg:overflow-y-auto shrink-0 space-y-6">
+                <div className="space-y-2">
+                  <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">Admin Curated</span>
+                  <h2 className="text-white text-xl font-serif">Previous Customized Products</h2>
+                  <p className="text-white/30 text-xs font-light leading-relaxed">
+                    Browse premium bespoke formulations crafted for our client portfolio.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {PREVIOUS_PRODUCTS.map((prod) => (
+                    <div
+                      key={prod.id}
+                      onClick={() => setPreviewProduct(prod)}
+                      className="bg-[#121414]/30 border border-white/5 rounded-2xl p-3 flex flex-col gap-3 group hover:bg-[#121414] hover:border-[#F2CA50]/20 transition-all duration-300 cursor-pointer shadow-md"
+                    >
+                      <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-black/40 shrink-0">
+                        <Image src={prod.image} alt={prod.name} fill className="object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="text-[#F2CA50] text-[8px] font-bold tracking-[2px] uppercase w-full text-center bg-black/60 py-1.5 rounded backdrop-blur-sm">View Details</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-white text-xs font-serif truncate group-hover:text-[#F2CA50] transition-colors">{prod.name}</h3>
+                        <p className="text-[#F2CA50] text-[7px] font-bold tracking-[1px] uppercase opacity-40 truncate">{prod.category}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </aside>
             </div>
           )}
 
           {currentStep === 1 && (
-            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
+            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden w-full">
               <div className="flex-1 px-6 lg:px-12 xl:px-20 py-12 space-y-12 md:space-y-16 lg:overflow-y-auto">
                 <header className="space-y-6 md:space-y-4">
                   <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-60">Step 02 / 04</span>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <h1 className="text-[#F2CA50] text-4xl md:text-6xl font-serif">Art of Composition</h1>
+                    <h1 className="text-[#F2CA50] text-3xl sm:text-4xl md:text-6xl font-serif">Art of Composition</h1>
                     <div className="bg-[#1A1C1C] border border-white/5 px-6 py-4 rounded-xl flex items-center gap-4 w-full md:w-auto justify-between min-w-[200px]">
-                       <div className="flex flex-col gap-1">
-                         <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Total Blend:</span>
-                         {totalPercentage !== 100 && totalPercentage > 0 && (
-                           <button 
-                             onClick={() => handleTotalChange(100)}
-                             className="text-[#F2CA50] text-[10px] font-bold tracking-[1px] uppercase hover:text-white transition-colors flex items-center gap-1.5 animate-pulse"
-                             title="Automatically scale ingredients to reach 100%"
-                           >
-                             <span className="w-1 h-1 rounded-full bg-[#F2CA50]"></span>
-                             Balance to 100%
-                           </button>
-                         )}
-                       </div>
-                       <div className="flex items-center gap-2">
-                         <div className="flex items-center gap-1 group/total relative">
-                            <input 
-                              type="number"
-                              value={totalPercentage}
-                              onChange={(e) => handleTotalChange(parseInt(e.target.value) || 0)}
-                              onFocus={(e) => e.target.select()}
-                              className={`bg-transparent text-2xl font-light w-16 text-right outline-none focus:ring-1 focus:ring-[#F2CA50]/30 rounded px-1 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:animate-none caret-[#F2CA50] ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}
-                              inputMode="numeric"
-                            />
-                            <span className={`text-2xl font-light transition-colors ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}>%</span>
-                         </div>
-                         {totalPercentage === 100 && <span className="text-green-500 text-lg animate-in fade-in zoom-in duration-500">✓</span>}
-                       </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Total Blend:</span>
+                        {totalPercentage !== 100 && totalPercentage > 0 && (
+                          <button
+                            onClick={() => handleTotalChange(100)}
+                            className="text-[#F2CA50] text-[10px] font-bold tracking-[1px] uppercase hover:text-white transition-colors flex items-center gap-1.5 animate-pulse"
+                            title="Automatically scale ingredients to reach 100%"
+                          >
+                            <span className="w-1 h-1 rounded-full bg-[#F2CA50]"></span>
+                            Balance to 100%
+                          </button>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 group/total relative">
+                          <input
+                            type="number"
+                            value={totalPercentage}
+                            onChange={(e) => handleTotalChange(parseInt(e.target.value) || 0)}
+                            onFocus={(e) => e.target.select()}
+                            className={`bg-transparent text-2xl font-light w-16 text-right outline-none focus:ring-1 focus:ring-[#F2CA50]/30 rounded px-1 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:animate-none caret-[#F2CA50] ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}
+                            inputMode="numeric"
+                          />
+                          <span className={`text-2xl font-light transition-colors ${totalPercentage === 100 ? "text-[#F2CA50]" : "text-white/40"}`}>%</span>
+                        </div>
+                        {totalPercentage === 100 && <span className="text-green-500 text-lg animate-in fade-in zoom-in duration-500">✓</span>}
+                      </div>
                     </div>
                   </div>
                 </header>
                 <div className="space-y-6 md:space-y-8">
                   {selectedData.map((formula) => (
-                    <div key={formula.id} className="bg-[#1A1C1C]/40 border border-white/5 p-6 md:p-10 rounded-2xl space-y-8 md:space-y-10 group hover:border-white/10 transition-all duration-500">
+                    <div key={formula.id} className="bg-[#1A1C1C]/40 border border-white/5 p-4 sm:p-6 md:p-10 rounded-2xl space-y-6 md:space-y-10 group hover:border-white/10 transition-all duration-500">
                       <div className="flex justify-between items-start md:items-baseline">
-                        <div className="space-y-2"><span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-70">{formula.type}</span><h3 className="text-white text-2xl md:text-4xl font-serif">{formula.name}</h3></div>
-                         <div className="flex items-center gap-1 group/val relative">
-                            <input
-                              type="number"
-                              value={percentages[formula.id] || 0}
-                              onChange={(e) => handlePercentageChange(formula.id, parseInt(e.target.value) || 0)}
-                              onFocus={(e) => e.target.select()}
-                              className="bg-transparent text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 focus:text-[#F2CA50] outline-none transition-colors w-28 md:w-44 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:animate-none caret-[#F2CA50]"
-                              inputMode="numeric"
-                            />
-                            <span className="text-white/20 text-4xl md:text-6xl font-light group-hover:text-white/40 transition-colors">%</span>
-                         </div>
+                        <div className="space-y-2"><span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-70">{formula.type}</span><h3 className="text-white text-lg sm:text-2xl md:text-4xl font-serif">{formula.name}</h3></div>
+                        <div className="flex items-center gap-1 group/val relative">
+                          <input
+                            type="number"
+                            value={percentages[formula.id] || 0}
+                            onChange={(e) => handlePercentageChange(formula.id, parseInt(e.target.value) || 0)}
+                            onFocus={(e) => e.target.select()}
+                            className="bg-transparent text-white/20 text-3xl sm:text-4xl md:text-6xl font-light group-hover:text-white/40 focus:text-[#F2CA50] outline-none transition-colors w-20 sm:w-28 md:w-44 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:animate-none caret-[#F2CA50]"
+                            inputMode="numeric"
+                          />
+                          <span className="text-white/20 text-3xl sm:text-4xl md:text-6xl font-light group-hover:text-white/40 transition-colors">%</span>
+                        </div>
                       </div>
                       <div className="relative group/slider">
                         <input type="range" min="0" max="100" value={percentages[formula.id] || 0} onChange={(e) => handlePercentageChange(formula.id, parseInt(e.target.value))} className="w-full h-px bg-white/10 appearance-none cursor-pointer accent-[#F2CA50]" />
@@ -525,7 +659,7 @@ function CreateBlendContent() {
                   ))}
                 </div>
               </div>
-              <aside className="w-full lg:w-[380px] xl:w-[450px] border-l border-white/5 p-6 lg:p-6 xl:p-10 space-y-12 bg-[#0D0E0E] flex flex-col justify-center">
+              <aside className="w-full lg:w-[380px] xl:w-[450px] border-t lg:border-t-0 lg:border-l border-white/5 p-6 lg:p-6 xl:p-10 space-y-12 bg-[#0D0E0E] flex flex-col justify-center">
                 <div className="space-y-10">
                   <div className="space-y-6">
                     <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">Medium Selection</span>
@@ -542,7 +676,7 @@ function CreateBlendContent() {
                         <button
                           key={type}
                           onClick={() => setProductType(type)}
-                          className={`px-6 py-8 rounded-2xl border transition-all duration-500 flex flex-col items-center justify-center gap-3 group ${productType === type ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_20px_40px_rgba(242,202,80,0.1)]" : "bg-white/5 border-white/10 text-white/40 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                          className={`px-4 sm:px-6 py-4 sm:py-8 rounded-2xl border transition-all duration-500 flex flex-col items-center justify-center gap-3 group ${productType === type ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_20px_40px_rgba(242,202,80,0.1)]" : "bg-white/5 border-white/10 text-white/40 hover:border-[#F2CA50]/30 hover:text-white"}`}
                         >
                           <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-colors ${productType === type ? "border-black/20" : "border-white/10 group-hover:border-[#F2CA50]/30"}`}>
                             <span className="text-[10px] font-serif">{type[0]}</span>
@@ -568,7 +702,7 @@ function CreateBlendContent() {
           )}
 
           {currentStep === 2 && (
-            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
+            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden w-full">
               <div className="flex-1 px-8 lg:px-12 xl:px-20 py-12 space-y-12 lg:overflow-y-auto">
                 <header className="space-y-4">
                   <h2 className="text-white text-3xl font-serif">Label Your Creation</h2>
@@ -577,12 +711,12 @@ function CreateBlendContent() {
                 <div className="space-y-10 max-w-xl">
                   <div className="space-y-4">
                     <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Name Your Product</label>
-                    <textarea 
-                      placeholder="" 
-                      value={fragranceName} 
-                      onChange={(e) => setFragranceName(e.target.value)} 
+                    <textarea
+                      placeholder=""
+                      value={fragranceName}
+                      onChange={(e) => setFragranceName(e.target.value)}
                       rows={2}
-                      className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-xl text-white outline-none focus:border-[#F2CA50]/50 transition-all uppercase tracking-widest text-sm resize-none" 
+                      className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-xl text-white outline-none focus:border-[#F2CA50]/50 transition-all uppercase tracking-widest text-sm resize-none"
                     />
                   </div>
                   <div className="space-y-4">
@@ -624,21 +758,21 @@ function CreateBlendContent() {
                       <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Font Size</label>
                       <span className="text-white/40 text-[10px] font-mono">{labelFontSize.toFixed(1)}x</span>
                     </div>
-                    <input 
-                      type="range" 
-                      min="0.5" 
-                      max="2.0" 
-                      step="0.1" 
-                      value={labelFontSize} 
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="2.0"
+                      step="0.1"
+                      value={labelFontSize}
                       onChange={(e) => setLabelFontSize(parseFloat(e.target.value))}
                       className="w-full accent-[#F2CA50] bg-white/10 h-1 rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
                 </div>
               </div>
-              <aside className="w-full lg:w-[380px] xl:w-[450px] border-l border-white/5 p-6 lg:p-6 xl:p-10 flex flex-col items-center justify-center bg-[#0D0E0E] space-y-8 md:space-y-12">
+              <aside className="w-full lg:w-[380px] xl:w-[450px] border-t lg:border-t-0 lg:border-l border-white/5 p-6 lg:p-6 xl:p-10 flex flex-col items-center justify-center bg-[#0D0E0E] space-y-8 md:space-y-12">
                 <div className="relative w-full aspect-square bg-[#121414] rounded-[40px] flex items-center justify-center overflow-hidden shadow-2xl border border-white/5">
-                   <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" concentration={concentration} />
+                  <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" concentration={concentration} />
                 </div>
                 <div className="text-center space-y-2">
                   <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase">Artisanal Labeling</span>
@@ -648,7 +782,7 @@ function CreateBlendContent() {
           )}
 
           {currentStep === 3 && (
-            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden ">
+            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden w-full">
               <div className="flex-1 px-6 lg:px-12 xl:px-20 py-12 space-y-12 lg:overflow-y-auto bg-black/60 backdrop-blur-3xl">
                 <header className="space-y-4">
                   <h1 className="text-white text-3xl md:text-5xl font-serif">Review Your Signature Scent</h1>
@@ -658,143 +792,285 @@ function CreateBlendContent() {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-8 md:gap-12">
-                   <div className="space-y-12">
-                      <section className="space-y-6">
-                        <h3 className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase">The Formulation</h3>
-                        <div className="space-y-4 border-l border-white/10 pl-8">
-                          {selectedData.map(formula => (
-                            <div key={formula.id} className="flex justify-between items-baseline group">
-                               <span className="text-white/60 font-serif text-lg md:text-xl group-hover:text-white transition-colors">{formula.name}</span>
-                               <span className="text-[#F2CA50] text-lg font-light">{percentages[formula.id] || 0}%</span>
-                            </div>
+                  <div className="space-y-12">
+                    <section className="space-y-6">
+                      <h3 className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase">The Formulation</h3>
+                      <div className="space-y-4 border-l border-white/10 pl-8">
+                        {selectedData.map(formula => (
+                          <div key={formula.id} className="flex justify-between items-baseline group">
+                            <span className="text-white/60 font-serif text-lg md:text-xl group-hover:text-white transition-colors">{formula.name}</span>
+                            <span className="text-[#F2CA50] text-lg font-light">{percentages[formula.id] || 0}%</span>
+                          </div>
+                        ))}
+                        <div className="flex justify-between items-baseline pt-4 border-t border-white/5">
+                          <span className="text-white/40 text-sm font-light uppercase tracking-[2px]">Label Color</span>
+                          <span className="text-[#F2CA50] text-sm font-mono">{labelBg.toUpperCase()}</span>
+                        </div>
+                        <div className="flex justify-between items-baseline pt-2">
+                          <span className="text-white/40 text-sm font-light uppercase tracking-[2px]">Text Color</span>
+                          <span className="text-[#F2CA50] text-sm font-mono">{textColor.toUpperCase()}</span>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="space-y-6">
+                      <div className="space-y-3">
+                        <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Select Size</span>
+                        <div className="grid grid-cols-3 gap-3">
+                          {[
+                            { size: "30ml", label: "30mL", price: "$25.00" },
+                            { size: "50ml", label: "50mL", price: "$45.00" },
+                            { size: "100ml", label: "100mL", price: "$70.00" }
+                          ].map((opt) => (
+                            <button
+                              key={opt.size}
+                              onClick={() => setBottleSize(opt.size as any)}
+                              className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${bottleSize === opt.size ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                            >
+                              <span className="text-xs font-serif">{opt.label}</span>
+                              <span className={`text-[9px] mt-0.5 ${bottleSize === opt.size ? "text-black/60" : "text-white/30"}`}>{opt.price}</span>
+                            </button>
                           ))}
-                          <div className="flex justify-between items-baseline pt-4 border-t border-white/5">
-                             <span className="text-white/40 text-sm font-light uppercase tracking-[2px]">Label Color</span>
-                             <span className="text-[#F2CA50] text-sm font-mono">{labelBg.toUpperCase()}</span>
-                          </div>
-                          <div className="flex justify-between items-baseline pt-2">
-                             <span className="text-white/40 text-sm font-light uppercase tracking-[2px]">Text Color</span>
-                             <span className="text-[#F2CA50] text-sm font-mono">{textColor.toUpperCase()}</span>
-                          </div>
                         </div>
-                      </section>
+                      </div>
 
-                      <section className="space-y-6">
-                        <div className="space-y-3">
-                          <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Select Size</span>
-                          <div className="grid grid-cols-3 gap-3">
-                            {[
-                              { size: "30ml", label: "30mL", price: "$25.00" },
-                              { size: "50ml", label: "50mL", price: "$45.00" },
-                              { size: "100ml", label: "100mL", price: "$70.00" }
-                            ].map((opt) => (
-                              <button
-                                key={opt.size}
-                                onClick={() => setBottleSize(opt.size as any)}
-                                className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${bottleSize === opt.size ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
-                              >
-                                <span className="text-xs font-serif">{opt.label}</span>
-                                <span className={`text-[9px] mt-0.5 ${bottleSize === opt.size ? "text-black/60" : "text-white/30"}`}>{opt.price}</span>
-                              </button>
-                            ))}
-                          </div>
+                      <div className="space-y-3">
+                        <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Concentration Level</span>
+                        <div className="grid grid-cols-3 gap-3">
+                          {[
+                            { level: "20%", label: "20% EDP", add: "+$0.00" },
+                            { level: "30%", label: "30% Extrait", add: "+$10.00" },
+                            { level: "40%", label: "40% Parfum", add: "+$20.00" }
+                          ].map((opt) => (
+                            <button
+                              key={opt.level}
+                              onClick={() => setConcentration(opt.level as any)}
+                              className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${concentration === opt.level ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                            >
+                              <span className="text-[9px] sm:text-[10px] font-serif whitespace-nowrap">{opt.label}</span>
+                              <span className={`text-[9px] mt-0.5 ${concentration === opt.level ? "text-black/60" : "text-white/30"}`}>{opt.add}</span>
+                            </button>
+                          ))}
                         </div>
+                      </div>
+                    </section>
+                  </div>
 
-                        <div className="space-y-3">
-                          <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Concentration Level</span>
-                          <div className="grid grid-cols-3 gap-3">
-                            {[
-                              { level: "20%", label: "20% EDP", add: "+$0.00" },
-                              { level: "30%", label: "30% Extrait", add: "+$10.00" },
-                              { level: "40%", label: "40% Parfum", add: "+$20.00" }
-                            ].map((opt) => (
-                              <button
-                                key={opt.level}
-                                onClick={() => setConcentration(opt.level as any)}
-                                className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${concentration === opt.level ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
-                              >
-                                <span className="text-[10px] font-serif whitespace-nowrap">{opt.label}</span>
-                                <span className={`text-[9px] mt-0.5 ${concentration === opt.level ? "text-black/60" : "text-white/30"}`}>{opt.add}</span>
-                              </button>
-                            ))}
-                          </div>
+                  <div className="space-y-12">
+                    <section className="space-y-2">
+                      <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Label Name</span>
+                      <h2 className="text-white text-2xl md:text-3xl xl:text-4xl font-serif whitespace-pre-wrap leading-tight uppercase">
+                        {fragranceName ? `"${fragranceName}"` : "Unnamed Masterpiece"}
+                      </h2>
+                    </section>
+                    <section className="space-y-4">
+                      <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Adjust Font Size</label>
+                      <input
+                        type="range"
+                        min="0.5"
+                        max="2.0"
+                        step="0.1"
+                        value={labelFontSize}
+                        onChange={(e) => setLabelFontSize(parseFloat(e.target.value))}
+                        className="w-full max-w-[200px] accent-[#F2CA50] bg-white/10 h-1 rounded-lg appearance-none cursor-pointer"
+                      />
+                    </section>
+
+                    <section className="pt-8">
+                      <button
+                        onClick={handleShare}
+                        className="flex items-center gap-4 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group"
+                      >
+                        <div className="w-10 h-10 rounded-full border border-[#F2CA50]/20 flex items-center justify-center text-[#F2CA50] group-hover:scale-110 transition-transform">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                          </svg>
                         </div>
-                      </section>
-                   </div>
-
-                     <div className="space-y-12">
-                        <section className="space-y-2">
-                          <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Label Name</span>
-                          <h2 className="text-white text-2xl md:text-3xl xl:text-4xl font-serif whitespace-pre-wrap leading-tight uppercase">
-                             {fragranceName ? `"${fragranceName}"` : "Unnamed Masterpiece"}
-                           </h2>
-                        </section>
-                        <section className="space-y-4">
-                            <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Adjust Font Size</label>
-                            <input 
-                                type="range" 
-                                min="0.5" 
-                                max="2.0" 
-                                step="0.1" 
-                                value={labelFontSize} 
-                                onChange={(e) => setLabelFontSize(parseFloat(e.target.value))}
-                                className="w-full max-w-[200px] accent-[#F2CA50] bg-white/10 h-1 rounded-lg appearance-none cursor-pointer"
-                            />
-                        </section>
-
-                        <section className="pt-8">
-                           <button 
-                             onClick={handleShare}
-                             className="flex items-center gap-4 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group"
-                           >
-                             <div className="w-10 h-10 rounded-full border border-[#F2CA50]/20 flex items-center justify-center text-[#F2CA50] group-hover:scale-110 transition-transform">
-                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                               </svg>
-                             </div>
-                             <div className="text-left">
-                               <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Share Masterpiece</span>
-                               <span className="text-white text-sm font-serif">Copy Design Link</span>
-                             </div>
-                           </button>
-                        </section>
-                     </div>
+                        <div className="text-left">
+                          <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Share Masterpiece</span>
+                          <span className="text-white text-sm font-serif">Copy Design Link</span>
+                        </div>
+                      </button>
+                    </section>
+                  </div>
                 </div>
               </div>
-              <aside className="w-full lg:w-[380px] xl:w-[450px] border-l border-white/5 p-6 lg:p-6 xl:p-10 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl space-y-12 md:space-y-16">
-                  <div className="relative w-full aspect-square bg-[#121414] rounded-[40px] flex items-center justify-center overflow-hidden shadow-2xl border border-white/5">
-                     <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" concentration={concentration} />
+              <aside className="w-full lg:w-[380px] xl:w-[450px] border-t lg:border-t-0 lg:border-l border-white/5 p-6 lg:p-6 xl:p-10 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl space-y-12 md:space-y-16">
+                <div className="relative w-full aspect-square bg-[#121414] rounded-[40px] flex items-center justify-center overflow-hidden shadow-2xl border border-white/5">
+                  <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" concentration={concentration} />
+                </div>
+
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="flex items-center gap-4 text-[#F2CA50]">
+                    <div className="w-6 h-6 border-2 border-[#F2CA50] rounded-full flex items-center justify-center text-[8px] animate-pulse">3D</div>
+                    <span className="text-[10px] font-bold tracking-[3px] uppercase">Interactive Preview Enabled</span>
                   </div>
-  
-                 <div className="flex flex-col items-center space-y-4">
-                    <div className="flex items-center gap-4 text-[#F2CA50]">
-                       <div className="w-6 h-6 border-2 border-[#F2CA50] rounded-full flex items-center justify-center text-[8px] animate-pulse">3D</div>
-                       <span className="text-[10px] font-bold tracking-[3px] uppercase">Interactive Preview Enabled</span>
-                    </div>
-                 </div>
+                </div>
               </aside>
             </div>
           )}
         </main>
       </div>
 
-      <footer className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A]/80 backdrop-blur-xl border-t border-white/5 py-8 z-50">
-        <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
-          <button onClick={prevStep} className="flex items-center gap-3 text-white/40 text-[10px] font-bold tracking-[3px] uppercase hover:text-white transition-colors">← Back</button>
-          
+      <footer className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 py-4 md:py-6 z-50">
+        <div className="max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center w-full">
+          <button 
+            onClick={prevStep} 
+            className="flex items-center justify-center gap-2 text-white/60 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 md:px-6 md:py-4 rounded-xl text-[9px] md:text-[10px] font-bold tracking-[3px] uppercase transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.2)] active:scale-95"
+          >
+            ← Back
+          </button>
+
           <div className="hidden lg:flex flex-col items-center">
-             <span className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">{currentStep === 3 ? "Total Value" : "Current Estimate"}</span>
-             <span className="text-[#F2CA50] text-3xl font-light">${price.toFixed(2)}</span>
+            <span className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">{currentStep === 3 ? "Total Value" : "Current Estimate"}</span>
+            <span className="text-[#F2CA50] text-3xl font-light">${price.toFixed(2)}</span>
           </div>
 
-          <button 
-            onClick={nextStep} 
-            disabled={currentStep === 0 && selectedFormulas.length === 0} 
-            className={`text-black text-[10px] font-bold tracking-[3px] uppercase px-12 py-5 rounded-xl transition-all duration-500 flex items-center gap-3 shadow-[0_10px_20px_rgba(242,202,80,0.15)] ${(currentStep === 0 && selectedFormulas.length === 0) ? "bg-white/5 text-white/20 cursor-not-allowed shadow-none" : "bg-[#F2CA50] hover:bg-white"}`}>
-            {currentStep === 0 ? "Next Step" : currentStep === 3 ? "Add to Cart" : "Next Step"} <span className="text-sm">→</span>
+          <button
+            onClick={nextStep}
+            disabled={currentStep === 0 && selectedFormulas.length === 0}
+            className={`text-[9px] md:text-[10px] font-bold tracking-[3px] uppercase px-5 py-3 md:px-12 md:py-5 rounded-xl transition-all duration-500 flex items-center gap-2 md:gap-3 active:scale-95 shadow-[0_10px_20px_rgba(242,202,80,0.15)] ${
+              (currentStep === 0 && selectedFormulas.length === 0) 
+                ? "bg-[#121414]/80 text-white/20 border border-white/5 cursor-not-allowed shadow-none" 
+                : "bg-[#F2CA50] text-black hover:bg-white hover:scale-[1.02]"
+            }`}
+          >
+            {currentStep === 0 ? (
+              selectedFormulas.length > 0 ? (
+                <>
+                  <span className="lg:hidden">Next (${price.toFixed(2)})</span>
+                  <span className="hidden lg:inline">Next Step</span>
+                </>
+              ) : (
+                "Next Step"
+              )
+            ) : currentStep === 3 ? (
+              <>
+                <span className="lg:hidden">Add to Cart (${price.toFixed(2)})</span>
+                <span className="hidden lg:inline">Add to Cart</span>
+              </>
+            ) : (
+              <>
+                <span className="lg:hidden">Next (${price.toFixed(2)})</span>
+                <span className="hidden lg:inline">Next Step</span>
+              </>
+            )}
+            <span className="text-sm">→</span>
           </button>
         </div>
       </footer>
+
+      {/* Previous Customized Product Details Modal */}
+      {previewProduct && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-[100] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
+          <div 
+            className="bg-[#0D0E0E] border border-white/10 rounded-[32px] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col md:flex-row"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setPreviewProduct(null)}
+              className="absolute top-6 right-6 w-10 h-10 bg-black/60 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/60 hover:text-white transition-all z-10 hover:rotate-90 duration-300"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Left Side: Physical Label Preview & Basic Info */}
+            <div className="flex-1 bg-black/40 p-8 md:p-12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/5 space-y-8">
+              <div className="relative aspect-square w-full max-w-[280px] bg-[#121414] rounded-3xl flex items-center justify-center overflow-hidden shadow-xl border border-white/5">
+                <LabelPreview
+                  fragranceName={previewProduct.name}
+                  labelBg={previewProduct.labelBg}
+                  textColor={previewProduct.textColor}
+                  textAlign={previewProduct.textAlign}
+                  fontSize={previewProduct.labelFontSize}
+                  size="large"
+                  concentration={previewProduct.concentration}
+                />
+              </div>
+              <div className="text-center space-y-2">
+                <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-60">Served Creation Preview</span>
+                <h3 className="text-white text-2xl font-serif">{previewProduct.name}</h3>
+                <p className="text-white/40 text-xs max-w-xs font-light italic leading-relaxed">
+                  "{previewProduct.description}"
+                </p>
+              </div>
+            </div>
+
+            {/* Right Side: Composition Details & Apply Option */}
+            <div className="flex-1 p-8 md:p-12 flex flex-col justify-between space-y-10">
+              <div className="space-y-8">
+                <div className="space-y-1">
+                  <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">{previewProduct.category}</span>
+                  <h2 className="text-white text-3xl font-serif">Formulation Recipe</h2>
+                </div>
+
+                <div className="space-y-6">
+                  {previewProduct.formulaIds.map((id) => {
+                    const formula = FORMULAS.find(f => f.id === id)!;
+                    const pct = (previewProduct.percentages as any)[id] || 0;
+                    return (
+                      <div key={id} className="space-y-2">
+                        <div className="flex justify-between items-baseline text-sm">
+                          <span className="text-white/80 font-serif">{formula.name}</span>
+                          <span className="text-[#F2CA50] font-mono">{pct}%</span>
+                        </div>
+                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden relative">
+                          <div 
+                            className="absolute top-0 left-0 h-full bg-[#F2CA50] rounded-full transition-all duration-1000 ease-out" 
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="text-white/20 text-[9px] font-bold tracking-[1px] uppercase block">{formula.type}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-6 text-xs">
+                  <div className="space-y-1">
+                    <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Bottle Size</span>
+                    <span className="text-white font-serif text-sm">{(previewProduct.bottleSize as string) === '30ml' ? '30mL' : (previewProduct.bottleSize as string) === '50ml' ? '50mL' : '100mL'}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Concentration</span>
+                    <span className="text-white font-serif text-sm">
+                      {(previewProduct.concentration as string) === '20%' ? 'Eau De Parfum (20%)' : (previewProduct.concentration as string) === '30%' ? 'Extrait De Parfum (30%)' : 'Parfum (40%)'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6">
+                <button
+                  onClick={() => {
+                    // Quick Apply formulas
+                    setSelectedFormulas(previewProduct.formulaIds);
+                    setPercentages(previewProduct.percentages as any);
+                    setFragranceName(previewProduct.name);
+                    setLabelBg(previewProduct.labelBg);
+                    setTextColor(previewProduct.textColor);
+                    setTextAlign(previewProduct.textAlign);
+                    setLabelFontSize(previewProduct.labelFontSize);
+                    setBottleSize(previewProduct.bottleSize);
+                    setConcentration(previewProduct.concentration);
+                    setProductType(previewProduct.productType);
+                    
+                    triggerToast(`Loaded admin formula: "${previewProduct.name}" successfully!`, "success");
+                    setPreviewProduct(null);
+                  }}
+                  className="w-full bg-[#F2CA50] hover:bg-white text-black text-[10px] font-bold tracking-[3px] uppercase py-4 rounded-xl transition-all duration-300 shadow-[0_10px_20px_rgba(242,202,80,0.15)] flex items-center justify-center gap-2 group cursor-pointer"
+                >
+                  Apply Admin Blend Formula
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
