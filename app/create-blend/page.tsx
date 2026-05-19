@@ -390,10 +390,11 @@ function CreateBlendContent() {
           label: f.name,
           value: `${percentages[f.id] || 0}%`
         })),
-        { label: "Bottle Size", value: bottleSize === "30ml" ? "30mL" : bottleSize === "50ml" ? "50mL" : "100mL" },
+        { label: "Size", value: bottleSize === "30ml" ? "30mL" : bottleSize === "50ml" ? "50mL" : "100mL" },
         { label: "Concentration", value: concentration === "20%" ? "20% (Eau De Parfum)" : concentration === "30%" ? "30% (Extrait De Parfum)" : "40% (Parfum)" }
       ]
     };
+
 
     const existingCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
 
@@ -912,14 +913,9 @@ function CreateBlendContent() {
         </main>
       </div>
 
-      <footer className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-white/5 py-4 md:py-6 z-50">
+      <footer className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A]/90 backdrop-blur-xl border-t border-white/5 py-4 md:py-6 z-50">
         <div className="max-w-7xl mx-auto px-6 md:px-8 flex justify-between items-center w-full">
-          <button 
-            onClick={prevStep} 
-            className="flex items-center justify-center gap-2 text-white/60 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-3 md:px-6 md:py-4 rounded-xl text-[9px] md:text-[10px] font-bold tracking-[3px] uppercase transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.2)] active:scale-95"
-          >
-            ← Back
-          </button>
+          <button onClick={prevStep} className="flex items-center gap-2 text-white/40 text-[9px] md:text-[10px] font-bold tracking-[3px] uppercase hover:text-white transition-colors">← Back</button>
 
           <div className="hidden lg:flex flex-col items-center">
             <span className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase">{currentStep === 3 ? "Total Value" : "Current Estimate"}</span>
@@ -929,33 +925,8 @@ function CreateBlendContent() {
           <button
             onClick={nextStep}
             disabled={currentStep === 0 && selectedFormulas.length === 0}
-            className={`text-[9px] md:text-[10px] font-bold tracking-[3px] uppercase px-5 py-3 md:px-12 md:py-5 rounded-xl transition-all duration-500 flex items-center gap-2 md:gap-3 active:scale-95 shadow-[0_10px_20px_rgba(242,202,80,0.15)] ${
-              (currentStep === 0 && selectedFormulas.length === 0) 
-                ? "bg-[#121414]/80 text-white/20 border border-white/5 cursor-not-allowed shadow-none" 
-                : "bg-[#F2CA50] text-black hover:bg-white hover:scale-[1.02]"
-            }`}
-          >
-            {currentStep === 0 ? (
-              selectedFormulas.length > 0 ? (
-                <>
-                  <span className="lg:hidden">Next (${price.toFixed(2)})</span>
-                  <span className="hidden lg:inline">Next Step</span>
-                </>
-              ) : (
-                "Next Step"
-              )
-            ) : currentStep === 3 ? (
-              <>
-                <span className="lg:hidden">Add to Cart (${price.toFixed(2)})</span>
-                <span className="hidden lg:inline">Add to Cart</span>
-              </>
-            ) : (
-              <>
-                <span className="lg:hidden">Next (${price.toFixed(2)})</span>
-                <span className="hidden lg:inline">Next Step</span>
-              </>
-            )}
-            <span className="text-sm">→</span>
+            className={`text-black text-[9px] md:text-[10px] font-bold tracking-[3px] uppercase px-6 md:px-12 py-3.5 md:py-5 rounded-xl transition-all duration-500 flex items-center gap-2 md:gap-3 shadow-[0_10px_20px_rgba(242,202,80,0.15)] ${(currentStep === 0 && selectedFormulas.length === 0) ? "bg-white/5 text-white/20 cursor-not-allowed shadow-none" : "bg-[#F2CA50] hover:bg-white"}`}>
+            {currentStep === 0 ? "Next Step" : currentStep === 3 ? "Add to Cart" : "Next Step"} <span className="text-sm">→</span>
           </button>
         </div>
       </footer>
@@ -963,7 +934,7 @@ function CreateBlendContent() {
       {/* Previous Customized Product Details Modal */}
       {previewProduct && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-[100] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
-          <div 
+          <div
             className="bg-[#0D0E0E] border border-white/10 rounded-[32px] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col md:flex-row"
             onClick={(e) => e.stopPropagation()}
           >
@@ -1018,8 +989,8 @@ function CreateBlendContent() {
                           <span className="text-[#F2CA50] font-mono">{pct}%</span>
                         </div>
                         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden relative">
-                          <div 
-                            className="absolute top-0 left-0 h-full bg-[#F2CA50] rounded-full transition-all duration-1000 ease-out" 
+                          <div
+                            className="absolute top-0 left-0 h-full bg-[#F2CA50] rounded-full transition-all duration-1000 ease-out"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -1031,7 +1002,7 @@ function CreateBlendContent() {
 
                 <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-6 text-xs">
                   <div className="space-y-1">
-                    <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Bottle Size</span>
+                    <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Size</span>
                     <span className="text-white font-serif text-sm">{(previewProduct.bottleSize as string) === '30ml' ? '30mL' : (previewProduct.bottleSize as string) === '50ml' ? '50mL' : '100mL'}</span>
                   </div>
                   <div className="space-y-1">
@@ -1057,7 +1028,7 @@ function CreateBlendContent() {
                     setBottleSize(previewProduct.bottleSize);
                     setConcentration(previewProduct.concentration);
                     setProductType(previewProduct.productType);
-                    
+
                     triggerToast(`Loaded admin formula: "${previewProduct.name}" successfully!`, "success");
                     setPreviewProduct(null);
                   }}
