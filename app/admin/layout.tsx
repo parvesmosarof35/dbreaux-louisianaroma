@@ -2,12 +2,16 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import { useAuthState, useAuthActions } from "@/store/hooks";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { isAuthenticated, isAdmin, user } = useAuthState();
+  const { logout } = useAuthActions();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -25,7 +29,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [pathname]);
 
+  // Authorization routing guard
+  useEffect(() => {
+    if (isClient && (!isAuthenticated || !isAdmin)) {
+      router.push("/login");
+    }
+  }, [isClient, isAuthenticated, isAdmin, router]);
+
   if (!isClient) return null;
+
+  // Render a loading state to prevent flash of content during redirect
+  if (!isAuthenticated || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+        <span className="w-8 h-8 border-4 border-[#F2CA50] border-t-transparent rounded-full animate-spin"></span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-[#0A0A0A] text-white font-sans overflow-hidden">
@@ -44,20 +64,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
         <div className="p-7 border-b border-white/5 flex justify-between items-center">
-                     <Link href="/">
-              <Image
-                src="/Louisianaroma header white logo.svg"
-                alt="Louisianaroma Logo"
-                width={180}
-                height={50}
-                className="h-8 md:h-10 w-auto object-contain"
-              />
-            </Link>
+          <Link href="/">
+            <Image
+              src="/Louisianaroma header white logo.svg"
+              alt="Louisianaroma Logo"
+              width={180}
+              height={50}
+              className="h-8 md:h-10 w-auto object-contain"
+              priority
+            />
+          </Link>
           <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
-        <nav className="flex-1 p-6 space-y-3 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
           {[
             { name: "Dashboard", path: "/admin/dashboard" },
             { name: "Products", path: "/admin/products" },
@@ -65,11 +86,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             { name: "Users", path: "/admin/users" },
             { name: "Offers", path: "/admin/offers" },
             { name: "Profile", path: "/admin/profile" },
+            { name: "FAQ Management", path: "/admin/faq" },
+            { name: "About Us", path: "/admin/about-us" },
+            { name: "Privacy Policy", path: "/admin/privacy-policy" },
+            { name: "Terms & Conditions", path: "/admin/terms-and-condition" },
+            { name: "System Settings", path: "/admin/settings" },
           ].map((item) => (
             <Link 
               key={item.path} 
               href={item.path} 
-              className={`flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-bold tracking-[3px] uppercase transition-all duration-300 ${pathname === item.path ? "bg-[#F2CA50] text-black shadow-[0_10px_20px_rgba(242,202,80,0.1)]" : "text-white/30 hover:text-[#F2CA50] hover:bg-white/5"}`}
+              className={`flex items-center gap-4 px-6 py-3.5 rounded-2xl text-[10px] font-bold tracking-[3px] uppercase transition-all duration-300 ${pathname === item.path ? "bg-[#F2CA50] text-black shadow-[0_10px_20px_rgba(242,202,80,0.1)]" : "text-white/30 hover:text-[#F2CA50] hover:bg-white/5"}`}
             >
               <div className={`w-1.5 h-1.5 rounded-full ${pathname === item.path ? "bg-black" : "bg-[#F2CA50]/20"}`} />
               {item.name}
@@ -77,10 +103,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ))}
         </nav>
         <div className="p-6 border-t border-white/5">
-          <Link href="/login" className="flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-bold tracking-[3px] uppercase text-red-500/40 hover:text-red-500 hover:bg-red-500/5 transition-all">
+          <button 
+            onClick={() => {
+              logout();
+              router.push("/login");
+            }}
+            className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-bold tracking-[3px] uppercase text-red-500/40 hover:text-red-500 hover:bg-red-500/5 transition-all cursor-pointer text-left"
+          >
              <div className="w-1.5 h-1.5 rounded-full bg-red-500/40" />
              Logout
-          </Link>
+          </button>
         </div>
       </aside>
 
@@ -97,10 +129,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <div className="flex items-center gap-4">
              <div className="text-right hidden xs:block">
-                <p className="text-[11px] font-bold tracking-[2px] uppercase text-white">Alexander Vanderbilt</p>
-                <p className="text-[9px] text-[#F2CA50] font-bold tracking-[1px] uppercase opacity-60">High Alchemist</p>
+                <p className="text-[11px] font-bold tracking-[2px] uppercase text-white">
+                  {user?.fullname || "Alexander Vanderbilt"}
+                </p>
+                <p className="text-[9px] text-[#F2CA50] font-bold tracking-[1px] uppercase opacity-60">
+                  {user?.role === "superadmin" ? "High Alchemist (Super)" : "Maison Administrator"}
+                </p>
              </div>
-             <Link href="/admin/profile" className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-[#F2CA50] font-serif text-xl hover:border-[#F2CA50]/50 transition-all">A</Link>
+             <Link href="/admin/profile" className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-[#F2CA50] font-serif text-xl hover:border-[#F2CA50]/50 transition-all uppercase">
+               {(user?.fullname || "A").slice(0, 1)}
+             </Link>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 bg-[#0A0A0A] custom-scrollbar">

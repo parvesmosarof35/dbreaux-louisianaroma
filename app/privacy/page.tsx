@@ -1,12 +1,14 @@
+"use client";
+
+import { useGetPrivacyQuery } from "@/store/api/settingApi";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-export const metadata = {
-  title: "Privacy Policy | Louisianaroma",
-  description: "Learn how Louisianaroma preserves the sanctity of your personal data.",
-};
-
 export default function PrivacyPage() {
+  const { data: privacyResponse, isLoading } = useGetPrivacyQuery({});
+  
+  const privacyPolicy = privacyResponse?.data?.PrivacyPolicy || privacyResponse?.data?.privacyPolicy || "";
+
   const sections = [
     {
       title: "I. Collection of Essences (Data Collection)",
@@ -50,21 +52,76 @@ export default function PrivacyPage() {
         </header>
 
         {/* Content Section */}
-        <div className="space-y-16">
-          {sections.map((section, idx) => (
-            <section key={idx} className="space-y-6 group">
-               <div className="flex items-center gap-6">
-                  <div className="text-[#F2CA50] text-sm font-serif opacity-40 group-hover:opacity-100 transition-opacity">0{idx + 1}</div>
-                  <h2 className="text-white text-2xl font-serif tracking-wide">{section.title}</h2>
-               </div>
-               <div className="pl-12 border-l border-white/5 group-hover:border-[#F2CA50]/20 transition-colors">
-                 <p className="text-white/40 text-base md:text-lg font-light leading-relaxed tracking-wide">
-                   {section.content}
-                 </p>
-               </div>
-            </section>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <span className="w-10 h-10 border-4 border-[#F2CA50] border-t-transparent rounded-full animate-spin"></span>
+          </div>
+        ) : privacyPolicy ? (
+          <section className="space-y-6 group">
+             <div className="pl-6 md:pl-12 border-l border-white/5 group-hover:border-[#F2CA50]/20 transition-colors">
+               <style dangerouslySetInnerHTML={{ __html: `
+                 .rich-text-content p {
+                   margin-bottom: 1.5rem;
+                   line-height: 1.85;
+                   color: rgba(255, 255, 255, 0.6);
+                   font-size: 1.125rem;
+                   font-weight: 300;
+                 }
+                 .rich-text-content strong {
+                   color: #ffffff;
+                   font-weight: 600;
+                 }
+                 .rich-text-content h1, .rich-text-content h2, .rich-text-content h3 {
+                   color: #ffffff;
+                   font-family: var(--font-playfair), serif;
+                   margin-top: 2.5rem;
+                   margin-bottom: 1.25rem;
+                   font-weight: 500;
+                   letter-spacing: 0.05em;
+                 }
+                 .rich-text-content h1 { font-size: 2.25rem; }
+                 .rich-text-content h2 { font-size: 1.75rem; }
+                 .rich-text-content h3 { font-size: 1.5rem; }
+                 .rich-text-content ul, .rich-text-content ol {
+                   margin-bottom: 1.5rem;
+                   padding-left: 2rem;
+                   color: rgba(255, 255, 255, 0.6);
+                   font-size: 1.125rem;
+                   font-weight: 300;
+                 }
+                 .rich-text-content ul { list-style-type: disc; }
+                 .rich-text-content ol { list-style-type: decimal; }
+                 .rich-text-content li { margin-bottom: 0.5rem; }
+                 .rich-text-content a {
+                   color: #F2CA50;
+                   text-decoration: underline;
+                   transition: color 0.3s;
+                 }
+                 .rich-text-content a:hover { color: #ffffff; }
+               `}} />
+               <div 
+                 className="rich-text-content text-white/60 text-base md:text-lg font-light leading-relaxed tracking-wide space-y-6"
+                 dangerouslySetInnerHTML={{ __html: privacyPolicy }}
+               />
+             </div>
+          </section>
+        ) : (
+          <div className="space-y-16">
+            {sections.map((section, idx) => (
+              <section key={idx} className="space-y-6 group">
+                 <div className="flex items-center gap-6">
+                    <div className="text-[#F2CA50] text-sm font-serif opacity-40 group-hover:opacity-100 transition-opacity">0{idx + 1}</div>
+                    <h2 className="text-white text-2xl font-serif tracking-wide">{section.title}</h2>
+                 </div>
+                 <div className="pl-12 border-l border-white/5 group-hover:border-[#F2CA50]/20 transition-colors">
+                   <p className="text-white/40 text-base md:text-lg font-light leading-relaxed tracking-wide">
+                     {section.content}
+                   </p>
+                 </div>
+              </section>
+            ))}
+          </div>
+        )}
 
         {/* Footer Note */}
         <footer className="pt-24 border-t border-white/5 text-center space-y-8">

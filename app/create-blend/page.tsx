@@ -176,7 +176,6 @@ function CreateBlendContent() {
   const [labelFontSize, setLabelFontSize] = useState(1.0);
   const [bottleSize, setBottleSize] = useState<"30ml" | "50ml" | "100ml">("100ml");
   const [concentration, setConcentration] = useState<"20%" | "30%" | "40%">("20%");
-  const [previewProduct, setPreviewProduct] = useState<typeof PREVIOUS_PRODUCTS[number] | null>(null);
 
   const price = useMemo(() => {
     const base = bottleSize === "30ml" ? 25.00 : bottleSize === "50ml" ? 45.00 : 70.00;
@@ -576,14 +575,10 @@ function CreateBlendContent() {
                   {PREVIOUS_PRODUCTS.map((prod) => (
                     <div
                       key={prod.id}
-                      onClick={() => setPreviewProduct(prod)}
-                      className="bg-[#121414]/30 border border-white/5 rounded-2xl p-3 flex flex-col gap-3 group hover:bg-[#121414] hover:border-[#F2CA50]/20 transition-all duration-300 cursor-pointer shadow-md"
+                      className="bg-[#121414]/30 border border-white/5 rounded-2xl p-3 flex flex-col gap-3 group hover:bg-[#121414] hover:border-[#F2CA50]/20 transition-all duration-300 shadow-md"
                     >
                       <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-black/40 shrink-0">
                         <Image src={prod.image} alt={prod.name} fill className="object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="text-[#F2CA50] text-[8px] font-bold tracking-[2px] uppercase w-full text-center bg-black/60 py-1.5 rounded backdrop-blur-sm">View Details</span>
-                        </div>
                       </div>
                       <div className="space-y-1">
                         <h3 className="text-white text-xs font-serif truncate group-hover:text-[#F2CA50] transition-colors">{prod.name}</h3>
@@ -930,118 +925,6 @@ function CreateBlendContent() {
           </button>
         </div>
       </footer>
-
-      {/* Previous Customized Product Details Modal */}
-      {previewProduct && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-[100] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
-          <div
-            className="bg-[#0D0E0E] border border-white/10 rounded-[32px] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col md:flex-row"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setPreviewProduct(null)}
-              className="absolute top-6 right-6 w-10 h-10 bg-black/60 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/60 hover:text-white transition-all z-10 hover:rotate-90 duration-300"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* Left Side: Physical Label Preview & Basic Info */}
-            <div className="flex-1 bg-black/40 p-8 md:p-12 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/5 space-y-8">
-              <div className="relative aspect-square w-full max-w-[280px] bg-[#121414] rounded-3xl flex items-center justify-center overflow-hidden shadow-xl border border-white/5">
-                <LabelPreview
-                  fragranceName={previewProduct.name}
-                  labelBg={previewProduct.labelBg}
-                  textColor={previewProduct.textColor}
-                  textAlign={previewProduct.textAlign}
-                  fontSize={previewProduct.labelFontSize}
-                  size="large"
-                  concentration={previewProduct.concentration}
-                />
-              </div>
-              <div className="text-center space-y-2">
-                <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase opacity-60">Served Creation Preview</span>
-                <h3 className="text-white text-2xl font-serif">{previewProduct.name}</h3>
-                <p className="text-white/40 text-xs max-w-xs font-light italic leading-relaxed">
-                  "{previewProduct.description}"
-                </p>
-              </div>
-            </div>
-
-            {/* Right Side: Composition Details & Apply Option */}
-            <div className="flex-1 p-8 md:p-12 flex flex-col justify-between space-y-10">
-              <div className="space-y-8">
-                <div className="space-y-1">
-                  <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">{previewProduct.category}</span>
-                  <h2 className="text-white text-3xl font-serif">Formulation Recipe</h2>
-                </div>
-
-                <div className="space-y-6">
-                  {previewProduct.formulaIds.map((id) => {
-                    const formula = FORMULAS.find(f => f.id === id)!;
-                    const pct = (previewProduct.percentages as any)[id] || 0;
-                    return (
-                      <div key={id} className="space-y-2">
-                        <div className="flex justify-between items-baseline text-sm">
-                          <span className="text-white/80 font-serif">{formula.name}</span>
-                          <span className="text-[#F2CA50] font-mono">{pct}%</span>
-                        </div>
-                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden relative">
-                          <div
-                            className="absolute top-0 left-0 h-full bg-[#F2CA50] rounded-full transition-all duration-1000 ease-out"
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                        <span className="text-white/20 text-[9px] font-bold tracking-[1px] uppercase block">{formula.type}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-6 text-xs">
-                  <div className="space-y-1">
-                    <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Size</span>
-                    <span className="text-white font-serif text-sm">{(previewProduct.bottleSize as string) === '30ml' ? '30mL' : (previewProduct.bottleSize as string) === '50ml' ? '50mL' : '100mL'}</span>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase block">Concentration</span>
-                    <span className="text-white font-serif text-sm">
-                      {(previewProduct.concentration as string) === '20%' ? 'Eau De Parfum (20%)' : (previewProduct.concentration as string) === '30%' ? 'Extrait De Parfum (30%)' : 'Parfum (40%)'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-6">
-                <button
-                  onClick={() => {
-                    // Quick Apply formulas
-                    setSelectedFormulas(previewProduct.formulaIds);
-                    setPercentages(previewProduct.percentages as any);
-                    setFragranceName(previewProduct.name);
-                    setLabelBg(previewProduct.labelBg);
-                    setTextColor(previewProduct.textColor);
-                    setTextAlign(previewProduct.textAlign);
-                    setLabelFontSize(previewProduct.labelFontSize);
-                    setBottleSize(previewProduct.bottleSize);
-                    setConcentration(previewProduct.concentration);
-                    setProductType(previewProduct.productType);
-
-                    triggerToast(`Loaded admin formula: "${previewProduct.name}" successfully!`, "success");
-                    setPreviewProduct(null);
-                  }}
-                  className="w-full bg-[#F2CA50] hover:bg-white text-black text-[10px] font-bold tracking-[3px] uppercase py-4 rounded-xl transition-all duration-300 shadow-[0_10px_20px_rgba(242,202,80,0.15)] flex items-center justify-center gap-2 group cursor-pointer"
-                >
-                  Apply Admin Blend Formula
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
