@@ -43,12 +43,10 @@ export default function PrivacyPage() {
       <main className="flex-1 max-w-4xl mx-auto px-6 pt-48 pb-32 w-full space-y-24">
         {/* Header Section */}
         <header className="space-y-6 text-center">
-           <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">Data Stewardship</span>
+          
            <h1 className="text-white text-6xl md:text-7xl font-serif tracking-tight leading-tight uppercase">Privacy Policy</h1>
-           <div className="w-24 h-px bg-[#F2CA50]/30 mx-auto"></div>
-           <p className="text-white/40 text-lg font-light italic leading-relaxed max-w-xl mx-auto">
-             How Maison Louisianaroma honors and protects the digital identity of our esteemed collectors.
-           </p>
+           
+         
         </header>
 
         {/* Content Section */}

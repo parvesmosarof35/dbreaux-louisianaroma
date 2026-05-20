@@ -51,14 +51,8 @@ export default function AboutPage() {
         <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 md:py-40">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
             <div className="space-y-10">
-              <div className="space-y-4">
-                <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">
-                  EST. 1924
-                </span>
-                <h2 className="text-5xl md:text-6xl font-serif text-white leading-tight">
-                  Bespoke Artistry
-                </h2>
-              </div>
+             
+
               
               {isLoading ? (
                 <div className="flex items-center py-10">
@@ -122,14 +116,7 @@ export default function AboutPage() {
                  </div>
 
                  <div className="space-y-10 order-1 lg:order-2">
-                    <div className="space-y-4">
-                       <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">
-                         The Master Perfumer
-                       </span>
-                       <h2 className="text-5xl md:text-6xl font-serif text-white">
-                         Jean-Pierre Valois
-                       </h2>
-                    </div>
+                   
 
                     <div className="space-y-8">
                        {aboutUsData?.adminmessage ? (
@@ -157,17 +144,7 @@ export default function AboutPage() {
                             "A perfume is not a product; it is a ghost. It is the lingering presence of a memory you haven't had yet."
                          </p>
                        )}
-                       
-                       <p className="text-white/40 text-lg font-light leading-relaxed tracking-wide">
-                          With over forty years of expertise, Jean-Pierre is the architect of our contemporary collection. Known as 'The Ghost Maker' in Grasse, he possesses the rare ability to translate abstract emotions into complex chemical symmetries.
-                       </p>
-                       
-                       <Link 
-                         href="/shop"
-                         className="inline-block bg-[#D4AF37] text-black text-[11px] font-bold tracking-[3px] uppercase px-10 py-5 rounded-lg hover:bg-white transition-all duration-500 shadow-xl text-center"
-                       >
-                         Explore the Collection
-                       </Link>
+
                     </div>
                  </div>
               </div>

@@ -25,6 +25,9 @@ export default function AdminProfilePage() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [joinedDate, setJoinedDate] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [gender, setGender] = useState("Male");
   
   // Image
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -55,6 +58,9 @@ export default function AdminProfilePage() {
       setFullname(data.fullname || data.name || "");
       setEmail(data.email || "");
       setRole(data.role || "Maison Administrator");
+      setPhoneNumber(data.phoneNumber || "");
+      setAddress(data.address || "");
+      setGender(data.gender || "Male");
       
       if (data.createdAt) {
         const date = new Date(data.createdAt);
@@ -93,8 +99,13 @@ export default function AdminProfilePage() {
 
     const formData = new FormData();
     formData.append("fullname", fullname);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("address", address);
+    formData.append("gender", gender);
+    formData.append("male", gender);
     if (avatarFile) {
-      // Support both commonly expected multipart fields for absolute safety
+      // Support all commonly expected multipart fields for absolute safety including backend 'file'
+      formData.append("file", avatarFile);
       formData.append("image", avatarFile);
       formData.append("profile_image", avatarFile);
     }
@@ -158,7 +169,8 @@ export default function AdminProfilePage() {
     <div className="space-y-12 max-w-5xl mx-auto animate-in fade-in duration-700 px-4 sm:px-6">
       {/* Profile Header */}
       <header className="flex flex-col md:flex-row items-center gap-6 md:gap-10 text-center md:text-left">
-        <div className="relative group">
+        <label className="relative group cursor-pointer block">
+          <input type="file" className="hidden" accept="image/*" onChange={handlePhotoUpload} />
           <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-[32px] md:rounded-[48px] overflow-hidden border-2 border-[#F2CA50]/20 bg-white/5 flex items-center justify-center font-serif text-[#F2CA50] text-4xl md:text-6xl shadow-2xl transition-all group-hover:border-[#F2CA50]/50">
             {avatarPreview ? (
               <img src={avatarPreview} alt="Profile" className="w-full h-full object-cover" />
@@ -166,18 +178,17 @@ export default function AdminProfilePage() {
               (fullname || "A").slice(0, 1)
             )}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <label className="cursor-pointer text-[10px] font-bold tracking-[2px] uppercase text-[#F2CA50]">
+              <span className="text-[10px] font-bold tracking-[2px] uppercase text-[#F2CA50]">
                 Change Essence
-                <input type="file" className="hidden" accept="image/*" onChange={handlePhotoUpload} />
-              </label>
+              </span>
             </div>
           </div>
-          <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#F2CA50] rounded-2xl flex items-center justify-center shadow-xl border-4 border-[#121414]">
+          <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#F2CA50] rounded-2xl flex items-center justify-center shadow-xl border-4 border-[#121414] group-hover:bg-white transition-colors duration-300">
             <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
               <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
             </svg>
           </div>
-        </div>
+        </label>
         <div className="space-y-2">
           <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-serif">{fullname || "Alexander Vanderbilt"}</h1>
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4">
@@ -218,6 +229,45 @@ export default function AdminProfilePage() {
                   className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl text-white/40 outline-none font-light opacity-50 cursor-not-allowed" 
                 />
               </div>
+              
+              {/* Phone Number */}
+              <div className="space-y-3">
+                <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Phone Number</label>
+                <input 
+                  type="tel" 
+                  placeholder="e.g. +1 (555) 000-0000"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl text-white outline-none focus:border-[#F2CA50]/50 transition-all font-light" 
+                />
+              </div>
+
+              {/* Gender */}
+              <div className="space-y-3">
+                <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Gender</label>
+                <select 
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 px-8 py-5.5 rounded-2xl text-white outline-none focus:border-[#F2CA50]/50 transition-all font-light appearance-none [&>option]:bg-[#121414] [&>option]:text-white cursor-pointer" 
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              {/* Physical Address */}
+              <div className="space-y-3 md:col-span-2">
+                <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Physical Address</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. 123 Main Street, New York, NY, USA"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 px-8 py-5 rounded-2xl text-white outline-none focus:border-[#F2CA50]/50 transition-all font-light" 
+                />
+              </div>
+
               <div className="space-y-3">
                 <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Role Assignment</label>
                 <input 
@@ -314,18 +364,7 @@ export default function AdminProfilePage() {
             )}
           </div>
 
-          <div className="bg-red-500/5 border border-red-500/10 rounded-[30px] md:rounded-[40px] p-6 md:p-10 space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-red-500 text-xl font-serif">Danger Zone</h2>
-              <p className="text-red-500/40 text-[9px] font-bold tracking-[2px] uppercase leading-relaxed">Deactivating your alchemist identity will remove your access to the Maison forever.</p>
-            </div>
-            <button 
-              onClick={() => setShowDeactivateConfirm(true)}
-              className="w-full bg-red-500/10 text-red-500 text-[10px] font-bold tracking-[3px] uppercase py-5 rounded-2xl hover:bg-red-500 hover:text-white transition-all cursor-pointer text-center"
-            >
-              Deactivate Identity
-            </button>
-          </div>
+         
         </div>
       </div>
 

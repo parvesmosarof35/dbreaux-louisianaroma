@@ -17,7 +17,7 @@ export default function AdminFAQPage() {
   // Modals state
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [currentFaq, setCurrentFaq] = useState<{ _id: string; question: string; answer: string; category?: string } | null>(null);
+  const [currentFaq, setCurrentFaq] = useState<{ id?: string; _id?: string; question: string; answer: string; category?: string } | null>(null);
 
   // Form states
   const [question, setQuestion] = useState("");
@@ -94,7 +94,7 @@ export default function AdminFAQPage() {
     }
     try {
       await updateFaq({ 
-        _id: currentFaq._id, 
+        id: currentFaq.id || currentFaq._id, 
         data: { question, answer, category } 
       }).unwrap();
       showToast("The inquiry catalog has been revised.", "success");
@@ -134,7 +134,7 @@ export default function AdminFAQPage() {
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
-          Add Inquiry
+          Add FAQ
         </button>
       </header>
 
@@ -178,7 +178,7 @@ export default function AdminFAQPage() {
             const a = faq.answer || faq.content || "";
             return (
               <div 
-                key={faq._id}
+                key={faq.id || faq._id}
                 className="bg-[#121414] border border-white/5 hover:border-[#F2CA50]/30 rounded-[30px] p-6 md:p-8 transition-all duration-300 relative group flex flex-col md:flex-row justify-between gap-6"
               >
                 <div className="space-y-4 flex-1">
@@ -203,7 +203,7 @@ export default function AdminFAQPage() {
                     </svg>
                   </button>
                   <button
-                    onClick={() => setDeleteConfirmId(faq._id)}
+                    onClick={() => setDeleteConfirmId(faq.id || faq._id)}
                     className="p-3 bg-red-500/5 border border-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all"
                     title="Dissolve Inquiry"
                   >

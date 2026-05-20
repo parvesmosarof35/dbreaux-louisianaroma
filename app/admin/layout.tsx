@@ -87,6 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             { name: "Offers", path: "/admin/offers" },
             { name: "Profile", path: "/admin/profile" },
             { name: "FAQ Management", path: "/admin/faq" },
+            { name: "Inquiry Management", path: "/admin/inquiries" },
             { name: "About Us", path: "/admin/about-us" },
             { name: "Privacy Policy", path: "/admin/privacy-policy" },
             { name: "Terms & Conditions", path: "/admin/terms-and-condition" },

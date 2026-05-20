@@ -58,11 +58,9 @@ export default function AdminPrivacyPolicyPage() {
     <div className="space-y-8 md:space-y-12 animate-in fade-in duration-700 max-w-5xl mx-auto">
       {/* Header */}
       <header className="space-y-2">
-        <span className="text-[#F2CA50] text-[9px] md:text-[10px] font-bold tracking-[4px] uppercase opacity-60">Legal Secretariat</span>
+      
         <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-serif">Privacy Policy</h1>
-        <p className="text-white/40 text-xs sm:text-sm font-light tracking-wide max-w-2xl">
-          Edit and curate the official client data rights and security agreements. The content supports standard paragraph tags.
-        </p>
+       
       </header>
 
       <form onSubmit={handleSave} className="space-y-8">

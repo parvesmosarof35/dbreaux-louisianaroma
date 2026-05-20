@@ -2,7 +2,7 @@
 // export const imgUrl = "https://ecommarce-backend-dsoe.onrender.com/";
 // export const imgUrl = `${process.env.NEXT_PUBLIC_IMG_URL}`;
 // export const imgUrl = "https://renee-gdy9.onrender.com/";
-export const imgUrl = process.env.NEXT_PUBLIC_IMG_URL || "https://chairs-glad-directory-ideal.trycloudflare.com/";
+export const imgUrl = process.env.NEXT_PUBLIC_IMG_URL || "https://shorter-refresh-spam-oecd.trycloudflare.com/";
 
 
 export const url = `${imgUrl}api/v1/`;
@@ -49,8 +49,16 @@ export const getImageBaseUrl = () => imgUrl;
 
 // asdf 
 
-export const getImageUrl = (imagePath: any) => {
+export const getImageUrl = (imagePath: any): string => {
   if (!imagePath) return "";
+
+  // If it's an object (e.g. { url: "...", _id: "..." }), extract the url field
+  if (typeof imagePath === "object") {
+    imagePath = imagePath.url || imagePath.path || imagePath.src || imagePath.filePath || "";
+  }
+
+  // Must be a non-empty string by now
+  if (typeof imagePath !== "string" || !imagePath) return "";
 
   // If it's already a full URL, return as-is
   if (imagePath.startsWith("http")) {
@@ -61,10 +69,7 @@ export const getImageUrl = (imagePath: any) => {
   const base = imgUrl.replace(/\/+$/, "");
   const path = imagePath.replace(/^\/+/, "");
 
-  const finalUrl = `${base}/${path}`;
-  // console.log("Image URL:", finalUrl);
-
-  return finalUrl;
+  return `${base}/${path}`;
 };
 
 export const zegoConfig = {

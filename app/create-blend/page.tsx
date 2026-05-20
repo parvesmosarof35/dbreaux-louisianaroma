@@ -124,7 +124,7 @@ const PREVIOUS_PRODUCTS = [
   }
 ];
 
-function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, size, concentration = "20%" }: { fragranceName: string, labelBg: string, textColor: string, textAlign: string, fontSize: number, size: 'large' | 'small', concentration?: string }) {
+function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, size, concentration = "20%", productType = "Fragrance" }: { fragranceName: string, labelBg: string, textColor: string, textAlign: string, fontSize: number, size: 'large' | 'small', concentration?: string, productType?: string }) {
   return (
     <div className={`relative flex flex-col items-center justify-center text-center transition-all duration-700 shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/5 overflow-hidden ${size === 'large' ? 'w-64 h-64 md:w-80 md:h-80 p-6 md:p-8' : 'w-28 h-28 md:w-48 md:h-48 p-4 md:p-6'}`} style={{ backgroundColor: labelBg }}>
       <span className={`${size === 'large' ? 'absolute top-8 md:top-12 text-[8px] md:text-[10px]' : 'absolute top-3 md:top-6 text-[4px] md:text-[7px]'} tracking-[4px] uppercase font-bold opacity-60`} style={{ color: textColor }}>L'Essence Noire</span>
@@ -146,7 +146,11 @@ function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, 
       <div className={`${size === 'large' ? 'absolute bottom-8 md:bottom-12' : 'absolute bottom-3 md:bottom-6'} flex flex-col items-center w-full`}>
         <div className={`${size === 'large' ? 'w-12 md:w-16 h-px mb-4 md:mb-6' : 'w-4 md:w-10 h-px mb-2 md:mb-3'} opacity-30`} style={{ backgroundColor: textColor }}></div>
         <span className={`${size === 'large' ? 'text-[6px] md:text-[8px] tracking-[2px]' : 'text-[3px] md:text-[6px] tracking-[1px]'} uppercase font-light`} style={{ color: textColor }}>
-          {concentration === "30%" ? "Extrait De Parfum" : concentration === "40%" ? "Parfum" : "Eau De Parfum"}
+          {productType === "Fragrance" || !productType ? (
+            concentration === "30%" ? "Extrait De Parfum" : concentration === "40%" ? "Parfum" : "Eau De Parfum"
+          ) : (
+            productType
+          )}
         </span>
       </div>
     </div>
@@ -171,17 +175,22 @@ function CreateBlendContent() {
   const [labelBg, setLabelBg] = useState("#F2CA50");
   const [textColor, setTextColor] = useState("#000000");
   const [searchQuery, setSearchQuery] = useState("");
-  const [productType, setProductType] = useState("Fragrance");
+  const [productType, setProductType] = useState("");
+  const [highlightMedium, setHighlightMedium] = useState(false);
   const [textAlign, setTextAlign] = useState("center");
   const [labelFontSize, setLabelFontSize] = useState(1.0);
   const [bottleSize, setBottleSize] = useState<"30ml" | "50ml" | "100ml">("100ml");
   const [concentration, setConcentration] = useState<"20%" | "30%" | "40%">("20%");
 
   const price = useMemo(() => {
+    if (productType === "Essence Oil") return 45.00;
+    if (productType === "Artisanal Soap") return 15.00;
+    if (productType === "Shower Gel") return 20.00;
+
     const base = bottleSize === "30ml" ? 25.00 : bottleSize === "50ml" ? 45.00 : 70.00;
     const addOn = concentration === "20%" ? 0.00 : concentration === "30%" ? 10.00 : 20.00;
     return base + addOn;
-  }, [bottleSize, concentration]);
+  }, [productType, bottleSize, concentration]);
 
   // Initialize from searchParams if editing
   useEffect(() => {
@@ -326,9 +335,21 @@ function CreateBlendContent() {
   };
 
   const nextStep = () => {
-    if (currentStep === 1 && totalPercentage !== 100) {
-      triggerToast(`Your total blend is currently ${totalPercentage}%. It must be exactly 100% to proceed.`, "error");
-      return;
+    if (currentStep === 1) {
+      if (totalPercentage !== 100) {
+        triggerToast(`Your total blend is currently ${totalPercentage}%. It must be exactly 100% to proceed.`, "error");
+        return;
+      }
+      if (!productType) {
+        triggerToast("Please select your Essence Medium (Fragrance, Essence Oil, Soap, or Gel) to complete your composition.", "error");
+        setHighlightMedium(true);
+        setTimeout(() => setHighlightMedium(false), 4000);
+        const element = document.getElementById("medium-selection-section");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        return;
+      }
     }
     if (currentStep === 2 && !fragranceName.trim()) {
       triggerToast("Please provide a name for your fragrance before proceeding.", "error");
@@ -372,7 +393,9 @@ function CreateBlendContent() {
       name: fragranceName || "Your Signature Scent",
       price: price,
       category: "Custom Formulation",
-      subCategory: concentration === "20%" ? "Eau De Parfum" : concentration === "30%" ? "Extrait De Parfum" : "Parfum",
+      subCategory: productType === "Fragrance" 
+        ? (concentration === "20%" ? "Eau De Parfum" : concentration === "30%" ? "Extrait De Parfum" : "Parfum")
+        : productType,
       image: "/bottleofperfume.png",
       isCustom: true,
       labelBg,
@@ -389,8 +412,11 @@ function CreateBlendContent() {
           label: f.name,
           value: `${percentages[f.id] || 0}%`
         })),
-        { label: "Size", value: bottleSize === "30ml" ? "30mL" : bottleSize === "50ml" ? "50mL" : "100mL" },
-        { label: "Concentration", value: concentration === "20%" ? "20% (Eau De Parfum)" : concentration === "30%" ? "30% (Extrait De Parfum)" : "40% (Parfum)" }
+        { label: "Medium", value: productType },
+        ...(productType === "Fragrance" ? [
+          { label: "Size", value: bottleSize === "30ml" ? "30mL" : bottleSize === "50ml" ? "50mL" : "100mL" },
+          { label: "Concentration", value: concentration === "20%" ? "20% (Eau De Parfum)" : concentration === "30%" ? "30% (Extrait De Parfum)" : "40% (Parfum)" }
+        ] : [])
       ]
     };
 
@@ -665,8 +691,20 @@ function CreateBlendContent() {
                     </p>
                   </div>
 
-                  <div className="space-y-6">
-                    <label className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase block">Select Your Essence Medium</label>
+                  <div 
+                    id="medium-selection-section" 
+                    className={`space-y-6 p-4 rounded-3xl transition-all duration-700 ${
+                      highlightMedium 
+                        ? "bg-[#F2CA50]/5 border border-[#F2CA50]/30 shadow-[0_0_30px_rgba(242,202,80,0.15)] scale-[1.02]" 
+                        : "border border-transparent"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <label className="text-white/20 text-[9px] font-bold tracking-[3px] uppercase block">Select Your Essence Medium</label>
+                      {highlightMedium && (
+                        <span className="text-[#F2CA50] text-[8px] font-bold tracking-[2px] uppercase animate-pulse">Selection Required</span>
+                      )}
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                       {["Fragrance", "Essence Oil", "Artisanal Soap", "Shower Gel"].map((type) => (
                         <button
@@ -688,8 +726,12 @@ function CreateBlendContent() {
                       <div className="w-2 h-2 rounded-full bg-[#F2CA50] animate-pulse"></div>
                       <span className="text-white/60 text-[10px] font-bold tracking-[2px] uppercase">Formulation Insight</span>
                     </div>
-                    <p className="text-white/30 text-xs font-light leading-relaxed italic">
-                      "Choosing {productType} will optimize the concentration of top notes to ensure {productType === 'Fragrance' ? 'maximum sillage' : 'a lingering intimate scent'}. The base of Cambodian Oud will remain the soul of this creation."
+                    <p className="text-white/30 text-xs font-light leading-relaxed italic transition-all duration-500">
+                      {productType ? (
+                        `"Choosing ${productType} will optimize the concentration of top notes to ensure ${productType === 'Fragrance' ? 'maximum sillage' : 'a lingering intimate scent'}. The base of Cambodian Oud will remain the soul of this creation."`
+                      ) : (
+                        `"Please select your desired Essence Medium above. Your selection will guide the final extraction balancing to optimize your sillage and sillage longevity."`
+                      )}
                     </p>
                   </div>
                 </div>
@@ -809,47 +851,67 @@ function CreateBlendContent() {
                       </div>
                     </section>
 
-                    <section className="space-y-6">
-                      <div className="space-y-3">
-                        <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Select Size</span>
-                        <div className="grid grid-cols-3 gap-3">
-                          {[
-                            { size: "30ml", label: "30mL", price: "$25.00" },
-                            { size: "50ml", label: "50mL", price: "$45.00" },
-                            { size: "100ml", label: "100mL", price: "$70.00" }
-                          ].map((opt) => (
-                            <button
-                              key={opt.size}
-                              onClick={() => setBottleSize(opt.size as any)}
-                              className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${bottleSize === opt.size ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
-                            >
-                              <span className="text-xs font-serif">{opt.label}</span>
-                              <span className={`text-[9px] mt-0.5 ${bottleSize === opt.size ? "text-black/60" : "text-white/30"}`}>{opt.price}</span>
-                            </button>
-                          ))}
+                    {productType === "Fragrance" ? (
+                      <section className="space-y-6">
+                        <div className="space-y-3">
+                          <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Select Size</span>
+                          <div className="grid grid-cols-3 gap-3">
+                            {[
+                              { size: "30ml", label: "30mL", price: "$25.00" },
+                              { size: "50ml", label: "50mL", price: "$45.00" },
+                              { size: "100ml", label: "100mL", price: "$70.00" }
+                            ].map((opt) => (
+                              <button
+                                key={opt.size}
+                                onClick={() => setBottleSize(opt.size as any)}
+                                className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${bottleSize === opt.size ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                              >
+                                <span className="text-xs font-serif">{opt.label}</span>
+                                <span className={`text-[9px] mt-0.5 ${bottleSize === opt.size ? "text-black/60" : "text-white/30"}`}>{opt.price}</span>
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="space-y-3">
-                        <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Concentration Level</span>
-                        <div className="grid grid-cols-3 gap-3">
-                          {[
-                            { level: "20%", label: "20% EDP", add: "+$0.00" },
-                            { level: "30%", label: "30% Extrait", add: "+$10.00" },
-                            { level: "40%", label: "40% Parfum", add: "+$20.00" }
-                          ].map((opt) => (
-                            <button
-                              key={opt.level}
-                              onClick={() => setConcentration(opt.level as any)}
-                              className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${concentration === opt.level ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
-                            >
-                              <span className="text-[9px] sm:text-[10px] font-serif whitespace-nowrap">{opt.label}</span>
-                              <span className={`text-[9px] mt-0.5 ${concentration === opt.level ? "text-black/60" : "text-white/30"}`}>{opt.add}</span>
-                            </button>
-                          ))}
+                        <div className="space-y-3">
+                          <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Concentration Level</span>
+                          <div className="grid grid-cols-3 gap-3">
+                            {[
+                              { level: "20%", label: "20% EDP", add: "+$0.00" },
+                              { level: "30%", label: "30% Extrait", add: "+$10.00" },
+                              { level: "40%", label: "40% Parfum", add: "+$20.00" }
+                            ].map((opt) => (
+                              <button
+                                key={opt.level}
+                                onClick={() => setConcentration(opt.level as any)}
+                                className={`py-3 px-2 rounded-xl border flex flex-col items-center justify-center transition-all duration-300 ${concentration === opt.level ? "bg-[#F2CA50] border-[#F2CA50] text-black shadow-[0_4px_20px_rgba(242,202,80,0.15)] font-medium" : "bg-white/5 border-white/10 text-white/60 hover:border-[#F2CA50]/30 hover:text-white"}`}
+                              >
+                                <span className="text-[9px] sm:text-[10px] font-serif whitespace-nowrap">{opt.label}</span>
+                                <span className={`text-[9px] mt-0.5 ${concentration === opt.level ? "text-black/60" : "text-white/30"}`}>{opt.add}</span>
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    </section>
+                      </section>
+                    ) : (
+                      <section className="space-y-4">
+                        <span className="text-[#F2CA50] text-[9px] font-bold tracking-[3px] uppercase">Artisanal Medium</span>
+                        <div className="bg-[#121414] border border-[#F2CA50]/20 rounded-2xl p-6 flex items-center justify-between gap-6">
+                          <div className="space-y-1">
+                            <p className="text-white text-base font-serif">{productType}</p>
+                            <p className="text-white/30 text-[10px] font-light tracking-wide">
+                              {productType === "Essence Oil" && "Pure oil-based formulation. Intimate, long-lasting, and skin-safe."}
+                              {productType === "Artisanal Soap" && "Cold-process soap infused with your bespoke scent blend."}
+                              {productType === "Shower Gel" && "Luxurious gel-base for a sensory bathing ritual."}
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="text-[#F2CA50] text-2xl font-light">${price.toFixed(2)}</p>
+                            <p className="text-white/20 text-[9px] tracking-[2px] uppercase">Fixed Price</p>
+                          </div>
+                        </div>
+                      </section>
+                    )}
                   </div>
 
                   <div className="space-y-12">

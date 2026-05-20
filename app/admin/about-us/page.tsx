@@ -93,10 +93,10 @@ export default function AdminAboutUsPage() {
 
     try {
       await updateAboutUs(formData).unwrap();
-      showToast("Maison About Us configuration has been refined.", "success");
+      showToast("About Us has been updated.", "success");
       refetch();
     } catch (err: any) {
-      showToast(err?.data?.message || "Failed to refine configuration.", "error");
+      showToast(err?.data?.message || "Failed to update About Us.", "error");
     }
   };
 
@@ -112,11 +112,9 @@ export default function AdminAboutUsPage() {
     <div className="space-y-8 md:space-y-12 animate-in fade-in duration-700 max-w-5xl mx-auto">
       {/* Header */}
       <header className="space-y-2">
-        <span className="text-[#F2CA50] text-[9px] md:text-[10px] font-bold tracking-[4px] uppercase opacity-60">Chronicles of the House</span>
-        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-serif">About Us & Legacy</h1>
-        <p className="text-white/40 text-xs sm:text-sm font-light tracking-wide max-w-2xl">
-          Craft the narrative, design philosophy, and master alchemist quotes displayed over the Maison's official portal.
-        </p>
+       
+        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-serif">About Us</h1>
+      
       </header>
 
       <form onSubmit={handleSave} className="space-y-10">
@@ -150,7 +148,7 @@ export default function AdminAboutUsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* About Us Image */}
             <div className="space-y-4">
-              <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">About Us Narrative Image</label>
+             
               <div className="relative group">
                 <div className="w-full h-64 rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center relative">
                   {aboutUsImagePreview ? (
@@ -170,7 +168,7 @@ export default function AdminAboutUsPage() {
 
             {/* Admin Image */}
             <div className="space-y-4">
-              <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Master Alchemist Portrait</label>
+     
               <div className="relative group">
                 <div className="w-full h-64 rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center relative">
                   {adminImagePreview ? (
@@ -197,7 +195,7 @@ export default function AdminAboutUsPage() {
             disabled={isUpdating}
             className="w-full md:w-auto bg-[#F2CA50] text-black text-[10px] font-bold tracking-[3px] uppercase px-12 py-5.5 rounded-2xl hover:bg-white transition-all duration-500 shadow-[0_20px_40px_rgba(242,202,80,0.15)] disabled:opacity-40 cursor-pointer"
           >
-            {isUpdating ? "Refining Chronicles..." : "Refine Chronicles"}
+            {isUpdating ? "Updating..." : "Update"}
           </button>
         </div>
       </form>
