@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import styles from "./PriceRange.module.css";
 
-export default function PriceRange() {
+interface PriceRangeProps {
+  /** When true, omits the section header and reduces spacing (for mobile drawer) */
+  compact?: boolean;
+}
+
+export default function PriceRange({ compact = false }: PriceRangeProps) {
   const [minPrice, setMinPrice] = useState(2500);
   const [maxPrice, setMaxPrice] = useState(7500);
   const priceGap = 1000;
@@ -26,22 +31,13 @@ export default function PriceRange() {
   const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || 0;
     setMinPrice(value);
-    // Logic to sync range slider if valid
-    if (maxPrice - value >= priceGap && value >= 0) {
-      // Valid state
-    }
   };
 
   const handleMaxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || 0;
     setMaxPrice(value);
-    // Logic to sync range slider if valid
-    if (value - minPrice >= priceGap && value <= maxLimit) {
-      // Valid state
-    }
   };
 
-  // Sync logic when inputs are changed to ensure gap is maintained
   const handleBlur = () => {
     let finalMin = minPrice;
     let finalMax = maxPrice;
@@ -63,13 +59,16 @@ export default function PriceRange() {
   };
 
   return (
-    <div className={styles.wrapper}>
-      <header className="mb-6">
-        <h3 className="text-[#F2CA50] text-xs font-bold tracking-[3px] uppercase mb-1">
-          Price Range
-        </h3>
-        <p className="text-white/30 text-[10px] uppercase tracking-wider">Use slider or enter min and max price</p>
-      </header>
+    <div className={compact ? styles.wrapperCompact : styles.wrapper}>
+      {/* Header — hidden in compact mode (parent renders the label) */}
+      {!compact && (
+        <header className="mb-6">
+          <h3 className="text-[#F2CA50] text-xs font-bold tracking-[3px] uppercase mb-1">
+            Price Range
+          </h3>
+          <p className="text-white/30 text-[10px] uppercase tracking-wider">Use slider or enter min and max price</p>
+        </header>
+      )}
 
       <div className={styles.priceInput}>
         <div className={styles.field}>

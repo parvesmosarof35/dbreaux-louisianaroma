@@ -56,8 +56,7 @@ export default function AdminOffersPage() {
     <div className="space-y-12 animate-in fade-in duration-700">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
         <div className="space-y-4">
-           <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">Promotion Architecture</span>
-           <h1 className="text-white text-6xl font-serif">Maison Offers</h1>
+           <h1 className="text-white text-6xl font-serif">Our Offers</h1>
         </div>
         <button 
           onClick={handleOpenAdd}

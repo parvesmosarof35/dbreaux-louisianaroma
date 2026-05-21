@@ -45,8 +45,8 @@ export default function AdminUsersPage() {
     <div className="space-y-12 animate-in fade-in duration-700">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
         <div className="space-y-4">
-           <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">Directory Management</span>
-           <h1 className="text-white text-6xl font-serif">Alchemist Registry</h1>
+       
+           <h1 className="text-white text-6xl font-serif">Our Users</h1>
         </div>
         <div className="flex gap-4">
           <input 

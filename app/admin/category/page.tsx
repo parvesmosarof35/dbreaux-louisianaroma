@@ -11,12 +11,17 @@ import {
 } from "@/store/api/collectionApi";
 
 export default function AdminCategoryPage() {
-  const { data: response, isLoading, refetch } = useGetAllCollectionsQuery({});
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  const { data: response, isLoading, refetch } = useGetAllCollectionsQuery({ page, limit });
   const [createCollection, { isLoading: isCreating }] = useCreateCollectionMutation();
   const [updateCollection, { isLoading: isUpdating }] = useUpdateCollectionMutation();
   const [deleteCollection, { isLoading: isDeleting }] = useDeleteCollectionMutation();
 
   const collections: any[] = response?.data?.data || response?.data || [];
+  const meta = response?.meta || {};
+  const totalPages = meta.totalPage || Math.ceil((meta.total || 1) / limit);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -97,7 +102,6 @@ export default function AdminCategoryPage() {
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
         <div className="space-y-3">
-          <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase opacity-60">Classification Registry</span>
           <h1 className="text-white text-5xl md:text-6xl font-serif">Collections</h1>
         </div>
         <button
@@ -159,6 +163,33 @@ export default function AdminCategoryPage() {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4">
+          <button
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            disabled={page === 1}
+            className="p-3 rounded-xl border border-white/10 text-white/60 hover:text-white disabled:opacity-30 transition-all cursor-pointer"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          <span className="text-xs text-white/40 tracking-[2px] uppercase">
+            Page <span className="text-[#F2CA50] font-semibold">{page}</span> of {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+            disabled={page === totalPages}
+            className="p-3 rounded-xl border border-white/10 text-white/60 hover:text-white disabled:opacity-30 transition-all cursor-pointer"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* Add / Edit Modal */}
       {isModalOpen && (
