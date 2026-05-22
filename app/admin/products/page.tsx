@@ -31,12 +31,14 @@ interface ProductForm {
   sizes: string[];
   tags: string[];
   faqs: FaqItem[];
+  /** Existing image URLs (for edit mode) */
+  existingImages: { image: string; position: number }[];
 }
 
 const emptyForm: ProductForm = {
   name: "", label: "", category: "", price: "", stock: "",
   description: "", isfeatured: false, isAvailable: true,
-  hasfreedelivery: false, sizes: [], tags: [], faqs: [],
+  hasfreedelivery: false, sizes: [], tags: [], faqs: [], existingImages: [],
 };
 
 const emptyFaq: FaqItem = { question: "", answer: "", isvisible: true };
@@ -107,9 +109,9 @@ export default function AdminProductsPage() {
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
 
-  const products: any[]  = response?.data?.data || response?.data || [];
+  const products: any[]  = response?.data || [];
   const meta             = response?.meta || {};
-  const totalPages       = meta.totalPage || Math.ceil((meta.total || 1) / limit);
+  const totalPages       = meta.totalPages || meta.totalPage || Math.ceil((meta.total || 1) / limit);
 
   const [isModalOpen, setIsModalOpen]           = useState(false);
   const [editingId, setEditingId]               = useState<string | null>(null);
@@ -134,6 +136,17 @@ export default function AdminProductsPage() {
 
   const handleOpenEdit = (p: any) => {
     setEditingId(p._id || p.id);
+    // Normalise existing images into { image, position } array
+    const existingImages: { image: string; position: number }[] =
+      Array.isArray(p.images)
+        ? p.images.map((img: any, idx: number) =>
+            typeof img === "object"
+              ? { image: img.image || img.url || "", position: img.position ?? idx }
+              : { image: img, position: idx }
+          )
+        : p.image
+        ? [{ image: p.image, position: 0 }]
+        : [];
     setFormData({
       name:            p.name            || "",
       label:           p.label           || p.name || "",
@@ -149,10 +162,10 @@ export default function AdminProductsPage() {
       faqs:            Array.isArray(p.faqs)  ? p.faqs.map((f: any) => ({
         question: f.question || "", answer: f.answer || "", isvisible: f.isvisible !== false,
       })) : [],
+      existingImages,
     });
-    const firstImg = p.images?.[0];
-    const imgPath  = typeof firstImg === "object" ? firstImg?.image : firstImg;
-    setImagePreview(getImageUrl(imgPath || p.image || ""));
+    const firstImg = existingImages[0];
+    setImagePreview(getImageUrl(firstImg?.image || ""));
     setImageFiles([]); setIsModalOpen(true);
   };
 
@@ -161,23 +174,38 @@ export default function AdminProductsPage() {
     if (files.length > 0) { setImageFiles(files); setImagePreview(URL.createObjectURL(files[0])); }
   };
 
+  /**
+   * Build a FormData payload matching the backend's multipart/form-data expectation.
+   * - JSON fields (including existingImages) are stringified into body.data
+   * - New image files are appended as individual file entries
+   * The backend reads body.data (JSON string) and merges uploaded files as images.
+   */
   const buildFormData = (): FormData => {
     const fd = new FormData();
-    fd.append("data", JSON.stringify({
+
+    // JSON body — existingImages carry over in edit mode
+    const jsonPayload: Record<string, any> = {
       name:            formData.name,
       label:           formData.label || formData.name,
       category:        formData.category,
       price:           parseFloat(formData.price),
-      stock:           parseInt(formData.stock) || 0,
-      description:     formData.description,
+      description:     formData.description || undefined,
       isfeatured:      formData.isfeatured,
       isAvailable:     formData.isAvailable,
       hasfreedelivery: formData.hasfreedelivery,
-      sizes:           formData.sizes,
-      tags:            formData.tags,
-      faqs:            formData.faqs,
-    }));
-    imageFiles.forEach((f) => fd.append("images", f));
+      sizes:           formData.sizes.length  > 0 ? formData.sizes  : undefined,
+      tags:            formData.tags.length   > 0 ? formData.tags   : undefined,
+      faqs:            formData.faqs.length   > 0 ? formData.faqs   : undefined,
+      // Keep existing images (already uploaded URLs) when editing
+      images:          formData.existingImages.length > 0 ? formData.existingImages : undefined,
+    };
+    if (formData.stock !== "") jsonPayload.stock = parseInt(formData.stock, 10);
+
+    fd.append("data", JSON.stringify(jsonPayload));
+
+    // Append new image files — backend replaces images array with Cloudinary URLs
+    imageFiles.forEach((file) => fd.append("files", file));
+
     return fd;
   };
 
@@ -185,11 +213,12 @@ export default function AdminProductsPage() {
     e.preventDefault();
     if (!formData.category) { showToast("Please select a collection.", "error"); return; }
     try {
+      const fd = buildFormData();
       if (editingId) {
-        await updateProduct({ id: editingId, formData: buildFormData() }).unwrap();
+        await updateProduct({ id: editingId, formData: fd }).unwrap();
         showToast("Product updated successfully.", "success");
       } else {
-        await createProduct(buildFormData()).unwrap();
+        await createProduct(fd).unwrap();
         showToast("Product created successfully.", "success");
       }
       setIsModalOpen(false); refetch();

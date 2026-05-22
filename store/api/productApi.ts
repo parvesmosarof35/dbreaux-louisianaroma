@@ -3,7 +3,6 @@ import { baseApi } from "./baseApi";
 export const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // GET /api/v1/products/find_all
-    // `category` = MongoDB ObjectId of a Collection (from /collections/find_all)
     getProducts: builder.query<any, any>({
       query: (params = {}) => {
         const {
@@ -36,23 +35,27 @@ export const productApi = baseApi.injectEndpoints({
       providesTags: ["products"],
     }),
 
-    // POST /api/v1/products/create_product (FormData: data JSON + images files)
-    // data JSON must include: name, label, category (ObjectId), price
+    // POST /api/v1/products/create_product
+    // Sends multipart/form-data — pass a pre-built FormData object as payload.
+    // JSON fields go in body.data (stringified), files go as individual file fields.
     createProduct: builder.mutation<any, FormData>({
       query: (formData) => ({
         url: "products/create_product",
         method: "POST",
         body: formData,
+        // Do NOT set Content-Type — browser must set it with the boundary automatically
+        formData: true,
       }),
       invalidatesTags: ["products", "collection"],
     }),
 
-    // PATCH /api/v1/products/update_product/:id (FormData: data JSON + optional images)
+    // PATCH /api/v1/products/update_product/:id
     updateProduct: builder.mutation<any, { id: string; formData: FormData }>({
       query: ({ id, formData }) => ({
         url: `products/update_product/${id}`,
         method: "PATCH",
         body: formData,
+        formData: true,
       }),
       invalidatesTags: ["products"],
     }),

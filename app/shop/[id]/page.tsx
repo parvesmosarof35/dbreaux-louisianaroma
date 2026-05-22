@@ -19,7 +19,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   const addToCart = () => {
     if (!product) return;
     const savedCart = JSON.parse(localStorage.getItem("louisianaroma-cart") || "[]");
-    const imgSrc = getImageUrl(product.images?.[0] || product.image || "");
+    // images is [{ image: url, position }] — extract the URL string
+    const firstImg = product.images?.[0];
+    const firstImgUrl = typeof firstImg === "object" ? (firstImg?.image || firstImg?.url || "") : (firstImg || "");
+    const imgSrc = getImageUrl(firstImgUrl || product.image || "");
     const newItem = {
       id: `${product._id || product.id}-${Date.now()}`,
       name: product.name,
@@ -73,8 +76,12 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
     );
   }
 
-  const imgSrc = getImageUrl(product.images?.[0] || product.image || "");
-  const extraImages: string[] = (product.images || []).slice(1).map((img: string) => getImageUrl(img));
+  // Normalise images — API returns [{ image: url, position }] objects
+  const normaliseImg = (img: any): string =>
+    typeof img === "object" ? (img?.image || img?.url || "") : (img || "");
+
+  const imgSrc      = getImageUrl(normaliseImg(product.images?.[0]) || product.image || "");
+  const extraImages = (product.images || []).slice(1).map((img: any) => getImageUrl(normaliseImg(img))).filter(Boolean);
 
   return (
     <div className="bg-[#121414] min-h-screen text-white">
@@ -154,60 +161,91 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
           </div>
         )}
 
-        {/* Olfactory Architecture */}
-        <div className="space-y-20 mb-32">
-          <div className="text-center space-y-4">
-            <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">Olfactory Architecture</span>
-            <h2 className="text-4xl md:text-5xl font-serif">A Symphony of Rare Essences</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { title: "Top Notes", notes: "Saffron & Cardamom", description: "An immediate, sharp radiance of exotic spices that awakens the senses with a golden glow." },
-              { title: "Heart Notes", notes: "Bulgarian Rose & Ambergris", description: "The soul of the fragrance; a velvet floral core intertwined with the mineral saltiness of the sea." },
-              { title: "Base Notes", notes: "Agarwood, Leather & Sandalwood", description: "The lingering dark legacy. Deep, smoky oud and worn leather grounded by creaminess." },
-            ].map((section, idx) => (
-              <div key={idx} className="bg-[#1A1C1C] border border-white/5 rounded-3xl p-10 text-center space-y-6 hover:border-[#F2CA50]/30 transition-colors duration-500">
-                <div className="w-16 h-16 bg-[#F2CA50]/10 rounded-full flex items-center justify-center mx-auto">
-                  <div className="w-6 h-6 border-2 border-[#F2CA50] rounded-sm rotate-45 opacity-60" />
+        {/* Sizes, Tags & Product Details */}
+        {(product.sizes?.length > 0 || product.tags?.length > 0) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32">
+            {product.sizes?.length > 0 && (
+              <div className="bg-[#1A1C1C] border border-white/5 rounded-3xl p-10 space-y-6">
+                <h3 className="text-white/40 text-[10px] font-bold tracking-[3px] uppercase">Available Sizes</h3>
+                <div className="flex flex-wrap gap-3">
+                  {product.sizes.map((size: string, i: number) => (
+                    <span key={i} className="px-5 py-2.5 border border-[#F2CA50]/30 text-[#F2CA50] text-sm font-light tracking-widest rounded-full hover:bg-[#F2CA50]/10 transition-colors cursor-pointer">
+                      {size}
+                    </span>
+                  ))}
                 </div>
-                <div className="space-y-2">
-                  <h4 className="text-white/40 text-[10px] font-bold tracking-[3px] uppercase">{section.title}</h4>
-                  <p className="text-[#F2CA50] text-lg tracking-wide">{section.notes}</p>
-                </div>
-                <p className="text-white/30 text-sm font-light italic leading-relaxed px-4">&quot;{section.description}&quot;</p>
               </div>
-            ))}
+            )}
+            {product.tags?.length > 0 && (
+              <div className="bg-[#1A1C1C] border border-white/5 rounded-3xl p-10 space-y-6">
+                <h3 className="text-white/40 text-[10px] font-bold tracking-[3px] uppercase">Fragrance Profile</h3>
+                <div className="flex flex-wrap gap-3">
+                  {product.tags.map((tag: string, i: number) => (
+                    <span key={i} className="px-5 py-2.5 bg-white/5 border border-white/10 text-white/60 text-sm font-light tracking-widest rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
-        {/* Testimonials */}
-        <div className="space-y-20">
+        {/* FAQs */}
+        {product.faqs?.filter((f: any) => f.isvisible !== false).length > 0 && (
+          <div className="space-y-8 mb-32">
+            <div className="space-y-4">
+              <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">Questions & Answers</span>
+              <h2 className="text-4xl md:text-5xl font-serif">Frequently Asked</h2>
+            </div>
+            <div className="space-y-4">
+              {product.faqs
+                .filter((f: any) => f.isvisible !== false)
+                .map((faq: any, idx: number) => (
+                  <div key={idx} className="bg-[#1A1C1C] border border-white/5 rounded-2xl p-8 space-y-3 hover:border-[#F2CA50]/20 transition-colors duration-300">
+                    <h4 className="text-white text-lg font-serif">{faq.question}</h4>
+                    <p className="text-white/50 text-sm font-light leading-relaxed">{faq.answer}</p>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {/* Reviews */}
+        <div className="space-y-12 mb-16">
           <div className="flex flex-col md:flex-row justify-between items-end gap-8">
             <div className="space-y-4">
               <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">Voice of Distinction</span>
-              <h2 className="text-4xl md:text-5xl font-serif">Testimonials of Elegance</h2>
+              <h2 className="text-4xl md:text-5xl font-serif">Testimonials</h2>
             </div>
-            <div className="flex items-center gap-4 text-[#F2CA50]">
-              <div className="flex gap-1 text-xl">{[...Array(5)].map((_, i) => <span key={i}>★</span>)}</div>
-              <span className="text-white/40 text-sm tracking-widest uppercase font-bold">4.9 / 5.0</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { author: "Julian V.", text: "The most complex oud I have ever experienced. It transforms on the skin throughout the day, revealing layers of leather and saffron." },
-              { author: "Elena S.", text: "A masterpiece of restraint. It doesn't shout; it whispers power. The longevity is unmatched—it lingers on my silk scarves for days." },
-              { author: "Alexander D.", text: "Pure olfactory art. The bottle alone is a sculpture. Every spray feels like entering a private, rain-drenched library in old Florence." },
-            ].map((t, idx) => (
-              <div key={idx} className="bg-[#1A1C1C] border border-white/5 rounded-3xl p-10 space-y-8 hover:bg-[#222424] transition-colors duration-500">
-                <div className="flex gap-1 text-[#F2CA50] text-sm">{[...Array(5)].map((_, i) => <span key={i}>★</span>)}</div>
-                <p className="text-white/70 text-lg font-light italic tracking-wide leading-relaxed">&quot;{t.text}&quot;</p>
-                <div className="space-y-1">
-                  <div className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">{t.author}</div>
-                  <div className="text-white/20 text-[10px] font-bold tracking-[2px] uppercase">Verified Collector</div>
-                </div>
+            {product.reviews?.length > 0 && (
+              <div className="flex items-center gap-4 text-[#F2CA50]">
+                <div className="flex gap-1 text-xl">{[...Array(5)].map((_, i) => <span key={i}>★</span>)}</div>
+                <span className="text-white/40 text-sm tracking-widest uppercase font-bold">{product.reviews.length} review{product.reviews.length !== 1 ? "s" : ""}</span>
               </div>
-            ))}
+            )}
           </div>
+          {product.reviews?.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {product.reviews.map((r: any, idx: number) => (
+                <div key={idx} className="bg-[#1A1C1C] border border-white/5 rounded-3xl p-10 space-y-8 hover:bg-[#222424] transition-colors duration-500">
+                  <div className="flex gap-1 text-[#F2CA50] text-sm">
+                    {[...Array(r.rating || 5)].map((_, i) => <span key={i}>★</span>)}
+                  </div>
+                  <p className="text-white/70 text-lg font-light italic tracking-wide leading-relaxed">&quot;{r.comment || r.text || r.review}&quot;</p>
+                  <div className="space-y-1">
+                    <div className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">{r.user?.name || r.author || "Anonymous"}</div>
+                    <div className="text-white/20 text-[10px] font-bold tracking-[2px] uppercase">Verified Collector</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 border border-white/5 rounded-3xl">
+              <p className="text-white/20 font-serif text-xl">No reviews yet</p>
+              <p className="text-white/10 text-sm mt-2 font-light">Be the first to share your experience.</p>
+            </div>
+          )}
         </div>
 
         {/* Back to Shop */}

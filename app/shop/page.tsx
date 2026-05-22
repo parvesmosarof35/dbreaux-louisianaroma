@@ -30,8 +30,8 @@ export default function ShopPage() {
   });
 
   const products: any[] = response?.data?.data || response?.data || [];
-  const meta       = response?.meta || {};
-  const totalPages = meta.totalPage || Math.ceil((meta.total || products.length) / LIMIT) || 1;
+  const meta       = response?.meta || response?.data?.meta || {};
+  const totalPages = meta.totalPages || meta.totalPage || Math.ceil((meta.total || products.length) / LIMIT) || 1;
 
   const handleCollectionChange = (id: string) => {
     setSelectedCollection(id);
@@ -98,21 +98,30 @@ export default function ShopPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                {products.map((product: any, index: number) => (
-                  <ProductCard
-                    key={product._id || product.id}
-                    _id={product._id || product.id}
-                    category={product.category}
-                    name={product.name}
-                    description={product.description}
-                    notes={product.notes}
-                    price={product.price}
-                    images={product.images}
-                    image={product.image}
-                    isfeatured={product.isfeatured}
-                    priority={index < 3}
-                  />
-                ))}
+                {products.map((product: any, index: number) => {
+                  // API returns images as object array: [{ image: url, position }]
+                  // ProductCard expects images?: string[] — extract the URL strings
+                  const imageUrls: string[] = Array.isArray(product.images)
+                    ? product.images.map((img: any) =>
+                        typeof img === "object" ? (img.image || img.url || "") : img
+                      ).filter(Boolean)
+                    : [];
+                  return (
+                    <ProductCard
+                      key={product._id || product.id}
+                      _id={product._id || product.id}
+                      category={product.category}
+                      name={product.name}
+                      description={product.description}
+                      notes={product.notes}
+                      price={product.price}
+                      images={imageUrls}
+                      image={product.image}
+                      isfeatured={product.isfeatured}
+                      priority={index < 3}
+                    />
+                  );
+                })}
               </div>
             )}
 

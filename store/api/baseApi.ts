@@ -10,7 +10,8 @@ export const baseApi = createApi({
       const state: any = getState();
       const token = state?.auth?.token;
       if (token) {
-        headers.set("Authorization", token);
+        const bearer = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
+        headers.set("Authorization", bearer);
       }
       return headers;
     },
