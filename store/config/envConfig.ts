@@ -2,7 +2,7 @@
 // export const imgUrl = "https://ecommarce-backend-dsoe.onrender.com/";
 // export const imgUrl = `${process.env.NEXT_PUBLIC_IMG_URL}`;
 // export const imgUrl = "https://renee-gdy9.onrender.com/";
-export const imgUrl = process.env.NEXT_PUBLIC_IMG_URL || "https://turn-preliminary-flight-sagem.trycloudflare.com/";
+export const imgUrl = process.env.NEXT_PUBLIC_IMG_URL || "http://localhost:5000/";
 
 
 export const url = `${imgUrl}api/v1/`;

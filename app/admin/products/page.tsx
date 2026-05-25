@@ -10,12 +10,33 @@ import {
   useDeleteProductMutation,
 } from "@/store/api/productApi";
 import { useGetAllCollectionsQuery } from "@/store/api/collectionApi";
+import { useAuthState } from "@/store/hooks";
+import { uploadCardImage } from "@/utils/uploadCardImage";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface Collection { id: string; name: string; }
 
 interface FaqItem { question: string; answer: string; isvisible: boolean; }
+
+interface SectionTwoCard {
+  /** Raw File selected by the user — not sent to API */
+  imageFile: File | null;
+  /** Resolved Cloudinary URL — this is what goes into the API payload */
+  imageUrl: string;
+  /** Upload state for this card's image */
+  uploadState: "idle" | "uploading" | "done" | "error";
+  slogan: string;
+  title: string;
+  description: string;
+}
+
+interface SectionTwo {
+  show: boolean;
+  title: string;
+  description: string;
+  cards: SectionTwoCard[];
+}
 
 interface ProductForm {
   name: string;
@@ -33,12 +54,23 @@ interface ProductForm {
   faqs: FaqItem[];
   /** Existing image URLs (for edit mode) */
   existingImages: { image: string; position: number }[];
+  sectiontwo: SectionTwo | null;
 }
+
+const emptySectionTwo: SectionTwo = {
+  show: true, title: "", description: "", cards: [],
+};
+
+const emptySectionTwoCard: SectionTwoCard = {
+  imageFile: null, imageUrl: "", uploadState: "idle",
+  slogan: "", title: "", description: "",
+};
 
 const emptyForm: ProductForm = {
   name: "", label: "", category: "", price: "", stock: "",
   description: "", isfeatured: false, isAvailable: true,
   hasfreedelivery: false, sizes: [], tags: [], faqs: [], existingImages: [],
+  sectiontwo: null,
 };
 
 const emptyFaq: FaqItem = { question: "", answer: "", isvisible: true };
@@ -94,6 +126,9 @@ export default function AdminProductsPage() {
   const [filterCategory, setFilterCategory] = useState("");
   const limit = 8;
 
+  // Admin JWT token — required to authenticate the card-image upload endpoint
+  const { token } = useAuthState();
+
   const { data: collectionsResponse } = useGetAllCollectionsQuery({});
   const collections: Collection[] = (collectionsResponse?.data?.data || collectionsResponse?.data || [])
     .map((c: any) => ({ id: c._id || c.id, name: c.name as string }));
@@ -147,6 +182,24 @@ export default function AdminProductsPage() {
         : p.image
         ? [{ image: p.image, position: 0 }]
         : [];
+    const rawS2 = p.sectiontwo;
+    const sectiontwo: SectionTwo | null = rawS2
+      ? {
+          show:        rawS2.show !== false,
+          title:       rawS2.title       || "",
+          description: rawS2.description || "",
+          cards: Array.isArray(rawS2.cards)
+            ? rawS2.cards.map((c: any) => ({
+                imageFile:   null,
+                imageUrl:    c.image       || "",
+                uploadState: (c.image ? "done" : "idle") as SectionTwoCard["uploadState"],
+                slogan:      c.slogan      || "",
+                title:       c.title       || "",
+                description: c.description || "",
+              }))
+            : [],
+        }
+      : null;
     setFormData({
       name:            p.name            || "",
       label:           p.label           || p.name || "",
@@ -163,6 +216,7 @@ export default function AdminProductsPage() {
         question: f.question || "", answer: f.answer || "", isvisible: f.isvisible !== false,
       })) : [],
       existingImages,
+      sectiontwo,
     });
     const firstImg = existingImages[0];
     setImagePreview(getImageUrl(firstImg?.image || ""));
@@ -198,6 +252,19 @@ export default function AdminProductsPage() {
       faqs:            formData.faqs.length   > 0 ? formData.faqs   : undefined,
       // Keep existing images (already uploaded URLs) when editing
       images:          formData.existingImages.length > 0 ? formData.existingImages : undefined,
+      sectiontwo: formData.sectiontwo
+        ? {
+            show:        formData.sectiontwo.show,
+            title:       formData.sectiontwo.title,
+            description: formData.sectiontwo.description,
+            cards: formData.sectiontwo.cards.map((c) => ({
+              image:       c.imageUrl || "",
+              slogan:      c.slogan,
+              title:       c.title,
+              description: c.description,
+            })),
+          }
+        : undefined,
     };
     if (formData.stock !== "") jsonPayload.stock = parseInt(formData.stock, 10);
 
@@ -242,6 +309,48 @@ export default function AdminProductsPage() {
     setFormData((f) => { const faqs = [...f.faqs]; faqs[i] = { ...faqs[i], ...patch }; return { ...f, faqs }; });
   const addFaq    = () => setFormData((f) => ({ ...f, faqs: [...f.faqs, { ...emptyFaq }] }));
   const removeFaq = (i: number) => setFormData((f) => ({ ...f, faqs: f.faqs.filter((_, idx) => idx !== i) }));
+
+  // Section Two helpers
+  const setS2 = (patch: Partial<SectionTwo>) =>
+    setFormData((f) => ({ ...f, sectiontwo: f.sectiontwo ? { ...f.sectiontwo, ...patch } : { ...emptySectionTwo, ...patch } }));
+  const setS2Card = (i: number, patch: Partial<SectionTwoCard>) =>
+    setFormData((f) => {
+      if (!f.sectiontwo) return f;
+      const cards = [...f.sectiontwo.cards];
+      cards[i] = { ...cards[i], ...patch };
+      return { ...f, sectiontwo: { ...f.sectiontwo, cards } };
+    });
+  const addS2Card    = () => setFormData((f) => ({
+    ...f,
+    sectiontwo: f.sectiontwo
+      ? { ...f.sectiontwo, cards: [...f.sectiontwo.cards, { ...emptySectionTwoCard }] }
+      : { ...emptySectionTwo, cards: [{ ...emptySectionTwoCard }] },
+  }));
+  const removeS2Card = (i: number) => setFormData((f) => ({
+    ...f,
+    sectiontwo: f.sectiontwo
+      ? { ...f.sectiontwo, cards: f.sectiontwo.cards.filter((_, idx) => idx !== i) }
+      : null,
+  }));
+  const enableSectionTwo  = () => setFormData((f) => ({ ...f, sectiontwo: { ...emptySectionTwo } }));
+  const disableSectionTwo = () => setFormData((f) => ({ ...f, sectiontwo: null }));
+
+  /**
+   * Upload a card image to Cloudinary via the backend admin endpoint.
+   * Updates the card's uploadState and resolves imageUrl on success.
+   */
+  const handleCardImageUpload = async (cardIndex: number, file: File) => {
+    // Immediately store the file and mark as uploading
+    setS2Card(cardIndex, { imageFile: file, uploadState: "uploading", imageUrl: "" });
+    try {
+      const url = await uploadCardImage(file, token || "");
+      setS2Card(cardIndex, { imageUrl: url, uploadState: "done" });
+      showToast(`Card ${cardIndex + 1} image uploaded.`, "success");
+    } catch (err: any) {
+      setS2Card(cardIndex, { uploadState: "error" });
+      showToast(err.message || "Card image upload failed.", "error");
+    }
+  };
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -390,14 +499,24 @@ export default function AdminProductsPage() {
                 <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageChange} className="hidden" />
               </div>
 
-              {/* ── Product Name ── */}
-              <div className="space-y-2">
-                <label className="text-white/30 text-[10px] font-bold tracking-[2px] uppercase">Product Name *</label>
-                <input required value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value, label: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all"
-                  placeholder="e.g. Nocturnal Silk"
-                />
+              {/* ── Product Name + Label ── */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-white/30 text-[10px] font-bold tracking-[2px] uppercase">Product Name *</label>
+                  <input required value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all"
+                    placeholder="e.g. Nocturnal Silk"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-white/30 text-[10px] font-bold tracking-[2px] uppercase">Label *</label>
+                  <input required value={formData.label}
+                    onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all"
+                    placeholder="e.g. Chateau Rose Mist"
+                  />
+                </div>
               </div>
 
               {/* ── Collection ── */}
@@ -513,6 +632,189 @@ export default function AdminProductsPage() {
                     <Toggle value={faq.isvisible} onChange={() => setFaq(i, { isvisible: !faq.isvisible })} label="Visible to customers" />
                   </div>
                 ))}
+              </div>
+
+              {/* ── Section Two ── */}
+              <div className="space-y-4 border border-white/10 rounded-2xl p-5 bg-white/[0.02]">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white/30 text-[10px] font-bold tracking-[2px] uppercase">Section Two</p>
+                    <p className="text-white/20 text-[9px] font-light mt-0.5">Feature section shown on the product page</p>
+                  </div>
+                  {formData.sectiontwo === null ? (
+                    <button type="button" onClick={enableSectionTwo}
+                      className="text-[#F2CA50] text-[9px] font-bold tracking-[2px] uppercase hover:text-white transition-colors border border-[#F2CA50]/30 px-4 py-2 rounded-xl hover:border-white/30"
+                    >
+                      + Enable
+                    </button>
+                  ) : (
+                    <button type="button" onClick={disableSectionTwo}
+                      className="text-red-400 text-[9px] font-bold tracking-[2px] uppercase hover:text-red-300 transition-colors border border-red-400/30 px-4 py-2 rounded-xl"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+
+                {formData.sectiontwo !== null && (
+                  <div className="space-y-4 pt-2 border-t border-white/5">
+                    {/* Show toggle */}
+                    <Toggle
+                      value={formData.sectiontwo.show}
+                      onChange={() => setS2({ show: !formData.sectiontwo!.show })}
+                      label="Show this section"
+                    />
+
+                    {/* Title */}
+                    <div className="space-y-1">
+                      <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Section Title</label>
+                      <input
+                        value={formData.sectiontwo.title}
+                        onChange={(e) => setS2({ title: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all"
+                        placeholder="e.g. The Essence of Rose"
+                      />
+                    </div>
+
+                    {/* Description */}
+                    <div className="space-y-1">
+                      <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Section Description</label>
+                      <textarea
+                        value={formData.sectiontwo.description}
+                        onChange={(e) => setS2({ description: e.target.value })}
+                        rows={2}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all resize-none"
+                        placeholder="A short paragraph introducing this section..."
+                      />
+                    </div>
+
+                    {/* Cards */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Cards</label>
+                        <button type="button" onClick={addS2Card}
+                          className="text-[#F2CA50] text-[9px] font-bold tracking-[2px] uppercase hover:text-white transition-colors flex items-center gap-1"
+                        >
+                          + Add Card
+                        </button>
+                      </div>
+
+                      {formData.sectiontwo.cards.length === 0 && (
+                        <p className="text-white/20 text-xs font-light">No cards yet. Click "Add Card" to create one.</p>
+                      )}
+
+                      {formData.sectiontwo.cards.map((card, i) => (
+                        <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 relative">
+                          <button type="button" onClick={() => removeS2Card(i)}
+                            className="absolute top-3 right-3 text-white/20 hover:text-red-400 transition-colors text-xs"
+                          >
+                            ✕
+                          </button>
+                          <p className="text-white/20 text-[9px] font-bold tracking-[2px] uppercase">Card {i + 1}</p>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-white/20 text-[8px] font-bold tracking-[2px] uppercase">Slogan</label>
+                              <input
+                                value={card.slogan}
+                                onChange={(e) => setS2Card(i, { slogan: e.target.value })}
+                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all"
+                                placeholder="e.g. Pure Elegance"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-white/20 text-[8px] font-bold tracking-[2px] uppercase">Title</label>
+                              <input
+                                value={card.title}
+                                onChange={(e) => setS2Card(i, { title: e.target.value })}
+                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all"
+                                placeholder="e.g. Morning Bloom"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-white/20 text-[8px] font-bold tracking-[2px] uppercase">Description</label>
+                            <textarea
+                              value={card.description}
+                              onChange={(e) => setS2Card(i, { description: e.target.value })}
+                              rows={2}
+                              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm outline-none focus:border-[#F2CA50]/50 transition-all resize-none"
+                              placeholder="Card body text..."
+                            />
+                          </div>
+
+                          {/* Card Image — must be uploaded to Cloudinary before submitting */}
+                          <div className="space-y-2">
+                            <label className="text-white/20 text-[8px] font-bold tracking-[2px] uppercase">
+                              Card Image
+                              {card.uploadState === "done" && (
+                                <span className="ml-2 text-emerald-400">✓ Uploaded</span>
+                              )}
+                              {card.uploadState === "error" && (
+                                <span className="ml-2 text-red-400">✗ Failed — try again</span>
+                              )}
+                            </label>
+
+                            {/* Preview if already uploaded */}
+                            {card.imageUrl && card.uploadState === "done" && (
+                              <div className="relative w-full h-24 rounded-lg overflow-hidden border border-emerald-500/30 bg-white/5">
+                                <img
+                                  src={card.imageUrl}
+                                  alt={`Card ${i + 1} preview`}
+                                  className="w-full h-full object-cover opacity-80"
+                                />
+                                <div className="absolute bottom-1 right-1">
+                                  <span className="text-[8px] font-bold bg-black/60 text-emerald-400 px-2 py-0.5 rounded-full tracking-widest uppercase">
+                                    Live URL
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+
+                            <label className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-lg border transition-all cursor-pointer ${
+                              card.uploadState === "uploading"
+                                ? "border-[#F2CA50]/40 bg-[#F2CA50]/5 pointer-events-none"
+                                : card.uploadState === "done"
+                                ? "border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-400/50"
+                                : card.uploadState === "error"
+                                ? "border-red-400/30 bg-red-400/5 hover:border-red-400/50"
+                                : "border-white/10 bg-white/5 hover:border-[#F2CA50]/30"
+                            }`}>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleCardImageUpload(i, file);
+                                  e.target.value = ""; // allow re-selecting same file
+                                }}
+                              />
+                              {card.uploadState === "uploading" ? (
+                                <>
+                                  <span className="w-3.5 h-3.5 border-2 border-[#F2CA50] border-t-transparent rounded-full animate-spin shrink-0" />
+                                  <span className="text-[#F2CA50] text-[9px] font-bold tracking-[2px] uppercase">Uploading…</span>
+                                </>
+                              ) : (
+                                <>
+                                  <svg className="w-3.5 h-3.5 text-white/30 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                  </svg>
+                                  <span className={`text-[9px] font-bold tracking-[2px] uppercase ${
+                                    card.uploadState === "done" ? "text-emerald-400" : card.uploadState === "error" ? "text-red-400" : "text-white/30"
+                                  }`}>
+                                    {card.uploadState === "done" ? "Replace Image" : "Choose & Upload Image"}
+                                  </span>
+                                </>
+                              )}
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* ── Submit ── */}

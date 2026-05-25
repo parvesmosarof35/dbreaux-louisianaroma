@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
@@ -15,6 +15,29 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   const { refreshCart, showToast } = useCart();
 
   const product = response?.data || response;
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  // Reset selected image when changing product details
+  useEffect(() => {
+    setSelectedImage(null);
+  }, [id]);
+
+  // Lock scrolling when lightbox modal is active, and register escape-key listener
+  useEffect(() => {
+    if (isLightboxOpen) {
+      document.body.style.overflow = "hidden";
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") setIsLightboxOpen(false);
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [isLightboxOpen]);
 
   const addToCart = () => {
     if (!product) return;
@@ -68,7 +91,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
           <h1 className="text-white text-5xl font-serif">Fragrance Not Found</h1>
           <p className="text-white/40 text-lg font-light">This creation may have been moved or is no longer available.</p>
           <Link href="/shop" className="inline-block mt-6 bg-[#F2CA50] text-black text-xs font-bold tracking-[3px] uppercase px-8 py-4 rounded-xl hover:bg-white transition-all">
-            Return to the Atelier
+            Return to the shop
           </Link>
         </main>
         <Footer />
@@ -82,6 +105,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
 
   const imgSrc      = getImageUrl(normaliseImg(product.images?.[0]) || product.image || "");
   const extraImages = (product.images || []).slice(1).map((img: any) => getImageUrl(normaliseImg(img))).filter(Boolean);
+  const activeImageSrc = selectedImage || imgSrc;
 
   return (
     <div className="bg-[#121414] min-h-screen text-white">
@@ -98,15 +122,18 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         {/* Product Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
           {/* Large Image Container */}
-          <div className="relative aspect-square rounded-3xl overflow-hidden bg-[#1A1C1C] p-12">
+          <div 
+            onClick={() => activeImageSrc && setIsLightboxOpen(true)}
+            className="relative aspect-square rounded-[32px] overflow-hidden bg-[#1A1C1C] p-12 cursor-zoom-in group/main border border-white/5 hover:border-white/15 transition-all duration-500 shadow-2xl"
+          >
             <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent" />
             <div className="relative w-full h-full">
-              {imgSrc ? (
+              {activeImageSrc ? (
                 <Image
-                  src={imgSrc}
+                  src={activeImageSrc}
                   alt={product.name}
                   fill
-                  className="object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)]"
+                  className="object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.8)] group-hover/main:scale-105 transition-transform duration-700"
                   unoptimized
                 />
               ) : (
@@ -118,14 +145,20 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 Featured
               </div>
             )}
+            {/* Click to Zoom indicator */}
+            {activeImageSrc && (
+              <div className="absolute bottom-8 right-8 bg-black/60 backdrop-blur-md border border-white/10 rounded-full p-3 opacity-0 group-hover/main:opacity-100 transition-opacity duration-300 shadow-2xl">
+                <svg className="w-4 h-4 text-[#F2CA50]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            )}
           </div>
 
           {/* Details Content */}
           <div className="space-y-12">
             <div className="space-y-4">
-              <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">
-                {product.category || "Parfum d'Exception"}
-              </span>
+              
               <h1 className="text-white text-6xl md:text-7xl font-serif tracking-tight leading-tight">
                 {product.name}
               </h1>
@@ -145,7 +178,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               onClick={addToCart}
               className="w-full sm:w-80 flex items-center justify-center bg-[#F2CA50] text-black text-xs font-bold tracking-[3px] uppercase py-6 rounded-xl hover:bg-white transition-all duration-500 transform hover:scale-[1.02] shadow-[0_20px_40px_rgba(242,202,80,0.15)]"
             >
-              Add to Atelier →
+              Add to Cart →
             </button>
           </div>
         </div>
@@ -153,11 +186,26 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         {/* Thumbnail Gallery */}
         {extraImages.length > 0 && (
           <div className="flex gap-4 mb-32 overflow-x-auto pb-2">
-            {[imgSrc, ...extraImages].map((src, i) => (
-              <div key={i} className="w-24 h-24 shrink-0 rounded-xl overflow-hidden border border-white/10 bg-white/5">
-                <Image src={src} alt={`${product.name} view ${i + 1}`} width={96} height={96} className="object-cover w-full h-full" unoptimized />
-              </div>
-            ))}
+            {[imgSrc, ...extraImages].map((src, i) => {
+              const isSelected = activeImageSrc === src;
+              return (
+                <button
+                  key={i}
+                  onClick={() => setSelectedImage(src)}
+                  className={`w-24 h-24 shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-300 bg-white/5 relative group cursor-pointer ${
+                    isSelected ? "border-[#F2CA50] shadow-[0_0_20px_rgba(242,202,80,0.2)]" : "border-white/10 hover:border-white/30"
+                  }`}
+                >
+                  <Image
+                    src={src}
+                    alt={`${product.name} view ${i + 1}`}
+                    fill
+                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                    unoptimized
+                  />
+                </button>
+              );
+            })}
           </div>
         )}
 
@@ -215,7 +263,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         <div className="space-y-12 mb-16">
           <div className="flex flex-col md:flex-row justify-between items-end gap-8">
             <div className="space-y-4">
-              <span className="text-[#F2CA50] text-xs font-bold tracking-[4px] uppercase opacity-80">Voice of Distinction</span>
+             
               <h2 className="text-4xl md:text-5xl font-serif">Testimonials</h2>
             </div>
             {product.reviews?.length > 0 && (
@@ -258,6 +306,36 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
       </main>
 
       <Footer />
+
+      {/* Lightbox / Fullscreen Modal */}
+      {isLightboxOpen && activeImageSrc && (
+        <div 
+          onClick={() => setIsLightboxOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-in fade-in duration-300 cursor-zoom-out"
+        >
+          <button 
+            onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(false); }}
+            className="absolute top-8 right-8 text-white/40 hover:text-white p-3 rounded-full hover:bg-white/5 transition-all duration-300 cursor-pointer z-10"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-4xl w-full h-[80vh] flex items-center justify-center animate-in zoom-in-95 duration-300"
+          >
+            <Image
+              src={activeImageSrc}
+              alt={product.name}
+              fill
+              className="object-contain drop-shadow-[0_0_80px_rgba(242,202,80,0.15)]"
+              unoptimized
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
