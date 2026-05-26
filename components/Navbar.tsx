@@ -34,7 +34,7 @@ export default function Navbar() {
                 alt="Louisianaroma Logo"
                 width={180}
                 height={50}
-                className="h-8 md:h-10 w-auto object-contain"
+                className="h-8 md:h-20 w-auto object-contain"
               />
             </Link>
           </div>

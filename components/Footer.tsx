@@ -56,13 +56,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand and Description */}
           <div className="col-span-1 md:col-span-1 ">
-            <Image
-              src={footerLogoSrc}
-              alt="Louisianaroma Footer Logo"
-              width={150}
-              height={40}
-              className="mb-6 h-10 w-auto object-contain -ml-10"
-            />
+           <Link href="/">
+              <Image
+                src="/Louisianaroma header white logo.svg"
+                alt="Louisianaroma footer Logo"
+                width={300}
+                height={100}
+                className="h-12 md:h-16 w-auto object-contain max-w-none -ml-[30.8%]"
+              />
+            </Link>
             <p className="text-sm leading-relaxed mb-8 opacity-80">
               The pinnacle of bespoke perfumery, blending traditional savoir-faire with contemporary digital precision.
             </p>
