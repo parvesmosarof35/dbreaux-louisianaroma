@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useGetTermsAndConditionsQuery, useUpdateTermsAndConditionsMutation } from "@/store/api/settingApi";
 import JoditComponent from "@/components/ui/JoditComponent";
 import Toast from "@/components/ui/Toast";
+import { revalidateTerms } from "@/app/actions/settings";
 
 export default function AdminTermsAndConditionsPage() {
   const { data: termsResponse, isLoading, refetch } = useGetTermsAndConditionsQuery({});
@@ -39,6 +40,7 @@ export default function AdminTermsAndConditionsPage() {
     try {
       // Must match exactly {"TermsConditions": "..."} expected by the backend
       await updateTerms({ TermsConditions: termsConditions }).unwrap();
+      await revalidateTerms();
       showToast("The Maison Terms & Conditions have been revised.", "success");
       refetch();
     } catch (err: any) {

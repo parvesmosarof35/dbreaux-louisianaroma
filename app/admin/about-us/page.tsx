@@ -5,6 +5,7 @@ import { useGetAboutUsQuery, useUpdateAboutUsMutation } from "@/store/api/settin
 import { getBaseUrl } from "@/store/config/envConfig";
 import JoditComponent from "@/components/ui/JoditComponent";
 import Toast from "@/components/ui/Toast";
+import { revalidateAboutUs } from "@/app/actions/settings";
 
 export default function AdminAboutUsPage() {
   const { data: aboutUsResponse, isLoading, refetch } = useGetAboutUsQuery({});
@@ -93,6 +94,7 @@ export default function AdminAboutUsPage() {
 
     try {
       await updateAboutUs(formData).unwrap();
+      await revalidateAboutUs();
       showToast("About Us has been updated.", "success");
       refetch();
     } catch (err: any) {

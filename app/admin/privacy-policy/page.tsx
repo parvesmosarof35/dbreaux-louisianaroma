@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useGetPrivacyQuery, useUpdatePrivacyMutation } from "@/store/api/settingApi";
 import JoditComponent from "@/components/ui/JoditComponent";
 import Toast from "@/components/ui/Toast";
+import { revalidatePrivacy } from "@/app/actions/settings";
 
 export default function AdminPrivacyPolicyPage() {
   const { data: privacyResponse, isLoading, refetch } = useGetPrivacyQuery({});
@@ -39,6 +40,7 @@ export default function AdminPrivacyPolicyPage() {
     try {
       // Must match exactly {"PrivacyPolicy": "..."} expected by the backend
       await updatePrivacy({ PrivacyPolicy: privacyPolicy }).unwrap();
+      await revalidatePrivacy();
       showToast("The Maison Privacy Policy has been revised.", "success");
       refetch();
     } catch (err: any) {

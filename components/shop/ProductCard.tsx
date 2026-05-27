@@ -73,7 +73,7 @@ export default function ProductCard({
       {/* Product Info */}
       <div className="space-y-4">
         <div className="space-y-1">
-          <span className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase opacity-70">{category}</span>
+          {/* <span className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase opacity-70">{category}</span> */}
           <h3 className="text-white text-3xl font-serif tracking-tight leading-tight">{name}</h3>
         </div>
 

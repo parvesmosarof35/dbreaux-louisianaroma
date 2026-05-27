@@ -8,6 +8,7 @@ import {
   useDeleteFaqMutation 
 } from "@/store/api/faqApi";
 import Toast from "@/components/ui/Toast";
+import { revalidateFaqs } from "@/app/actions/faq";
 
 export default function AdminFAQPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,6 +78,7 @@ export default function AdminFAQPage() {
     }
     try {
       await createFaq({ question, answer, category }).unwrap();
+      await revalidateFaqs();
       showToast("A new olfactory inquiry has been archived.", "success");
       setIsAddOpen(false);
       refetch();
@@ -97,6 +99,7 @@ export default function AdminFAQPage() {
         id: currentFaq.id || currentFaq._id, 
         data: { question, answer, category } 
       }).unwrap();
+      await revalidateFaqs();
       showToast("The inquiry catalog has been revised.", "success");
       setIsEditOpen(false);
       refetch();
@@ -108,6 +111,7 @@ export default function AdminFAQPage() {
   const handleDelete = async (id: string) => {
     try {
       await deleteFaq(id).unwrap();
+      await revalidateFaqs();
       showToast("Olfactory inquiry permanently dissolved.", "success");
       setDeleteConfirmId(null);
       refetch();
