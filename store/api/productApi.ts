@@ -12,6 +12,7 @@ export const productApi = baseApi.injectEndpoints({
           isAvailable,
           minPrice,
           maxPrice,
+          sortBy,
           page = 1,
           limit = 9,
         } = params;
@@ -22,6 +23,7 @@ export const productApi = baseApi.injectEndpoints({
         if (isAvailable !== undefined)    q.append("isAvailable", String(isAvailable));
         if (minPrice    !== undefined)    q.append("minPrice",    String(minPrice));
         if (maxPrice    !== undefined)    q.append("maxPrice",    String(maxPrice));
+        if (sortBy      !== undefined)    q.append("sortBy",      String(sortBy));
         q.append("page",  String(page));
         q.append("limit", String(limit));
         return { url: `products/find_all?${q.toString()}`, method: "GET" };

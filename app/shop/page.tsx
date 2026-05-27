@@ -1,173 +1,100 @@
-"use client";
+import ShopClient from "./ShopClient";
+import { url } from "@/store/config/envConfig";
 
-import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ShopSidebar from "@/components/shop/ShopSidebar";
-import ProductCard from "@/components/shop/ProductCard";
-import { useGetProductsQuery } from "@/store/api/productApi";
-import { useGetAllCollectionsQuery } from "@/store/api/collectionApi";
+export const metadata = {
+  title: "Atelier Fragrances | Louisianaroma",
+  description: "Browse our premium scent collections, woody, floral, and oud extractions at the Maison Louisianaroma.",
+};
 
-const LIMIT = 9;
+/**
+ * Fetches collections and price metadata on the server-side with Next.js data cache tag 'collection'.
+ */
+async function getCollectionsData() {
+  const fetchUrl = `${url}collections/find_all`;
+  try {
+    const res = await fetch(fetchUrl, {
+      method: "GET",
+      next: { tags: ["collection"] },
+    });
+    if (!res.ok) return { collections: [], globalMinPrice: 0, globalMaxPrice: 100 };
 
-export default function ShopPage() {
-  /** ObjectId of the selected collection, or "" for All */
-  const [selectedCollection, setSelectedCollection] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(1);
+    const result = await res.json();
+    const rawCols = result?.data?.data || result?.data || [];
+    const collections = rawCols.map((c: any) => ({
+      id: c._id || c.id,
+      name: c.name,
+      numberOfProducts: c.numberOfProducts ?? 0,
+    }));
 
-  // Resolve collection name for active-filter chip display
-  const { data: collectionsResp } = useGetAllCollectionsQuery({});
-  const allCollections: any[] = collectionsResp?.data?.data || collectionsResp?.data || [];
-  const selectedCollectionName =
-    allCollections.find((c: any) => (c._id || c.id) === selectedCollection)?.name ?? "";
+    const collectionsMeta = result?.meta || result?.data?.meta || {};
+    const globalMinPrice = collectionsMeta.minPrice !== undefined ? Number(collectionsMeta.minPrice) : 0;
+    const globalMaxPrice = collectionsMeta.maxPrice !== undefined ? Number(collectionsMeta.maxPrice) : 100;
 
-  const { data: response, isLoading } = useGetProductsQuery({
-    category:   selectedCollection || undefined,
-    searchTerm: searchTerm        || undefined,
-    page,
-    limit: LIMIT,
-  });
+    return { collections, globalMinPrice, globalMaxPrice };
+  } catch (error) {
+    console.error("Error fetching collections on server:", error);
+    return { collections: [], globalMinPrice: 0, globalMaxPrice: 100 };
+  }
+}
 
-  const products: any[] = response?.data?.data || response?.data || [];
-  const meta       = response?.meta || response?.data?.meta || {};
-  const totalPages = meta.totalPages || meta.totalPage || Math.ceil((meta.total || products.length) / LIMIT) || 1;
+/**
+ * Fetches products on the server-side with Next.js data cache tag 'products' matching current filters.
+ */
+async function getProductsData(filters: any) {
+  const q = new URLSearchParams();
+  if (filters.category) q.append("category", filters.category);
+  if (filters.searchTerm) q.append("searchTerm", filters.searchTerm);
+  if (filters.minPrice !== undefined) q.append("minPrice", String(filters.minPrice));
+  if (filters.maxPrice !== undefined) q.append("maxPrice", String(filters.maxPrice));
+  if (filters.sortBy) q.append("sortBy", filters.sortBy);
+  q.append("page", String(filters.page));
+  q.append("limit", String(filters.limit));
 
-  const handleCollectionChange = (id: string) => {
-    setSelectedCollection(id);
-    setPage(1);
-  };
+  const fetchUrl = `${url}products/find_all?${q.toString()}`;
+  try {
+    const res = await fetch(fetchUrl, {
+      method: "GET",
+      next: { tags: ["products"] },
+    });
+    if (!res.ok) return { products: [], totalPages: 1 };
+
+    const result = await res.json();
+    const products = result?.data?.data || result?.data || [];
+    const meta = result?.meta || result?.data?.meta || {};
+    const totalPages = meta.totalPages || meta.totalPage || Math.ceil((meta.total || products.length) / filters.limit) || 1;
+
+    return { products, totalPages };
+  } catch (error) {
+    console.error("Error fetching products on server:", error);
+    return { products: [], totalPages: 1 };
+  }
+}
+
+export default async function ShopPage({ searchParams }: { searchParams: Promise<any> }) {
+  const resolvedSearchParams = await searchParams;
+
+  const { collections, globalMinPrice, globalMaxPrice } = await getCollectionsData();
+
+  const category = resolvedSearchParams.category || "";
+  const searchTerm = resolvedSearchParams.searchTerm || "";
+  const minPrice = resolvedSearchParams.minPrice !== undefined ? Number(resolvedSearchParams.minPrice) : globalMinPrice;
+  const maxPrice = resolvedSearchParams.maxPrice !== undefined ? Number(resolvedSearchParams.maxPrice) : globalMaxPrice;
+  const sortBy = resolvedSearchParams.sortBy || "";
+  const page = resolvedSearchParams.page !== undefined ? Number(resolvedSearchParams.page) : 1;
+  const limit = resolvedSearchParams.limit !== undefined ? Number(resolvedSearchParams.limit) : 20;
+
+  const filters = { category, searchTerm, minPrice, maxPrice, sortBy, page, limit };
+
+  const { products, totalPages } = await getProductsData(filters);
 
   return (
-    <div className="bg-[#121414] min-h-screen text-white">
-      <Navbar />
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-40 pb-24">
-
-        {/* ── Active filter chip (mobile + desktop) ── */}
-        {selectedCollection && (
-          <div className="flex items-center gap-3 flex-wrap mb-6">
-            <span className="inline-flex items-center gap-2 text-[9px] font-bold tracking-[2px] uppercase text-black bg-[#F2CA50] px-4 py-1.5 rounded-full">
-              {selectedCollectionName || selectedCollection}
-              <button
-                onClick={() => handleCollectionChange("")}
-                className="hover:opacity-60 transition-opacity"
-              >
-                ✕
-              </button>
-            </span>
-            <button
-              onClick={() => handleCollectionChange("")}
-              className="text-white/30 text-[9px] font-bold tracking-[2px] uppercase hover:text-white/60 transition-colors"
-            >
-              Clear All
-            </button>
-          </div>
-        )}
-
-        {/* ── Main layout ── */}
-        {/*
-          ShopSidebar renders a MOBILE toggle bar (lg:hidden) AND a DESKTOP aside (hidden lg:flex).
-          We place ONE instance here inside the flex container so the desktop aside sits beside
-          the product grid, while the mobile bar stacks above it naturally.
-        */}
-        <div className="flex flex-col lg:flex-row gap-16">
-          <ShopSidebar
-            selectedCollection={selectedCollection}
-            onSelectCollection={handleCollectionChange}
-            selectedCategory=""
-            onSelectCategory={() => {}}
-          />
-
-          {/* Product Grid */}
-          <div className="flex-1 space-y-16">
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-[#1A1C1C] rounded-2xl p-6 space-y-4 animate-pulse">
-                    <div className="aspect-square bg-white/5 rounded-xl" />
-                    <div className="h-4 bg-white/5 rounded-lg w-2/3" />
-                    <div className="h-3 bg-white/5 rounded-lg w-1/2" />
-                  </div>
-                ))}
-              </div>
-            ) : products.length === 0 ? (
-              <div className="text-center py-24 space-y-4">
-                <p className="text-white/20 text-2xl font-serif">No fragrances found</p>
-                <p className="text-white/10 text-sm font-light">Try adjusting your filters or search term.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                {products.map((product: any, index: number) => {
-                  // API returns images as object array: [{ image: url, position }]
-                  // ProductCard expects images?: string[] — extract the URL strings
-                  const imageUrls: string[] = Array.isArray(product.images)
-                    ? product.images.map((img: any) =>
-                        typeof img === "object" ? (img.image || img.url || "") : img
-                      ).filter(Boolean)
-                    : [];
-                  return (
-                    <ProductCard
-                      key={product._id || product.id}
-                      _id={product._id || product.id}
-                      category={product.category}
-                      name={product.name}
-                      description={product.description}
-                      notes={product.notes}
-                      price={product.price}
-                      images={imageUrls}
-                      image={product.image}
-                      isfeatured={product.isfeatured}
-                      priority={index < 3}
-                    />
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Pagination */}
-            {totalPages > 1 && !isLoading && (
-              <div className="flex justify-center items-center gap-4 pt-8 border-t border-white/5">
-                <button
-                  onClick={() => setPage((p) => Math.max(p - 1, 1))}
-                  disabled={page === 1}
-                  className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-[#F2CA50] transition-colors disabled:opacity-30 cursor-pointer"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <div className="flex items-center gap-4 flex-wrap justify-center">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => setPage(p)}
-                      className={`pb-1 text-sm transition-colors ${
-                        p === page
-                          ? "text-[#F2CA50] font-medium border-b border-[#F2CA50]"
-                          : "text-white/40 hover:text-white cursor-pointer"
-                      }`}
-                    >
-                      {String(p).padStart(2, "0")}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                  disabled={page === totalPages}
-                  className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-[#F2CA50] transition-colors disabled:opacity-30 cursor-pointer"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      <Footer />
-    </div>
+    <ShopClient
+      initialProducts={products}
+      collections={collections}
+      globalMinPrice={globalMinPrice}
+      globalMaxPrice={globalMaxPrice}
+      totalPages={totalPages}
+      initialFilters={filters}
+    />
   );
 }

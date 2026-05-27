@@ -12,6 +12,7 @@ import {
 import { useGetAllCollectionsQuery } from "@/store/api/collectionApi";
 import { useAuthState } from "@/store/hooks";
 import { uploadCardImage } from "@/utils/uploadCardImage";
+import { revalidateProducts } from "@/app/actions/products";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -283,9 +284,11 @@ export default function AdminProductsPage() {
       const fd = buildFormData();
       if (editingId) {
         await updateProduct({ id: editingId, formData: fd }).unwrap();
+        await revalidateProducts();
         showToast("Product updated successfully.", "success");
       } else {
         await createProduct(fd).unwrap();
+        await revalidateProducts();
         showToast("Product created successfully.", "success");
       }
       setIsModalOpen(false); refetch();
@@ -297,6 +300,7 @@ export default function AdminProductsPage() {
   const handleDelete = async (id: string) => {
     try {
       await deleteProduct(id).unwrap();
+      await revalidateProducts();
       showToast("Product dissolved from the registry.", "success");
       setDeleteConfirmId(null); refetch();
     } catch (err: any) {
