@@ -145,7 +145,7 @@ export default function ContactPage() {
         </section>
 
         {/* Content Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 md:py-32">
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 md:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
             
             {/* Left side: Information */}

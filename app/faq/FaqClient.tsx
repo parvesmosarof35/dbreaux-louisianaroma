@@ -78,9 +78,7 @@ export default function FAQClient({ initialFaqs }: { initialFaqs: FaqItem[] }) {
           </div>
           
           <div className="relative z-10 text-center max-w-5xl px-6 flex flex-col items-center">
-            <span className="text-[#F2CA50] text-[10px] md:text-xs font-bold tracking-[3px] md:tracking-[4px] uppercase block mb-6">
-              Private Assistance
-            </span>
+            
             <h1 className="text-3xl md:text-6xl drop-shadow-2xl mb-8 tracking-tight">
               Questions & Concierge
             </h1>

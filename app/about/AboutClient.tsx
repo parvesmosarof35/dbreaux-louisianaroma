@@ -44,7 +44,7 @@ export default function AboutClient({ initialData }: { initialData: AboutUsData 
           </div>
           
           <div className="relative z-10 text-center max-w-5xl px-6">
-             <h1 className="text-3xl md:text-6xl lg:text-7xl drop-shadow-2xl mb-8 uppercase tracking-[6px] md:tracking-[10px] leading-tight">
+             <h1 className="text-3xl md:text-6xl lg:text-6xl drop-shadow-2xl mb-8 uppercase tracking-[6px] md:tracking-[10px] leading-tight">
                 The Heritage of Scent
              </h1>
              <div className="w-16 md:w-24 h-px bg-[#F2CA50]/40 mx-auto"></div>
@@ -52,7 +52,7 @@ export default function AboutClient({ initialData }: { initialData: AboutUsData 
         </section>
 
         {/* Bespoke Artistry Section */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 md:py-40">
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 md:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
             <div className="space-y-10">
               {aboutUsData?.aboutus ? (

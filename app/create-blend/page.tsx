@@ -125,27 +125,98 @@ const PREVIOUS_PRODUCTS = [
 ];
 
 function LabelPreview({ fragranceName, labelBg, textColor, textAlign, fontSize, size, concentration = "20%", productType = "Fragrance" }: { fragranceName: string, labelBg: string, textColor: string, textAlign: string, fontSize: number, size: 'large' | 'small', concentration?: string, productType?: string }) {
+  const isLarge = size === 'large';
+  
   return (
-    <div className={`relative flex flex-col items-center justify-center text-center transition-all duration-700 shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/5 overflow-hidden ${size === 'large' ? 'w-64 h-64 md:w-80 md:h-80 p-6 md:p-8' : 'w-28 h-28 md:w-48 md:h-48 p-4 md:p-6'}`} style={{ backgroundColor: labelBg }}>
-      <span className={`${size === 'large' ? 'absolute top-8 md:top-12 text-[8px] md:text-[10px]' : 'absolute top-3 md:top-6 text-[4px] md:text-[7px]'} tracking-[4px] uppercase font-bold opacity-60`} style={{ color: textColor }}>L'Essence Noire</span>
+    <div 
+      className={`relative flex flex-col items-center justify-between text-center transition-all duration-700 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-black/5 overflow-hidden ${
+        isLarge 
+          ? 'w-[180px] h-[290px] md:w-[210px] md:h-[340px] py-10 px-4' 
+          : 'w-[90px] h-[140px] md:w-[110px] md:h-[180px] py-5 px-2'
+      }`} 
+      style={{ backgroundColor: labelBg }}
+    >
+      {/* Dynamic Font Import tag */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap');
+        @font-face {
+          font-family: 'Hyperwave';
+          src: url('/font/Hyperwave.otf') format('opentype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        .label-style-container {
+          font-family: 'Montserrat', sans-serif;
+        }
+        .label-header-title {
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 800;
+          letter-spacing: 0.15em;
+        }
+        .label-header-subtitle {
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+        .label-middle-title {
+          font-family: 'Hyperwave', sans-serif;
+          text-transform: uppercase;
+        }
+        .label-footer-text {
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 800;
+          letter-spacing: 0.15em;
+        }
+      ` }} />
 
-      <div className={`w-full flex flex-col items-center justify-center ${size === 'large' ? 'py-10' : 'py-4 md:py-8'}`}>
+      {/* Top Header Group */}
+      <div className="flex flex-col items-center space-y-0.5 label-style-container select-none">
+        <span 
+          className={`label-header-title uppercase font-black leading-none ${
+            isLarge ? 'text-[8px] md:text-[10px]' : 'text-[4px] md:text-[5px]'
+          }`} 
+          style={{ color: textColor }}
+        >
+          LOUISIANAROMA
+        </span>
+        <span 
+          className={`label-header-subtitle uppercase opacity-95 leading-none ${
+            isLarge ? 'text-[5px] md:text-[6px]' : 'text-[2.5px] md:text-[3px]'
+          }`} 
+          style={{ color: textColor }}
+        >
+          BESPOKE BLENDS
+        </span>
+      </div>
+
+      {/* Middle Custom Name */}
+      <div className="w-full flex flex-col items-center justify-center py-2">
         <h3
-          className="font-serif uppercase w-full px-4 whitespace-pre-wrap break-words leading-tight"
+          className="label-middle-title w-full px-2 whitespace-pre-wrap break-words leading-tight"
           style={{
             color: textColor,
             textAlign: textAlign as any,
-            fontSize: `calc(${fragranceName.length > 20 ? (size === 'large' ? '0.85rem' : '0.5rem') : fragranceName.length > 10 ? (size === 'large' ? '1.25rem' : '0.75rem') : (size === 'large' ? '1.75rem' : '1.0rem')} * ${fontSize})`,
-            letterSpacing: fragranceName.length > 15 ? '0.05em' : '0.02em'
+            fontSize: `calc(${
+              fragranceName.length > 25 
+                ? (isLarge ? '0.75rem' : '0.4rem') 
+                : fragranceName.length > 15 
+                  ? (isLarge ? '0.95rem' : '0.5rem') 
+                  : (isLarge ? '1.5rem' : '0.8rem')
+            } * ${fontSize})`,
           }}
         >
-          {fragranceName || (size === 'large' ? "Your Signature" : "")}
+          {fragranceName || (isLarge ? "Your Scent" : "")}
         </h3>
       </div>
 
-      <div className={`${size === 'large' ? 'absolute bottom-8 md:bottom-12' : 'absolute bottom-3 md:bottom-6'} flex flex-col items-center w-full`}>
-        <div className={`${size === 'large' ? 'w-12 md:w-16 h-px mb-4 md:mb-6' : 'w-4 md:w-10 h-px mb-2 md:mb-3'} opacity-30`} style={{ backgroundColor: textColor }}></div>
-        <span className={`${size === 'large' ? 'text-[6px] md:text-[8px] tracking-[2px]' : 'text-[3px] md:text-[6px] tracking-[1px]'} uppercase font-light`} style={{ color: textColor }}>
+      {/* Bottom Footer Group */}
+      <div className="flex flex-col items-center w-full label-style-container select-none">
+        <span 
+          className={`label-footer-text uppercase leading-none ${
+            isLarge ? 'text-[5.5px] md:text-[7px]' : 'text-[3px] md:text-[4px]'
+          }`} 
+          style={{ color: textColor }}
+        >
           {productType === "Fragrance" || !productType ? (
             concentration === "30%" ? "Extrait De Parfum" : concentration === "40%" ? "Parfum" : "Eau De Parfum"
           ) : (
@@ -172,7 +243,7 @@ function CreateBlendContent() {
 
   // Label Customization State
   const [fragranceName, setFragranceName] = useState("");
-  const [labelBg, setLabelBg] = useState("#F2CA50");
+  const [labelBg, setLabelBg] = useState("#FFFFFF");
   const [textColor, setTextColor] = useState("#000000");
   const [searchQuery, setSearchQuery] = useState("");
   const [productType, setProductType] = useState("");
@@ -740,7 +811,7 @@ function CreateBlendContent() {
           )}
 
           {currentStep === 2 && (
-            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden w-full">
+            <div className="flex-1 flex flex-col-reverse lg:flex-row lg:overflow-hidden w-full">
               <div className="flex-1 px-8 lg:px-12 xl:px-20 py-12 space-y-12 lg:overflow-y-auto">
                 <header className="space-y-4">
                   <h2 className="text-white text-3xl font-serif">Label Your Creation</h2>
@@ -760,7 +831,7 @@ function CreateBlendContent() {
                   <div className="space-y-4">
                     <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Label Background</label>
                     <div className="flex gap-4 items-center">
-                      {["#F2CA50", "#1A1C1C", "#064E3B", "#7F1D1D"].map(color => (
+                      {["#FFFFFF", "#F2CA50", "#1A1C1C", "#064E3B", "#7F1D1D"].map(color => (
                         <button key={color} onClick={() => setLabelBg(color)} className={`w-12 h-12 rounded-full border-2 transition-all ${labelBg === color ? "border-white scale-110 shadow-lg" : "border-transparent opacity-60 hover:opacity-100"}`} style={{ backgroundColor: color }} />
                       ))}
                       <input id="bg-color-picker" type="color" ref={bgInputRef} className="sr-only" value={labelBg} onChange={(e) => setLabelBg(e.target.value)} />
@@ -770,7 +841,7 @@ function CreateBlendContent() {
                   <div className="space-y-4">
                     <label className="text-[#F2CA50] text-[10px] font-bold tracking-[3px] uppercase">Text Color</label>
                     <div className="flex gap-4 items-center">
-                      {["#F2CA50", "#E5E7EB", "#000000", "#991B1B"].map(color => (
+                      {["#000000", "#F2CA50", "#E5E7EB", "#991B1B"].map(color => (
                         <button key={color} onClick={() => setTextColor(color)} className={`w-12 h-12 rounded-full border-2 transition-all ${textColor === color ? "border-white scale-110 shadow-lg" : "border-transparent opacity-60 hover:opacity-100"}`} style={{ backgroundColor: color }} />
                       ))}
                       <input id="text-color-picker" type="color" ref={textInputRef} className="sr-only" value={textColor} onChange={(e) => setTextColor(e.target.value)} />
@@ -812,7 +883,7 @@ function CreateBlendContent() {
                 <div className="relative w-full aspect-square bg-[#121414] rounded-[40px] flex items-center justify-center overflow-hidden shadow-2xl border border-white/5">
                   <LabelPreview fragranceName={fragranceName} labelBg={labelBg} textColor={textColor} textAlign={textAlign} fontSize={labelFontSize} size="large" concentration={concentration} />
                 </div>
-                <div className="text-center space-y-2">
+                <div className="text-center space-y-2 hidden md:block">
                   <span className="text-[#F2CA50] text-[10px] font-bold tracking-[4px] uppercase">Artisanal Labeling</span>
                 </div>
               </aside>
@@ -820,7 +891,7 @@ function CreateBlendContent() {
           )}
 
           {currentStep === 3 && (
-            <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden w-full">
+            <div className="flex-1 flex flex-col-reverse lg:flex-row lg:overflow-hidden w-full">
               <div className="flex-1 px-6 lg:px-12 xl:px-20 py-12 space-y-12 lg:overflow-y-auto bg-black/60 backdrop-blur-3xl">
                 <header className="space-y-4">
                   <h1 className="text-white text-3xl md:text-5xl font-serif">Review Your Signature Scent</h1>
