@@ -295,6 +295,7 @@ function CreateBlendContent() {
 
   const [showToast, setShowToast] = useState(false);
   const [toastConfig, setToastConfig] = useState({ message: "", type: "info" as "error" | "success" | "info" });
+  const [expandedEssenceId, setExpandedEssenceId] = useState<number | null>(null);
 
   const triggerToast = (message: string, type: "error" | "success" | "info" = "info") => {
     setToastConfig({ message, type });
@@ -560,47 +561,88 @@ function CreateBlendContent() {
                     />
                   </div>
 
-                  {/* Available Essences - COMPACT LIST */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center border-b border-white/5 pb-3">
-                      <h2 className="text-white/30 text-[10px] font-bold tracking-[3px] uppercase px-2">Available Essences</h2>
-                      {searchQuery && (
-                        <button onClick={() => setSearchQuery("")} className="text-[#F2CA50] text-[9px] font-bold tracking-[2px] uppercase opacity-60 hover:opacity-100 transition-opacity">Clear Filter</button>
-                      )}
-                    </div>
-
-                    <div className="max-h-[350px] overflow-y-auto pr-2 space-y-2 custom-scrollbar">
-                      {FORMULAS.filter(f => !selectedFormulas.includes(f.id))
-                        .filter(f =>
-                          f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          f.category.toLowerCase().includes(searchQuery.toLowerCase())
-                        )
-                        .map((formula) => (
-                          <div
-                            key={formula.id}
-                            className="bg-[#121414]/30 border border-white/5 rounded-xl p-3 flex items-center gap-4 group hover:bg-[#121414] hover:border-[#F2CA50]/20 transition-all duration-300"
-                          >
-                            <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black/40 shrink-0">
-                              <Image src={formula.image} alt={formula.name} fill className="object-cover opacity-40 group-hover:opacity-100 transition-opacity" />
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-2">
-                                <h3 className="text-white text-xs sm:text-sm font-serif truncate">{formula.name}</h3>
-                                <span className="text-[#F2CA50] text-[7px] sm:text-[8px] font-bold tracking-[1px] uppercase opacity-30 truncate">{formula.category}</span>
-                              </div>
-                              <p className="text-white/20 text-[9px] sm:text-[10px] font-light truncate">{formula.description}</p>
-                            </div>
-
-                            <button
-                              onClick={() => toggleFormula(formula.id)}
-                              disabled={selectedFormulas.length >= 3}
-                              className={`shrink-0 px-3 sm:px-6 py-1.5 sm:py-2 rounded-lg text-[9px] font-bold tracking-[2px] uppercase transition-all duration-300 ${selectedFormulas.length >= 3 ? "text-white/5 cursor-not-allowed" : "bg-white/5 text-[#F2CA50] border border-[#F2CA50]/10 hover:bg-[#F2CA50] hover:text-black"}`}
-                            >
-                              + Add
-                            </button>
+                  {/* Available Essences List - Immediately below searchbar */}
+                  <div className="max-w-xl mx-auto w-full pt-4">
+                    <div className="max-h-[380px] overflow-y-auto pr-2 space-y-2.5 custom-scrollbar">
+                      {searchQuery.trim() === "" ? (
+                        <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 select-none border border-dashed border-white/5 rounded-2xl">
+                          <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20">
+                            <svg className="w-5 h-5 text-[#F2CA50]/60 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                           </div>
-                        ))}
+                          <p className="text-white/20 text-xs font-light italic">Type in the search bar above to discover essences...</p>
+                        </div>
+                      ) : (
+                        FORMULAS.filter(f => !selectedFormulas.includes(f.id))
+                          .filter(f =>
+                            f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            f.category.toLowerCase().includes(searchQuery.toLowerCase())
+                          ).length === 0 ? (
+                            <div className="py-12 flex flex-col items-center justify-center text-center space-y-3 select-none">
+                              <p className="text-white/20 text-xs font-light italic">No essences found matching "{searchQuery}"</p>
+                            </div>
+                          ) : (
+                            FORMULAS.filter(f => !selectedFormulas.includes(f.id))
+                              .filter(f =>
+                                f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                f.category.toLowerCase().includes(searchQuery.toLowerCase())
+                              )
+                              .map((formula) => (
+                                <div
+                                  key={formula.id}
+                                  className="bg-[#121414]/30 border border-white/5 rounded-xl p-3.5 flex items-center gap-4 group hover:bg-[#121414] hover:border-[#F2CA50]/20 transition-all duration-300"
+                                >
+                                  <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black/40 shrink-0">
+                                    <Image src={formula.image} alt={formula.name} fill className="object-cover opacity-40 group-hover:opacity-100 transition-opacity" />
+                                  </div>
+
+                                  <div className="flex-1 min-w-0">
+                                    <div 
+                                      className="flex items-center gap-2 cursor-pointer select-none group/title" 
+                                      onClick={() => setExpandedEssenceId(expandedEssenceId === formula.id ? null : formula.id)}
+                                    >
+                                      <h3 className="text-white text-xs sm:text-sm font-serif group-hover/title:text-[#F2CA50] transition-colors truncate">{formula.name}</h3>
+                                      <span className="text-[#F2CA50] text-[7px] sm:text-[8px] font-bold tracking-[1px] uppercase opacity-30 truncate">{formula.category}</span>
+                                      
+                                      {/* Rotating Chevron Arrow */}
+                                      <svg 
+                                        className={`w-3 h-3 text-[#F2CA50]/60 group-hover/title:text-[#F2CA50] transition-transform duration-300 shrink-0 ${
+                                          expandedEssenceId === formula.id ? "rotate-180" : ""
+                                        }`}
+                                        fill="none" 
+                                        stroke="currentColor" 
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                      </svg>
+                                    </div>
+
+                                    {/* Expandable Dropdown Description */}
+                                    <div 
+                                      className={`overflow-hidden transition-all duration-350 ease-in-out ${
+                                        expandedEssenceId === formula.id 
+                                          ? "max-h-[120px] opacity-100 mt-2" 
+                                          : "max-h-0 opacity-0"
+                                      }`}
+                                    >
+                                      <p className="text-white/40 text-[9px] sm:text-[10px] font-light leading-relaxed italic border-t border-white/5 pt-2 min-h-[2.5rem] whitespace-normal">
+                                        {formula.description}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    onClick={() => toggleFormula(formula.id)}
+                                    disabled={selectedFormulas.length >= 3}
+                                    className={`shrink-0 px-3 sm:px-6 py-1.5 sm:py-2 rounded-lg text-[9px] font-bold tracking-[2px] uppercase transition-all duration-300 ${selectedFormulas.length >= 3 ? "text-white/5 cursor-not-allowed" : "bg-white/5 text-[#F2CA50] border border-[#F2CA50]/10 hover:bg-[#F2CA50] hover:text-black"}`}
+                                  >
+                                    + Add
+                                  </button>
+                                </div>
+                              ))
+                          )
+                      )}
                     </div>
                   </div>
 
@@ -645,9 +687,14 @@ function CreateBlendContent() {
                                 </button>
                               </div>
 
-                              <div className="p-5 space-y-1">
-                                <h3 className="text-white text-sm font-serif">{formula.name}</h3>
-                                <p className="text-[#F2CA50] text-[8px] font-bold tracking-[1px] uppercase opacity-40">{formula.category}</p>
+                              <div className="p-5 space-y-3">
+                                <div className="space-y-1">
+                                  <h3 className="text-white text-sm font-serif">{formula.name}</h3>
+                                  <p className="text-[#F2CA50] text-[8px] font-bold tracking-[1px] uppercase opacity-40">{formula.category}</p>
+                                </div>
+                                <p className="text-white/40 text-[10px] font-light leading-relaxed italic border-t border-white/5 pt-2.5">
+                                  "{formula.description}"
+                                </p>
                               </div>
                             </div>
                           );
